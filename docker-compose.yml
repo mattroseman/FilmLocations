@@ -1,0 +1,13 @@
+---
+version: "3.5"
+
+services:
+  get_film_locations:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: get_film_locations:local
+    container_name: get_film_locations
+    command: bash -c "npm start"
+    volumes:
+      - .:/usr/src/app
