@@ -1,0 +1,19 @@
+{
+  "name": "film-locations",
+  "version": "1.0.0",
+  "description": "Scrape IMDb to get filming locations for all movies",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mroseman95/FilmLocations.git"
+  },
+  "author": "Matthew Roseman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mroseman95/FilmLocations/issues"
+  },
+  "homepage": "https://github.com/mroseman95/FilmLocations#readme"
+}
