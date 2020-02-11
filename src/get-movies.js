@@ -100,7 +100,6 @@ async function addBasicInfoToDb() {
     if (newMoviesBuffer.length >= DB_BULK_OP_MAX_SIZE) {
       try {
         insertionPromises.push(await Movie.collection.insertMany([...newMoviesBuffer], {ordered: false, lean: true}));
-        console.log(`inserted ${newMoviesBuffer.length} movies into db`);
       } catch (err) {
         console.error(`error adding movies to db: ${err}`);
       }
@@ -117,7 +116,6 @@ async function addBasicInfoToDb() {
   }
 
   // one final insertMany to clear out newMovies buffer
-  console.log('test test test');
   try {
     insertionPromises.push(Movie.collection.insertMany([...newMoviesBuffer], {ordered: false, lean: true}));
   } catch (err) {
