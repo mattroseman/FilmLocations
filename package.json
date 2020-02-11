@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/mroseman95/FilmLocations/issues"
   },
-  "homepage": "https://github.com/mroseman95/FilmLocations#readme"
+  "homepage": "https://github.com/mroseman95/FilmLocations#readme",
+  "dependencies": {
+    "mongoose": "^5.8.11"
+  }
 }
