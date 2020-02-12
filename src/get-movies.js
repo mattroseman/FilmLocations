@@ -277,9 +277,5 @@ async function* downloadZippedFile(url) {
     yield previous;
   }
 }
-/*
-(async () => {
-  await addAllMoviesToDb();
-})();
-*/
+
 module.exports.addAllMoviesToDb = addAllMoviesToDb;

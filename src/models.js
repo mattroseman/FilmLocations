@@ -1,11 +1,13 @@
 const mongoose = require('mongoose');
 
+// MOVIE COLLECTION
 const movieSchema = new mongoose.Schema({
   _id: String,
   title: {type: String, required: true},
   year: {type: Number, default: 0},
   numVotes: {type: Number, default: 0},
-  rating: {type: Number, default: 0}
+  rating: {type: Number, default: 0},
+  locations: [{type: mongoose.Schema.Types.ObjectId, ref: 'Location'}]
 });
 
 // returns a string representation of a Movie for logging purposes
@@ -23,4 +25,35 @@ movieSchema.statics.idExists = async function(id) {
 
 const Movie = mongoose.model('Movie', movieSchema);
 
-module.exports.Movie = Movie;
+// LOCATION COLLECTION
+const pointSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    enum: ['Point'],
+    require: true
+  },
+  coordinates: {
+    type: [Number],
+    required: true
+  }
+});
+
+const locationSchema = new mongoose.Schema({
+  locationString: String,
+  location: {
+    type: pointSchema,
+    required: false
+  },
+  movies: [{type: String, ref: 'Movie'}]
+});
+
+locationSchema.methods.toString = function() {
+  return `Location: (_id: ${this._id}, locationString: ${this.locationString}, lon: ${this.location.coordinates[0]}, lat: ${this.location.coordinates[1]})`;
+};
+
+const Location = mongoose.model('Location', locationSchema);
+
+module.exports = {
+  Movie,
+  Location
+};

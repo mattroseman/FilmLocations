@@ -32,3 +32,5 @@ services:
       DB_BULK_OP_MAX_SIZE: 50000
     volumes:
       - .:/usr/src/app
+    ports:
+      - 9229:9229

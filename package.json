@@ -2,9 +2,9 @@
   "name": "film-locations",
   "version": "1.0.0",
   "description": "Scrape IMDb to get filming locations for all movies",
-  "main": "index.js",
+  "main": "src/main.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/mroseman95/FilmLocations#readme",
   "dependencies": {
+    "axios": "^0.19.2",
+    "cheerio": "^1.0.0-rc.3",
     "mongoose": "^5.8.11"
   }
 }
