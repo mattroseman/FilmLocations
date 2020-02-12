@@ -38,13 +38,17 @@ async function getLocations() {
   // asynchronously scrape IMDb for each movie, and then add those locations to the database
   let numMoviesProcessed = 0;
   const scrapingPromises = [];
+  // TODO also keep track of database update promises so those can happen truly asyncronously
+  // TODO or consider doing those in a worker thread
   for (const movieId of movieIds) {
+    // stop processing movies until a scraping promise resolves, and more requests can be made
     if (scrapingPromises.length >= MAX_CONCURRENT_REQUESTS) {
       await Promise.race(scrapingPromises);
     }
 
     const scrapingPromise = scrapeLocations(movieId);
     scrapingPromise.then(() => {
+      // remove this promise from the scrapingPromises pool after it resolves
       scrapingPromises.splice(scrapingPromises.indexOf(scrapingPromise), 1);
     });
     scrapingPromises.push(scrapingPromise);
