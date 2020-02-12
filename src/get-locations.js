@@ -10,12 +10,12 @@ const DB_PORT = process.env.DB_PORT;
 const DB_USER = process.env.DB_USER;
 const DB_PASS = process.env.DB_PASS;
 const DB_NAME = process.env.DB_NAME;
-// TODO might not need this
-// const DB_BULK_OP_MAX_SIZE = process.env.DB_BULK_OP_MAX_SIZE;
 
 // config mongoose
 mongoose.set('useFindAndModify', false);
 const mongoUrl = `mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=admin`;
+
+const MAX_CONCURRENT_REQUESTS = process.env.MAX_CONCURRENT_REQUESTS;
 
 /*
  * getLocations queries the database to get a list of all movies, and scrapes the location info for each one
@@ -35,16 +35,46 @@ async function getLocations() {
 
   console.log(`There are ${movieIds.length} movies in the database`);
 
+  // asynchronously scrape IMDb for each movie, and then add those locations to the database
+  let numRequests = 0;
+  const scrapingPromises = [];
+  // movieIds.map(async (movieId) => {
   for (const movieId of movieIds) {
-    const locations = await scrapeLocations(movieId);
-
-    console.log(`locations for movie: ${movieId}`);
-
-    if (locations.length > 0) {
-      const movie = await Movie.findOne({ _id: movieId });
-      await addLocationsToDb(locations, movie);
+    if (scrapingPromises.length >= MAX_CONCURRENT_REQUESTS) {
+      console.log('waiting for a request to finish');
+      await Promise.race(scrapingPromises);
     }
+
+    numRequests++;
+    console.log(`${numRequests} concurrent requests`);
+
+    const scrapingPromise = scrapeLocations(movieId);
+    scrapingPromise.then(() => {
+      scrapingPromises.splice(scrapingPromises.indexOf(scrapingPromise), 1);
+      numRequests--;
+    });
+    scrapingPromises.push(scrapingPromise);
+
+    scrapingPromise
+      .then(async (locations) => {
+        console.log(`locations for movie: ${movieId}`);
+
+        if (locations.length > 0) {
+          try {
+            const movie = await Movie.findOne({ _id: movieId });
+            await addLocationsToDb(locations, movie);
+          } catch(err) {
+            console.error(`Something wen't wrong adding locations to database for movie: ${movieId}\n${err}`);
+          }
+        }
+      })
+      .catch((err) => {
+        console.error(`Something wen't wrong scraping location info for movie: ${movieId}\n${err}`);
+      })
   }
+
+  // wait for all requests to finish
+  await Promise.all(scrapingPromises);
 }
 
 /*
@@ -58,7 +88,8 @@ async function scrapeLocations(movieId) {
   try {
     response = await axios(`https://www.imdb.com/title/${movieId}/locations`);
   } catch (err) {
-    console.error(`Something wen't wrong scraping location info for movie: ${movieId}\n${err}`);
+    console.error(`Something wen't wrong hitting IMDb locations endpoint for movie: ${movieId}\n${err}`);
+    return [];
   }
 
   if (response.status !== 200) {
