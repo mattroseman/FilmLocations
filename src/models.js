@@ -39,11 +39,8 @@ const pointSchema = new mongoose.Schema({
 });
 
 const locationSchema = new mongoose.Schema({
-  locationString: String,
-  location: {
-    type: pointSchema,
-    required: false
-  },
+  locationString: { type: String, required: true },
+  location: { type: pointSchema, required: false },
   movies: [{type: String, ref: 'Movie'}]
 });
 
