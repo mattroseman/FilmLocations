@@ -36,28 +36,22 @@ async function getLocations() {
   console.log(`There are ${movieIds.length} movies in the database`);
 
   // asynchronously scrape IMDb for each movie, and then add those locations to the database
-  let numRequests = 0;
+  let numMoviesProcessed = 0;
   const scrapingPromises = [];
-  // movieIds.map(async (movieId) => {
   for (const movieId of movieIds) {
     if (scrapingPromises.length >= MAX_CONCURRENT_REQUESTS) {
-      console.log('waiting for a request to finish');
       await Promise.race(scrapingPromises);
     }
-
-    numRequests++;
-    console.log(`${numRequests} concurrent requests`);
 
     const scrapingPromise = scrapeLocations(movieId);
     scrapingPromise.then(() => {
       scrapingPromises.splice(scrapingPromises.indexOf(scrapingPromise), 1);
-      numRequests--;
     });
     scrapingPromises.push(scrapingPromise);
 
     scrapingPromise
       .then(async (locations) => {
-        console.log(`locations for movie: ${movieId}`);
+        console.log(`movie: ${movieId} locations: ["${locations.join('", "')}"]`);
 
         if (locations.length > 0) {
           try {
@@ -67,6 +61,9 @@ async function getLocations() {
             console.error(`Something wen't wrong adding locations to database for movie: ${movieId}\n${err}`);
           }
         }
+
+        numMoviesProcessed++;
+        console.log(`${numMoviesProcessed}/${movieIds.length} movies processed`);
       })
       .catch((err) => {
         console.error(`Something wen't wrong scraping location info for movie: ${movieId}\n${err}`);
@@ -114,8 +111,6 @@ async function scrapeLocations(movieId) {
  */
 async function addLocationsToDb(locations, movie) {
   for (const locationString of locations) {
-    console.log(locationString);
-
     let location = await Location.findOne({ locationString });
 
     // if there isn't already a location document in the database, create it

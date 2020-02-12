@@ -30,7 +30,7 @@ services:
       DB_PASS: film_locations_pass
       DB_NAME: film_locations
       DB_BULK_OP_MAX_SIZE: 50000
-      MAX_CONCURRENT_REQUESTS: 10
+      MAX_CONCURRENT_REQUESTS: 100
     volumes:
       - .:/usr/src/app
     ports:
