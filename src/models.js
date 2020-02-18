@@ -7,7 +7,8 @@ const movieSchema = new mongoose.Schema({
   year: {type: Number, default: 0},
   numVotes: {type: Number, default: 0},
   rating: {type: Number, default: 0},
-  locations: [{type: mongoose.Schema.Types.ObjectId, ref: 'Location'}]
+  locations: [{type: mongoose.Schema.Types.ObjectId, ref: 'Location'}],
+  lastLocationUpdateDate: {type: Date, default: Date.now}
 });
 
 // returns a string representation of a Movie for logging purposes
@@ -15,8 +16,36 @@ movieSchema.methods.toString = function() {
   return `Movie: (_id: ${this._id}, title: ${this.title}, year: ${this.year}, numVotes: ${this.numVotes}, rating: ${this.rating})`;
 };
 
+movieSchema.statics.getCount = async function() {
+  return await this.find().distinct('_id').count();
+};
+
+/*
+ * getAllIds queries for all unique movie id's in the database
+ */
 movieSchema.statics.getAllIds = async function() {
   return await this.find().distinct('_id');
+};
+
+/*
+ * getAllStaleIds queries for all unqiue movie id's that havn't had location updated today yet
+ */
+movieSchema.statics.getAllStaleIds = async function() {
+  return await this.find({
+    $or: [
+      {lastLocationUpdateDate: { $lt: new Date(new Date().setHours(0, 0, 0, 0)) }},
+      {lastLocationUpdateDate: null}
+    ]
+  }).distinct('_id');
+};
+
+/*
+ * getAllNewMovieIds queries for all unique movie id's that have never had their location's updated
+ */
+movieSchema.statics.getAllNewIds = async function() {
+  return await this.find({
+    lastLocationUpdateDate: null
+  }).distinct('_id');
 };
 
 movieSchema.statics.idExists = async function(id) {

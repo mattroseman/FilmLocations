@@ -31,12 +31,14 @@ async function getLocations() {
   }
 
   // query DB to get list of movies
-  const movieIds = await Movie.getAllIds();
+  // const movieIds = await Movie.getAllIds();
+  const movieIds = await Movie.getAllNewIds();
+  const totalMovieCount = await Movie.getCount();
 
-  console.log(`There are ${movieIds.length} movies in the database`);
+  console.log(`There are ${totalMovieCount} movies in the database`);
 
   // asynchronously scrape IMDb for each movie, and then add those locations to the database
-  let numMoviesProcessed = 0;
+  let numMoviesProcessed = totalMovieCount - movieIds.length;
   const scrapingPromises = [];
   // TODO also keep track of database update promises so those can happen truly asyncronously
   // TODO or consider doing those in a worker thread
@@ -67,7 +69,7 @@ async function getLocations() {
         }
 
         numMoviesProcessed++;
-        console.log(`${numMoviesProcessed}/${movieIds.length} movies processed`);
+        console.log(`${numMoviesProcessed}/${totalMovieCount} movies processed`);
       })
       .catch((err) => {
         console.error(`Something wen't wrong scraping location info for movie: ${movieId}\n${err}`);
@@ -137,6 +139,7 @@ async function addLocationsToDb(locations, movie) {
     location.save();
   }
 
+  movie.lastLocationUpdateDate = Date.now();
   movie.save();
 }
 
