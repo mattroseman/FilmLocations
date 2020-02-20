@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 const axios = require('axios');
 const cheerio = require('cheerio');
+const chalk = require('chalk');
 
 const { Movie, Location } = require('./models.js');
+
+const RELEVANT_MOVIE_VOTE_MIN = +process.env.RELEVANT_MOVIE_VOTE_MIN
 
 // load database environment variables
 const DB_HOST = process.env.DB_HOST;
@@ -32,8 +35,8 @@ async function getLocations() {
 
   // query DB to get list of movies
   // const movieIds = await Movie.getAllIds();
-  const movieIds = await Movie.getAllNewIds();
-  const totalMovieCount = await Movie.getCount();
+  const movieIds = await Movie.getAllRelevantIds(RELEVANT_MOVIE_VOTE_MIN);
+  const totalMovieCount = movieIds.length;
 
   console.log(`There are ${totalMovieCount} movies in the database`);
 
@@ -58,13 +61,14 @@ async function getLocations() {
     scrapingPromise
       .then(async (locations) => {
         console.log(`movie: ${movieId} locations: ["${locations.join('", "')}"]`);
+        if (locations !== null) {
+          console.log(`movie: ${movieId} locations: ["${locations.join('", "')}"]`);
 
-        if (locations.length > 0) {
           try {
             const movie = await Movie.findOne({ _id: movieId });
             await addLocationsToDb(locations, movie);
           } catch(err) {
-            console.error(`Something wen't wrong adding locations to database for movie: ${movieId}\n${err}`);
+            console.error(chalk.red(`Something wen't wrong adding locations to database for movie: ${movieId}\n${err}`));
           }
         }
 
@@ -72,7 +76,7 @@ async function getLocations() {
         console.log(`${numMoviesProcessed}/${totalMovieCount} movies processed`);
       })
       .catch((err) => {
-        console.error(`Something wen't wrong scraping location info for movie: ${movieId}\n${err}`);
+        console.error(chalk.red(`Something wen't wrong scraping location info for movie: ${movieId}\n${err}`));
       })
   }
 
@@ -83,7 +87,7 @@ async function getLocations() {
 /*
  * scrapeLocations scrapes the IMDb website to get a list of locations a movie was shot in, returning a list of strings
  * @param movieId: the IMDb id of the movie to get locations for
- * @return: an array of Strings of movie locations that were found
+ * @return: an array of Strings of movie locations that were found, or null if something wen't wrong. (If the scrape is successful but no locations is found an empty array is returned)
  */
 async function scrapeLocations(movieId) {
   let response;
@@ -91,12 +95,13 @@ async function scrapeLocations(movieId) {
   try {
     response = await axios(`https://www.imdb.com/title/${movieId}/locations`);
   } catch (err) {
-    console.error(`Something wen't wrong hitting IMDb locations endpoint for movie: ${movieId}\n${err}`);
-    return [];
+    console.error(chalk.red(`Something wen't wrong hitting IMDb locations endpoint for movie: ${movieId}\n${err}`));
+    return null;
   }
 
   if (response.status !== 200) {
-    console.error(`got a ${response.status} status code when scraping location for movie: ${movieId}`);
+    console.error(chalk.red(`got a ${response.status} status code when scraping location for movie: ${movieId}`));
+    return null;
   }
 
   const locationHtml = response.data;

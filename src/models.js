@@ -28,6 +28,18 @@ movieSchema.statics.getAllIds = async function() {
 };
 
 /*
+ * getAllRelevantIds queries for all movie ids with num of votes over the given minimum
+ */
+movieSchema.statics.getAllRelevantIds = async function(num_votes_min) {
+  return await this.find({
+    $and: [
+      {"numVotes": {$gte: num_votes_min}},
+      {"lastLocationUpdateDate": {$exists: false}}
+    ]
+  }).distinct('_id');
+};
+
+/*
  * getAllStaleIds queries for all unqiue movie id's that havn't had location updated today yet
  */
 movieSchema.statics.getAllStaleIds = async function() {
