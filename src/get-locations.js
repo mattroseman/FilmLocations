@@ -60,7 +60,6 @@ async function getLocations() {
 
     scrapingPromise
       .then(async (locations) => {
-        console.log(`movie: ${movieId} locations: ["${locations.join('", "')}"]`);
         if (locations !== null) {
           console.log(`movie: ${movieId} locations: ["${locations.join('", "')}"]`);
 
