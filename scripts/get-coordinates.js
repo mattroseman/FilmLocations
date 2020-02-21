@@ -3,7 +3,7 @@ const fs = require('fs');
 const chalk = require('chalk');
 const axios = require('axios');
 
-const { Location } = require('./models.js');
+const { Location } = require('../lib/models.js');
 
 const ENVIRONMENT = process.env.ENVIRONMENT;
 const MAX_CONCURRENT_REQUESTS = +process.env.MAX_CONCURRENT_REQUESTS;

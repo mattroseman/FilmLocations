@@ -4,7 +4,7 @@ const cheerio = require('cheerio');
 const chalk = require('chalk');
 const fs = require('fs');
 
-const { Movie, Location } = require('./models.js');
+const { Movie, Location } = require('../lib/models.js');
 
 const ENVIRONMENT = process.env.ENVIRONMENT;
 const RELEVANT_MOVIE_VOTE_MIN = +process.env.RELEVANT_MOVIE_VOTE_MIN;

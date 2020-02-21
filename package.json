@@ -2,9 +2,10 @@
   "name": "film-locations",
   "version": "1.0.0",
   "description": "Scrape IMDb to get filming locations for all movies",
-  "main": "src/main.js",
+  "main": "server/main.js",
   "scripts": {
     "start": "node src/main.js",
+    "generate-db": "node scripts/generate-db.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
