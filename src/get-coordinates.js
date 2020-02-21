@@ -6,7 +6,7 @@ const axios = require('axios');
 const { Location } = require('./models.js');
 
 const ENVIRONMENT = process.env.ENVIRONMENT;
-const MAX_CONCURRENT_REQUESTS = process.env.MAX_CONCURRENT_REQUESTS;
+const MAX_CONCURRENT_REQUESTS = +process.env.MAX_CONCURRENT_REQUESTS;
 
 // load geocode API config
 const GEOCODE_API_KEY = JSON.parse(fs.readFileSync('./credentials/google.json')).API_KEY;

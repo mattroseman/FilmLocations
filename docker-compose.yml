@@ -24,14 +24,17 @@ services:
     container_name: get_film_locations
     command: bash -c "npm start"
     environment:
+      ENVIRONMENT: local
       DB_HOST: mongodb
       DB_PORT: 27017
       DB_USER: film_locations_user
       DB_PASS: film_locations_pass
       DB_NAME: film_locations
-      DB_BULK_OP_MAX_SIZE: 50000
-      MAX_CONCURRENT_REQUESTS: 100
+      DB_BULK_OP_MAX_SIZE: 10000
+      MAX_CONCURRENT_REQUESTS: 20
+      PORT: ${PORT:-8080}
     volumes:
       - .:/usr/src/app
     ports:
       - 9229:9229
+      - 8080:${PORT:-8080}

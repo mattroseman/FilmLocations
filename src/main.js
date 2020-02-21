@@ -20,8 +20,8 @@ if (process.env.ENVIRONMENT === 'production') {
   app.listen(PORT);
 } else {
     (async () =>  {
-      // await addAllMoviesToDb();
-      // await getLocations();
+      await addAllMoviesToDb();
+      await getLocations();
       await getCoordinates();
     })();
 }

@@ -1,28 +1,45 @@
+const mongoose = require('mongoose');
+const fs = require('fs');
 const zlib = require('zlib');
 const https = require('https');
-
-const mongoose = require('mongoose');
+const chalk = require('chalk');
 
 const { Movie } = require('./models.js');
 
-
+const ENVIRONMENT = process.env.ENVIRONMENT;
 const IMDB_BASIC_FILE_URL = 'https://datasets.imdbws.com/title.basics.tsv.gz';
 const IMDB_RATING_FILE_URL = 'https://datasets.imdbws.com/title.ratings.tsv.gz';
 
 let preExistingMovieIds;
 let movieIds;
 
-// load database environment variables
-const DB_HOST = process.env.DB_HOST;
-const DB_PORT = process.env.DB_PORT;
-const DB_USER = process.env.DB_USER;
-const DB_PASS = process.env.DB_PASS;
-const DB_NAME = process.env.DB_NAME;
+// load database config
+let mongoUrl;
+if (ENVIRONMENT === 'production') {
+  const dbConfig = JSON.parse(fs.readFileSync('./credentials/mongodb.json'));
+  const DB_HOST = dbConfig.DB_HOST;
+  const DB_USER = dbConfig.DB_USER;
+  const DB_PASS = dbConfig.DB_PASS;
+  const DB_NAME = dbConfig.DB_NAME;
+
+  mongoUrl = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}?retryWrites=true&w=majority`;
+} else {
+  const DB_HOST = process.env.DB_HOST;
+  const DB_PORT = process.env.DB_PORT;
+  const DB_USER = process.env.DB_USER;
+  const DB_PASS = process.env.DB_PASS;
+  const DB_NAME = process.env.DB_NAME;
+
+  mongoUrl = `mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=admin`;
+}
 const DB_BULK_OP_MAX_SIZE = process.env.DB_BULK_OP_MAX_SIZE;
 
 // config mongoose
 mongoose.set('useFindAndModify', false);
-const mongoUrl = `mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=admin`;
+const mongooseConfig = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+};
 
 /*
  * addAllMoviesToDb downloads a list of current movies from IMDb, including data associated with the movies.
@@ -34,10 +51,11 @@ async function addAllMoviesToDb() {
 
   // connect to database
   try {
-    await mongoose.connect(mongoUrl, {useNewUrlParser: true, useUnifiedTopology: true});
+    console.log(`Database URL: ${mongoUrl}`);
+    await mongoose.connect(mongoUrl, mongooseConfig);
     console.log('connected to database');
   } catch (err) {
-    console.error('connection error: ' + err);
+    console.error(chalk.red(`connection error: ${err}`));
   }
 
   preExistingMovieIds = new Set(await Movie.getAllIds());
@@ -47,7 +65,7 @@ async function addAllMoviesToDb() {
   try {
     await addBasicInfoToDb();
   } catch (err) {
-    console.error(`there was an error adding basic movie info to db: ${err}`);
+    console.error(chalk.red(`there was an error adding basic movie info to db: ${err}`));
   }
 
   movieIds = new Set(await Movie.getAllIds());
@@ -55,7 +73,7 @@ async function addAllMoviesToDb() {
   try {
     await addRatingInfoToDb();
   } catch (err) {
-    console.error(`there was an error updating movie rating info in db: ${err}`);
+    console.error(chalk.red(`there was an error updating movie rating info in db: ${err}`));
   }
 
   console.log('All movie data has been downloaded and updated');
@@ -79,7 +97,7 @@ async function addBasicInfoToDb() {
   try {
     basicInfoLines = await downloadZippedFile(IMDB_BASIC_FILE_URL);
   } catch (err) {
-    console.error(`error downloading basic info file from IMDb: ${err}`);
+    console.error(chalk.red(`error downloading basic info file from IMDb: ${err}`));
   }
 
   for await (const line of basicInfoLines) {
@@ -100,8 +118,9 @@ async function addBasicInfoToDb() {
     if (newMoviesBuffer.length >= DB_BULK_OP_MAX_SIZE) {
       try {
         insertionPromises.push(await Movie.collection.insertMany([...newMoviesBuffer], {ordered: false, lean: true}));
+        console.log(`adding ${newMoviesBuffer.length} movies to the DB`);
       } catch (err) {
-        console.error(`error adding movies to db: ${err}`);
+        console.error(chalk.red(`error adding movies to db: ${err}`));
       }
 
       // reset the buffer for more movies
@@ -119,7 +138,7 @@ async function addBasicInfoToDb() {
   try {
     insertionPromises.push(Movie.collection.insertMany([...newMoviesBuffer], {ordered: false, lean: true}));
   } catch (err) {
-    console.error(`error adding movies to db: ${err}`);
+    console.error(chalk.red(`error adding movies to db: ${err}`));
   }
 
   console.log(`${newMoviesTotalLength} new documents added`);
@@ -175,7 +194,7 @@ async function addRatingInfoToDb() {
   try {
     ratingInfoLines = await downloadZippedFile(IMDB_RATING_FILE_URL);
   } catch (err) {
-    console.error(`error downloading ratings info file form IMDb: ${err}`);
+    console.error(chalk.red(`error downloading ratings info file form IMDb: ${err}`));
   }
 
   for await (const line of ratingInfoLines) {
@@ -204,7 +223,7 @@ async function addRatingInfoToDb() {
 
     console.log(`${res.modifiedCount} documents updated`);
   } catch (err) {
-    console.error(`error updating movies in db: ${err}`);
+    console.error(chalk.red(`error updating movies in db: ${err}`));
   }
 
   console.log('IMDb ratings file downloaded and processed');

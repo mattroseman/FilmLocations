@@ -2,23 +2,40 @@ const mongoose = require('mongoose');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const chalk = require('chalk');
+const fs = require('fs');
 
 const { Movie, Location } = require('./models.js');
 
-const RELEVANT_MOVIE_VOTE_MIN = +process.env.RELEVANT_MOVIE_VOTE_MIN
+const ENVIRONMENT = process.env.ENVIRONMENT;
+const RELEVANT_MOVIE_VOTE_MIN = +process.env.RELEVANT_MOVIE_VOTE_MIN;
+const MAX_CONCURRENT_REQUESTS = +process.env.MAX_CONCURRENT_REQUESTS;
 
-// load database environment variables
-const DB_HOST = process.env.DB_HOST;
-const DB_PORT = process.env.DB_PORT;
-const DB_USER = process.env.DB_USER;
-const DB_PASS = process.env.DB_PASS;
-const DB_NAME = process.env.DB_NAME;
+// load database config
+let mongoUrl;
+if (ENVIRONMENT === 'production') {
+  const dbConfig = JSON.parse(fs.readFileSync('./credentials/mongodb.json'));
+  const DB_HOST = dbConfig.DB_HOST;
+  const DB_USER = dbConfig.DB_USER;
+  const DB_PASS = dbConfig.DB_PASS;
+  const DB_NAME = dbConfig.DB_NAME;
+
+  mongoUrl = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}?retryWrites=true&w=majority`;
+} else {
+  const DB_HOST = process.env.DB_HOST;
+  const DB_PORT = process.env.DB_PORT;
+  const DB_USER = process.env.DB_USER;
+  const DB_PASS = process.env.DB_PASS;
+  const DB_NAME = process.env.DB_NAME;
+
+  mongoUrl = `mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=admin`;
+}
 
 // config mongoose
 mongoose.set('useFindAndModify', false);
-const mongoUrl = `mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=admin`;
-
-const MAX_CONCURRENT_REQUESTS = process.env.MAX_CONCURRENT_REQUESTS;
+const mongooseConfig = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+};
 
 /*
  * getLocations queries the database to get a list of all movies, and scrapes the location info for each one
@@ -27,10 +44,11 @@ const MAX_CONCURRENT_REQUESTS = process.env.MAX_CONCURRENT_REQUESTS;
 async function getLocations() {
   // connect to database
   try {
-    await mongoose.connect(mongoUrl, {useNewUrlParser: true, useUnifiedTopology: true});
+    console.log(`Dataase URL: ${mongoUrl}`);
+    await mongoose.connect(mongoUrl, mongooseConfig);
     console.log('connected to database');
   } catch (err) {
-    console.error('connection error: ' + err);
+    console.error(chalk.red(`connection error: ${err}`));
   }
 
   // query DB to get list of movies
