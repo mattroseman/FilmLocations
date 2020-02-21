@@ -82,11 +82,21 @@ const pointSchema = new mongoose.Schema({
 const locationSchema = new mongoose.Schema({
   locationString: { type: String, required: true },
   location: { type: pointSchema, required: false },
-  movies: [{type: String, ref: 'Movie'}]
+  movies: [{type: String, ref: 'Movie'}],
+  geocodeResult: { type: {}, required: false }
 });
 
 locationSchema.methods.toString = function() {
   return `Location: (_id: ${this._id}, locationString: ${this.locationString}, lon: ${this.location.coordinates[0]}, lat: ${this.location.coordinates[1]})`;
+};
+
+/*
+ * getNoGeocodeResultLocations gets all locations from the database that don't yet have a raw geocode result from the database
+ */
+locationSchema.statics.getNoGeocodeResultLocations = async function() {
+  return await this.find({
+    geocodeResult: {$exists: false}
+  });
 };
 
 const Location = mongoose.model('Location', locationSchema);
