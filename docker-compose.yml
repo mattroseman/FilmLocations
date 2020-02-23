@@ -44,7 +44,7 @@ services:
       dockerfile: Dockerfile
     image: film_locations:local
     container_name: film_locations
-    command: bash -c "npm start"
+    command: bash -c "npm run server-dev"
     environment:
       ENVIRONMENT: local
       DB_HOST: mongodb
