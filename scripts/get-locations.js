@@ -1,42 +1,12 @@
-const mongoose = require('mongoose');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const chalk = require('chalk');
-const fs = require('fs');
 
+const connectToDatabase = require('../lib/db.js');
 const { Movie, Location } = require('../lib/models.js');
 
-const ENVIRONMENT = process.env.ENVIRONMENT;
 const RELEVANT_MOVIE_VOTE_MIN = +process.env.RELEVANT_MOVIE_VOTE_MIN;
 const MAX_CONCURRENT_REQUESTS = +process.env.MAX_CONCURRENT_REQUESTS;
-
-// load database config
-let mongoUrl;
-if (ENVIRONMENT === 'production') {
-  const dbConfig = JSON.parse(fs.readFileSync('./credentials/mongodb.json'));
-  const DB_HOST = dbConfig.DB_HOST;
-  const DB_USER = dbConfig.DB_USER;
-  const DB_PASS = dbConfig.DB_PASS;
-  const DB_NAME = dbConfig.DB_NAME;
-
-  mongoUrl = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}?retryWrites=true&w=majority`;
-} else {
-  const DB_HOST = process.env.DB_HOST;
-  const DB_PORT = process.env.DB_PORT;
-  const DB_USER = process.env.DB_USER;
-  const DB_PASS = process.env.DB_PASS;
-  const DB_NAME = process.env.DB_NAME;
-
-  mongoUrl = `mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=admin`;
-}
-
-// config mongoose
-mongoose.set('useFindAndModify', false);
-const mongooseConfig = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true
-};
 
 /*
  * getLocations queries the database to get a list of all movies, and scrapes the location info for each one
@@ -44,12 +14,8 @@ const mongooseConfig = {
  */
 async function getLocations() {
   // connect to database
-  try {
-    console.log(`Dataase URL: ${mongoUrl}`);
-    await mongoose.connect(mongoUrl, mongooseConfig);
-    console.log('connected to database');
-  } catch (err) {
-    console.error(chalk.red(`connection error: ${err}`));
+  if (!(await connectToDatabase())) {
+    return;
   }
 
   // query DB to get list of movies

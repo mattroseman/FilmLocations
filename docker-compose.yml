@@ -52,6 +52,7 @@ services:
       DB_USER: film_locations_user
       DB_PASS: film_locations_pass
       DB_NAME: film_locations
+      PORT: 5000
     volumes:
       - .:/usr/src/app
     ports:

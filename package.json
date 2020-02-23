@@ -4,7 +4,7 @@
   "description": "Scrape IMDb to get filming locations for all movies",
   "main": "server/main.js",
   "scripts": {
-    "start": "node src/main.js",
+    "start": "node server/main.js",
     "generate-db": "node scripts/generate-db.js",
     "client-dev": "webpack-dev-server --mode development --host 0.0.0.0",
     "build": "webpack",
@@ -23,6 +23,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "cheerio": "^1.0.0-rc.3",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "leaflet": "^1.6.0",
     "mongoose": "^5.8.11",

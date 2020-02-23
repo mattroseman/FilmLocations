@@ -1,3 +1,4 @@
+const connectToDatabase = require('./lib/db.js');
 const { addAllMoviesToDb } = require('./get-movies.js');
 const { getLocations } = require('./get-locations.js');
 const { getCoordinates } = require('./get-coordinates.js');
@@ -11,8 +12,13 @@ if (process.env.ENVIRONMENT === 'production') {
 
   app.get('/', (_, res) => {
     (async () =>  {
+      if (!(await connectToDatabase())) {
+        return;
+      }
+
       await addAllMoviesToDb();
       await getLocations();
+      await getCoordinates();
     })();
     res.send();
   });
@@ -20,6 +26,10 @@ if (process.env.ENVIRONMENT === 'production') {
   app.listen(PORT);
 } else {
     (async () =>  {
+      if (!(await connectToDatabase())) {
+        return;
+      }
+
       await addAllMoviesToDb();
       await getLocations();
       await getCoordinates();

@@ -1,46 +1,16 @@
-const mongoose = require('mongoose');
-const fs = require('fs');
 const zlib = require('zlib');
 const https = require('https');
 const chalk = require('chalk');
 
+const connectToDatabase = require('../lib/db.js');
 const { Movie } = require('../lib/models.js');
 
-const ENVIRONMENT = process.env.ENVIRONMENT;
 const IMDB_BASIC_FILE_URL = 'https://datasets.imdbws.com/title.basics.tsv.gz';
 const IMDB_RATING_FILE_URL = 'https://datasets.imdbws.com/title.ratings.tsv.gz';
+const DB_BULK_OP_MAX_SIZE = process.env.DB_BULK_OP_MAX_SIZE;
 
 let preExistingMovieIds;
 let movieIds;
-
-// load database config
-let mongoUrl;
-if (ENVIRONMENT === 'production') {
-  const dbConfig = JSON.parse(fs.readFileSync('./credentials/mongodb.json'));
-  const DB_HOST = dbConfig.DB_HOST;
-  const DB_USER = dbConfig.DB_USER;
-  const DB_PASS = dbConfig.DB_PASS;
-  const DB_NAME = dbConfig.DB_NAME;
-
-  mongoUrl = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}?retryWrites=true&w=majority`;
-} else {
-  const DB_HOST = process.env.DB_HOST;
-  const DB_PORT = process.env.DB_PORT;
-  const DB_USER = process.env.DB_USER;
-  const DB_PASS = process.env.DB_PASS;
-  const DB_NAME = process.env.DB_NAME;
-
-  mongoUrl = `mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=admin`;
-}
-const DB_BULK_OP_MAX_SIZE = process.env.DB_BULK_OP_MAX_SIZE;
-
-// config mongoose
-mongoose.set('useFindAndModify', false);
-const mongooseConfig = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true
-};
 
 /*
  * addAllMoviesToDb downloads a list of current movies from IMDb, including data associated with the movies.
@@ -50,13 +20,8 @@ const mongooseConfig = {
 async function addAllMoviesToDb() {
   const startTime = new Date();
 
-  // connect to database
-  try {
-    console.log(`Database URL: ${mongoUrl}`);
-    await mongoose.connect(mongoUrl, mongooseConfig);
-    console.log('connected to database');
-  } catch (err) {
-    console.error(chalk.red(`connection error: ${err}`));
+  if (!(await connectToDatabase())) {
+    return;
   }
 
   preExistingMovieIds = new Set(await Movie.getAllIds());

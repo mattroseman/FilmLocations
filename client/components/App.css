@@ -5,6 +5,13 @@ html, body, #root {
   margin: 0rem;
 }
 
+#map-container {
+  height: 100%;
+  width: 100%;
+
+  margin: 0rem;
+}
+
 .leaflet-container {
   height: 100%;
   width: 100%;
