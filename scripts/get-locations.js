@@ -34,7 +34,8 @@ if (ENVIRONMENT === 'production') {
 mongoose.set('useFindAndModify', false);
 const mongooseConfig = {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useCreateIndex: true
 };
 
 /*

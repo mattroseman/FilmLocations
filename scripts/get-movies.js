@@ -38,7 +38,8 @@ const DB_BULK_OP_MAX_SIZE = process.env.DB_BULK_OP_MAX_SIZE;
 mongoose.set('useFindAndModify', false);
 const mongooseConfig = {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useCreateIndex: true
 };
 
 /*

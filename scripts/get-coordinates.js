@@ -36,7 +36,8 @@ if (ENVIRONMENT === 'production') {
 mongoose.set('useFindAndModify', false);
 const mongooseConfig = {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useCreateIndex: true
 };
 
 /*
@@ -53,12 +54,12 @@ async function getCoordinates() {
     console.error(chalk.red(`connection error: ${err}`));
   }
 
-  // get list of all locations without coordinate information from database
+  // get list of all locations from database that are missing coordinate data
   let locations;
   let numLocations;
   let numLocationsProcessed = 0;
   try {
-    locations = await Location.getNoGeocodeResultLocations();
+    locations = await Location.getNoCoordinateLocations();
   } catch (err) {
     console.error(chalk.red(`something wen't wrong getting locations from db\n${err}`));
   }
@@ -66,9 +67,15 @@ async function getCoordinates() {
 
   console.log(`getting geocode result for ${numLocations} locations`);
 
-  // for each location, hit geocoding API to get coordinate information and store raw data in database
+  // for each location, if it doesn't already have geocoding results,
+  // hit the geocoding API to get coordinate information and store raw data in database
   const geocodeResultPromises = [];
   for (const location of locations) {
+    // skip any locations that already have geocode results
+    if (location.geocodeResult !== null) {
+      continue;
+    }
+
     // stop processing locations until a geocode result promise resolves, and more requests can be made
     if (geocodeResultPromises.length >= MAX_CONCURRENT_REQUESTS) {
       await Promise.race(geocodeResultPromises);
@@ -99,6 +106,44 @@ async function getCoordinates() {
   }
 
   await Promise.all(geocodeResultPromises);
+
+  console.log('Done updating any missing geocoding results for locations');
+  console.log('Parsing results to get coordinates and geohashes');
+
+  numLocationsProcessed = 0;
+  for (const location of locations) {
+    numLocationsProcessed++;
+
+    // skip any locations that already have a locationPoint field
+    if (location.locationPoint !== null) {
+      console.log(`${numLocationsProcessed}/${numLocations} location ${location.locationString} already has parsed location point`);
+      continue;
+    }
+
+    // skip any locations missing geocode results
+    if (location.geocodeResult === {} || location.geocodeResult === null) {
+      console.log(`${numLocationsProcessed}/${numLocations} location ${location.locationString} has no geocode result`);
+      continue;
+    }
+    
+    // if this location geocode result doesn't have coordinate information
+    if (location.geocodeResult.geometry === undefined || location.geocodeResult.geometry.location === undefined) {
+      console.log(`${numLocationsProcessed}/${numLocations} location ${location.locationString} geocode result doesn't have coordinate info`);
+      continue;
+    }
+
+    location.locationPoint = {
+      type: 'Point',
+      coordinates: [
+        location.geocodeResult.geometry.location.lng,
+        location.geocodeResult.geometry.location.lat
+      ]
+    };
+
+    console.log(`${numLocationsProcessed}/${numLocations} location ${location.locationString} is at [${location.locationPoint.coordinates[0]}, ${location.locationPoint.coordinates[1]}]`);
+
+    await location.save();
+  }
 }
 
 /*
@@ -141,7 +186,16 @@ async function getGeocodeResult(locationString) {
 async function addGeocodeResultToDb(location, geocodeResult) {
   location.geocodeResult = geocodeResult;
   location.markModified('geocodeResult');
-  location.save();
+
+  location.locationPoint = {
+    type: 'Point',
+    coordinates: [
+      location.geocodeResult.geometry.location.lng,
+      location.geocodeResult.geometry.location.lat
+    ]
+  };
+
+  await location.save();
 }
 
 module.exports.getCoordinates = getCoordinates;
