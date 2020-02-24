@@ -10,10 +10,12 @@ const MAX_CIRCLE_MARKER_RADIUS = 50;
 const MIN_CIRCLE_MARKER_RADIUS = 5;
 */
 const CIRCLE_MARKER_RADII = [
+  { max: 10, radius: 20 },
+  { max: 30, radius: 25 },
   { max: 100, radius: 30 },
-  { max: 500, radius: 50 },
-  { max: 1000, radius: 70 },
-  { max: Infinity, radius: 90 }
+  { max: 500, radius: 40 },
+  { max: 1000, radius: 60 },
+  { max: Infinity, radius: 80 }
 ];
 
 class App extends Component {
