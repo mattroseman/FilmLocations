@@ -5,7 +5,16 @@ import { Map, TileLayer, CircleMarker, Marker, Popup } from 'react-leaflet';
 
 import './App.css';
 
-const MAX_CIRCLE_MARKER_RADIUS = 100;
+/*
+const MAX_CIRCLE_MARKER_RADIUS = 50;
+const MIN_CIRCLE_MARKER_RADIUS = 5;
+*/
+const CIRCLE_MARKER_RADII = [
+  { max: 100, radius: 30 },
+  { max: 500, radius: 50 },
+  { max: 1000, radius: 100 },
+  { max: Infinity, radius: 150 }
+];
 
 class App extends Component {
   constructor(props) {
@@ -29,15 +38,7 @@ class App extends Component {
   }
 
   handleMapMoveEnd() {
-    this.setState({
-      map: {
-        markers: []
-      },
-      showingClusters: [],
-      maxClusterCount: 0
-    }, () => {
-      this.updateMapMarkers();
-    });
+    this.updateMapMarkers();
   }
 
   /*
@@ -50,9 +51,7 @@ class App extends Component {
     const northEast = [bounds._northEast.lat, bounds._northEast.lng];
     this.getClusters(southWest, northEast)
       .then((clusters) => {
-        for (const cluster of clusters) {
-          this.plotCluster(cluster);
-        }
+        this.plotClusters(clusters);
       });
   }
 
@@ -75,25 +74,38 @@ class App extends Component {
   }
 
   /*
-   * plotCluster takes a cluster object and plots it on the map
-   * @params cluster: {id: <cluster id>, numLocations: <how many locations are in this cluster>, center: [lat, lon]} an object describing a cluster of locations
+   * plotClusters takes an array of cluster objects and plots them on the map
+   * @params clusters: [{id: <cluster id>, numLocations: <how many locations are in this cluster>, center: [lat, lon]}] an array of objects describing clusters of locations
    */
-  plotCluster(cluster) {
-    const newMarker = {
-      id: cluster.id,
-      count: cluster.numLocations,
-      coordinate: [cluster.center[1], cluster.center[0]] // TODO this shouldn't be switched here
-    };
+  plotClusters(clusters) {
+    const newMarkers = clusters.map((cluster) => {
+      return {
+        id: cluster.id,
+        count: cluster.numLocations,
+        coordinate: [cluster.center[1], cluster.center[0]]  // TODO this shouldn't be switched here, but in the backend
+      };
+    });
 
-    // only add this new marker if there isn't already a marker for the given cluster
-    if (this.state.showingClusters.indexOf(cluster.id) < 0) {
-      this.setState({
-        map: {
-          markers: [...this.state.map.markers, newMarker]
-        },
-        showingClusters: [...this.state.showingClusters, cluster.id],
-        maxClusterCount: Math.max(this.state.maxClusterCount, cluster.numLocations)
-      });
+    this.setState({
+      map: {
+        markers: newMarkers
+      }
+    });
+  }
+
+  /*
+   * getCircleMarkerRadius calculates what the radius for the circle marker on the map for a cluster with the given number of locations
+   * @param numLocations: how many locations are in the cluster this circle marker represents
+   * @return: the radius the circle marker should have
+   */
+  getCircleMarkerRadius(numLocations) {
+    for (const range of CIRCLE_MARKER_RADII) {
+      const max = range.max;
+      const radius = range.radius;
+
+      if (numLocations < max) {
+        return radius;
+      }
     }
   }
 
@@ -104,7 +116,7 @@ class App extends Component {
           <CircleMarker
             key={marker.id}
             center={marker.coordinate}
-            radius={(marker.count / this.state.maxClusterCount) * MAX_CIRCLE_MARKER_RADIUS}
+            radius={this.getCircleMarkerRadius(marker.count)}
           >
             <Popup>
               {marker.count}

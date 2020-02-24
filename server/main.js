@@ -8,7 +8,7 @@ const { Location } = require('../lib/models.js');
 const { getCoordinatesCenter } = require('../lib/utils.js');
 
 const ENVIRONMENT = process.env.ENVIRONMENT;
-const CLUSTER_FACTOR = 2;  // the higher CLUSTER_FACTOR is smaller clusters are likely to be, and there will be more
+const CLUSTER_FACTOR = 3;  // the higher CLUSTER_FACTOR is smaller clusters are likely to be, and there will be more
 
 let app = express();
 
@@ -31,10 +31,15 @@ app.get('/film-clusters', async (req, res, next) => {
 
   console.log(`getting location clusters in bounds: [${southWest}:${northEast}]`);
 
+  let clusterFactor = CLUSTER_FACTOR;
+  if (Math.abs(southWest[1] - northEast[1]) > 1) {
+    clusterFactor -= 1;
+  }
+
   // query mongo database to get all clusters in the given boundaries, and the counts of movies for each cluster
   let clusters;
   try {
-    clusters = await Location.getClustersInBounds(southWest, northEast, CLUSTER_FACTOR);
+    clusters = await Location.getClustersInBounds(southWest, northEast, clusterFactor);
   } catch (err) {
     console.error(chalk.red(`Something wen't wrong getting film locations in bounds: ${southWest}:${northEast}\n${err}`));
     next(err);
