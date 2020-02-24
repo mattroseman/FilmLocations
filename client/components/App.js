@@ -141,6 +141,7 @@ class App extends Component {
           center={this.state.map.center}
           zoom={this.state.map.zoom}
           onMoveend={() => this.handleMapMoveEnd()}
+          worldCopyJump={true}
         >
           <TileLayer
             attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
