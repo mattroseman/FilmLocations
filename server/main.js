@@ -30,9 +30,18 @@ app.get('/film-clusters', async (req, res, next) => {
   const northEast = [+req.query.nelat, +req.query.nelon];
 
   console.log(`getting location clusters in bounds: [${southWest}:${northEast}]`);
+  console.log(`${Math.abs(southWest[1] - northEast[1])}`);
 
   let clusterFactor = CLUSTER_FACTOR;
-  if (Math.abs(southWest[1] - northEast[1]) > 1) {
+  const horizontalDiff = Math.abs(southWest[1] - northEast[1]);
+  if (horizontalDiff < .005) {
+    clusterFactor += 9
+    console.log(clusterFactor);
+  }
+  if (horizontalDiff > .8) {
+    clusterFactor -= 1;
+  }
+  if ( horizontalDiff > 100) {
     clusterFactor -= 1;
   }
 
@@ -53,6 +62,11 @@ app.get('/film-clusters', async (req, res, next) => {
       numLocations: cluster.count,
       center: getCoordinatesCenter(cluster.points.map((point) => {return [point.coordinates[1], point.coordinates[0]];}))
     }
+  });
+
+  // filter out clusters not within the given bounds
+  clusters = clusters.filter((cluster) => {
+    return (cluster.center[0] > southWest[0] && cluster.center[0] < northEast[0]) && (cluster.center[1]  > southWest[1] && cluster.center[1] < northEast[1]);
   });
 
   console.log(`${clusters.length} clusters found in bounds: [${southWest}:${northEast}]`);

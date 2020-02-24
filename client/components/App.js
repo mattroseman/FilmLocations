@@ -12,8 +12,8 @@ const MIN_CIRCLE_MARKER_RADIUS = 5;
 const CIRCLE_MARKER_RADII = [
   { max: 100, radius: 30 },
   { max: 500, radius: 50 },
-  { max: 1000, radius: 100 },
-  { max: Infinity, radius: 150 }
+  { max: 1000, radius: 70 },
+  { max: Infinity, radius: 90 }
 ];
 
 class App extends Component {
@@ -82,7 +82,7 @@ class App extends Component {
       return {
         id: cluster.id,
         count: cluster.numLocations,
-        coordinate: [cluster.center[1], cluster.center[0]]  // TODO this shouldn't be switched here, but in the backend
+        coordinate: cluster.center
       };
     });
 
