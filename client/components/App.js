@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { hot } from 'react-hot-loader/root';
 
-import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
+import { Map, TileLayer, CircleMarker, Marker, Popup } from 'react-leaflet';
 
 import './App.css';
+
+const MAX_CIRCLE_MARKER_RADIUS = 100;
 
 class App extends Component {
   constructor(props) {
@@ -15,7 +17,8 @@ class App extends Component {
         zoom: 14,
         markers: []
       },
-      showingClusters: []
+      showingClusters: [],
+      maxClusterCount: 0
     };
 
     this.map = React.createRef();
@@ -30,7 +33,8 @@ class App extends Component {
       map: {
         markers: []
       },
-      showingClusters: []
+      showingClusters: [],
+      maxClusterCount: 0
     }, () => {
       this.updateMapMarkers();
     });
@@ -41,17 +45,15 @@ class App extends Component {
    */
   updateMapMarkers() {
     const map = this.map.current;
-    if (map !== null) {
-      const bounds = map.leafletElement.getBounds();
-      const southWest = [bounds._southWest.lat, bounds._southWest.lng];
-      const northEast = [bounds._northEast.lat, bounds._northEast.lng];
-      this.getClusters(southWest, northEast)
-        .then((clusters) => {
-          for (const cluster of clusters) {
-            this.plotCluster(cluster);
-          }
-        });
-    }
+    const bounds = map.leafletElement.getBounds();
+    const southWest = [bounds._southWest.lat, bounds._southWest.lng];
+    const northEast = [bounds._northEast.lat, bounds._northEast.lng];
+    this.getClusters(southWest, northEast)
+      .then((clusters) => {
+        for (const cluster of clusters) {
+          this.plotCluster(cluster);
+        }
+      });
   }
 
   /*
@@ -79,7 +81,7 @@ class App extends Component {
   plotCluster(cluster) {
     const newMarker = {
       id: cluster.id,
-      name: `${cluster.numLocations} locations`,
+      count: cluster.numLocations,
       coordinate: [cluster.center[1], cluster.center[0]] // TODO this shouldn't be switched here
     };
 
@@ -89,17 +91,32 @@ class App extends Component {
         map: {
           markers: [...this.state.map.markers, newMarker]
         },
-        showingClusters: [...this.state.showingClusters, cluster.id]
+        showingClusters: [...this.state.showingClusters, cluster.id],
+        maxClusterCount: Math.max(this.state.maxClusterCount, cluster.numLocations)
       });
     }
   }
 
   render() {
     const markers = this.state.map.markers.map((marker) => {
+      if (marker.count > 1) {
+        return (
+          <CircleMarker
+            key={marker.id}
+            center={marker.coordinate}
+            radius={(marker.count / this.state.maxClusterCount) * MAX_CIRCLE_MARKER_RADIUS}
+          >
+            <Popup>
+              {marker.count}
+            </Popup>
+          </CircleMarker>
+        );
+      }
+
       return (
         <Marker key={marker.id} position={marker.coordinate}>
           <Popup>
-            {marker.name}
+            {marker.count} locations
           </Popup>
         </Marker>
       );
