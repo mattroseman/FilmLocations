@@ -5,8 +5,10 @@ const chalk = require('chalk');
 
 const connectToDatabase = require('../lib/db.js');
 const { Location } = require('../lib/models.js');
+const { getCoordinatesCenter } = require('../lib/utils.js');
 
 const ENVIRONMENT = process.env.ENVIRONMENT;
+const CLUSTER_FACTOR = 2;  // the higher CLUSTER_FACTOR is smaller clusters are likely to be, and there will be more
 
 let app = express();
 
@@ -24,26 +26,33 @@ app.get('/', (req, res) => {
 });
 
 app.get('/film-clusters', async (req, res, next) => {
-  const southWest = [req.query.swlat, req.query.swlon];
-  const northEast = [req.query.nelat, req.query.nelon];
+  const southWest = [+req.query.swlat, +req.query.swlon];
+  const northEast = [+req.query.nelat, +req.query.nelon];
 
-  console.log(`getting location clusters in bounds: ${southWest}:${northEast}`);
+  console.log(`getting location clusters in bounds: [${southWest}:${northEast}]`);
 
   // query mongo database to get all clusters in the given boundaries, and the counts of movies for each cluster
-  let locations;
+  let clusters;
   try {
-    locations = await Location.getLocationsInBounds(southWest, northEast)
+    clusters = await Location.getClustersInBounds(southWest, northEast, CLUSTER_FACTOR);
   } catch (err) {
     console.error(chalk.red(`Something wen't wrong getting film locations in bounds: ${southWest}:${northEast}\n${err}`));
     next(err);
     return;
   }
-  res.send(locations.map((location) => {
+
+  // find the centroid for each cluster
+  clusters = clusters.map((cluster) => {
     return {
-      'locationString': location.locationString,
-      'locationPoint': [location.locationPoint.coordinates[1], location.locationPoint.coordinates[0]]
+      id: cluster._id,
+      numLocations: cluster.count,
+      center: getCoordinatesCenter(cluster.points.map((point) => {return [point.coordinates[1], point.coordinates[0]];}))
     }
-  }));
+  });
+
+  console.log(`${clusters.length} clusters found in bounds: [${southWest}:${northEast}]`);
+
+  res.send(clusters);
 });
 
 const port = process.env.PORT || 5000;

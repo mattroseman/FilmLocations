@@ -1,4 +1,4 @@
-const connectToDatabase = require('./lib/db.js');
+const connectToDatabase = require('../lib/db.js');
 const { addAllMoviesToDb } = require('./get-movies.js');
 const { getLocations } = require('./get-locations.js');
 const { getCoordinates } = require('./get-coordinates.js');
@@ -30,8 +30,8 @@ if (process.env.ENVIRONMENT === 'production') {
         return;
       }
 
-      await addAllMoviesToDb();
-      await getLocations();
+      // await addAllMoviesToDb();
+      // await getLocations();
       await getCoordinates();
     })();
 }

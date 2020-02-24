@@ -15,7 +15,7 @@ class App extends Component {
         zoom: 14,
         markers: []
       },
-      showingLocations: []
+      showingClusters: []
     };
 
     this.map = React.createRef();
@@ -26,7 +26,14 @@ class App extends Component {
   }
 
   handleMapMoveEnd() {
-    this.updateMapMarkers();
+    this.setState({
+      map: {
+        markers: []
+      },
+      showingClusters: []
+    }, () => {
+      this.updateMapMarkers();
+    });
   }
 
   /*
@@ -38,22 +45,22 @@ class App extends Component {
       const bounds = map.leafletElement.getBounds();
       const southWest = [bounds._southWest.lat, bounds._southWest.lng];
       const northEast = [bounds._northEast.lat, bounds._northEast.lng];
-      this.getLocations(southWest, northEast)
-        .then((filmLocations) => {
-          for (const filmLocation of filmLocations) {
-            this.plotLocation(filmLocation);
+      this.getClusters(southWest, northEast)
+        .then((clusters) => {
+          for (const cluster of clusters) {
+            this.plotCluster(cluster);
           }
         });
     }
   }
 
   /*
-   * getLocations queries the backend for all locations in the given bounds
+   * getClusters queries the backend for all clusters in the given bounds
    * params southWest: [lat, lon] the lat lon coordinates for the south west corner of the bounds to search for locations in
    * params northEast: [lat, lon] the lat lon coordinates for the north east corner of the bounds to search for locations in
-   * @return: [{locationString: 'name of location', locationPoint: [lat, lon]}] an array of location objects
+   * @return: [{id: <cluster id>, numLocations: <how many locations are in this cluster>, center: [lat, lon]}] an array of cluster objects
    */
-  getLocations(southWest, northEast) {
+  getClusters(southWest, northEast) {
     return new Promise((resolve, reject) => {
       fetch(`http://localhost:5000/film-clusters?swlat=${southWest[0]}&swlon=${southWest[1]}&nelat=${northEast[0]}&nelon=${northEast[1]}`)
         .then((response) => {
@@ -66,22 +73,23 @@ class App extends Component {
   }
 
   /*
-   * plotLocation takes a location and plots it on the map
-   * @params filmLocation: { "locationString": "name of location", "locationPoint": [lat, lon] } an object containing location name and it's coordinates
+   * plotCluster takes a cluster object and plots it on the map
+   * @params cluster: {id: <cluster id>, numLocations: <how many locations are in this cluster>, center: [lat, lon]} an object describing a cluster of locations
    */
-  plotLocation(filmLocation) {
+  plotCluster(cluster) {
     const newMarker = {
-      name: filmLocation.locationString,
-      coordinate: filmLocation.locationPoint
+      id: cluster.id,
+      name: `${cluster.numLocations} locations`,
+      coordinate: [cluster.center[1], cluster.center[0]] // TODO this shouldn't be switched here
     };
 
-    // only add this new marker if there isn't already a marker for the given location
-    if (this.state.showingLocations.indexOf(filmLocation.locationString) < 0) {
+    // only add this new marker if there isn't already a marker for the given cluster
+    if (this.state.showingClusters.indexOf(cluster.id) < 0) {
       this.setState({
         map: {
           markers: [...this.state.map.markers, newMarker]
         },
-        showingLocations: [...this.state.showingLocations, filmLocation.locationString]
+        showingClusters: [...this.state.showingClusters, cluster.id]
       });
     }
   }
@@ -89,7 +97,7 @@ class App extends Component {
   render() {
     const markers = this.state.map.markers.map((marker) => {
       return (
-        <Marker key={marker.name} position={marker.coordinate}>
+        <Marker key={marker.id} position={marker.coordinate}>
           <Popup>
             {marker.name}
           </Popup>

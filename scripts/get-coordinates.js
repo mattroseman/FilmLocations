@@ -1,6 +1,7 @@
 const fs = require('fs');
 const chalk = require('chalk');
 const axios = require('axios');
+const geohash = require('ngeohash');
 
 const connectToDatabase = require('../lib/db.js');
 const { Location } = require('../lib/models.js');
@@ -81,33 +82,43 @@ async function getCoordinates() {
   for (const location of locations) {
     numLocationsProcessed++;
 
-    // skip any locations that already have a locationPoint field
-    if (location.locationPoint !== null) {
-      console.log(`${numLocationsProcessed}/${numLocations} location ${location.locationString} already has parsed location point`);
-      continue;
-    }
-
     // skip any locations missing geocode results
-    if (location.geocodeResult === {} || location.geocodeResult === null) {
+    if (location.geocodeResult === {} || !location.geocodeResult) {
       console.log(`${numLocationsProcessed}/${numLocations} location ${location.locationString} has no geocode result`);
       continue;
     }
-    
+
     // if this location geocode result doesn't have coordinate information
     if (location.geocodeResult.geometry === undefined || location.geocodeResult.geometry.location === undefined) {
       console.log(`${numLocationsProcessed}/${numLocations} location ${location.locationString} geocode result doesn't have coordinate info`);
       continue;
     }
 
-    location.locationPoint = {
-      type: 'Point',
-      coordinates: [
-        location.geocodeResult.geometry.location.lng,
-        location.geocodeResult.geometry.location.lat
-      ]
-    };
+    /*
+    // skip any locations that already have a locationPoint field
+    if (location.locationPoint !== null) {
+      console.log(`${numLocationsProcessed}/${numLocations} location ${location.locationString} already has parsed location point`);
+      continue;
+    }
+    */
 
-    console.log(`${numLocationsProcessed}/${numLocations} location ${location.locationString} is at [${location.locationPoint.coordinates[0]}, ${location.locationPoint.coordinates[1]}]`);
+    if (!location.locationPoint) {
+      location.locationPoint = {
+        type: 'Point',
+        coordinates: [
+          location.geocodeResult.geometry.location.lng,
+          location.geocodeResult.geometry.location.lat
+        ]
+      };
+
+      console.log(`${numLocationsProcessed}/${numLocations} location ${location.locationString} is at [${location.locationPoint.coordinates[0]}, ${location.locationPoint.coordinates[1]}]`);
+    }
+
+    if (!location.geohash) {
+      location.geohash = geohash.encode(location.locationPoint.coordinates[1], location.locationPoint.coordinates[0]);
+      console.log(`${numLocationsProcessed}/${numLocations} location ${location.locationString} has geohash: ${location.geohash}`);
+    }
+
 
     await location.save();
   }
