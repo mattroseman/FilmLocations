@@ -84,7 +84,8 @@ class App extends Component {
       return {
         id: cluster.id,
         count: cluster.numLocations,
-        coordinate: cluster.center
+        coordinate: cluster.center,
+        locations: cluster.locations,
       };
     });
 
@@ -93,6 +94,15 @@ class App extends Component {
         markers: newMarkers
       }
     });
+  }
+
+  handleMarkerClick(movies) {
+    console.log(movies);
+
+    // TODO make a query to get info for all the movies in this list
+    // TODO display those settings in some way
+
+    // TODO also take all this logic into it's own component
   }
 
   /*
@@ -128,9 +138,9 @@ class App extends Component {
       }
 
       return (
-        <Marker key={marker.id} position={marker.coordinate}>
+        <Marker key={marker.id} position={marker.coordinate} onClick={() => this.handleMarkerClick(marker.locations[0].movies)}>
           <Popup>
-            {marker.count} locations
+            {marker.locations[0].locationString}
           </Popup>
         </Marker>
       );

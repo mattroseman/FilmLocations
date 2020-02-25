@@ -5,7 +5,7 @@ const chalk = require('chalk');
 
 const connectToDatabase = require('../lib/db.js');
 const { Location } = require('../lib/models.js');
-const { getCoordinatesCenter } = require('../lib/utils.js');
+const { getCoordinatesCenter, getDistance } = require('../lib/utils.js');
 
 const ENVIRONMENT = process.env.ENVIRONMENT;
 const CLUSTER_FACTOR = 3;  // the higher CLUSTER_FACTOR is smaller clusters are likely to be, and there will be more
@@ -32,14 +32,12 @@ app.get('/film-clusters', async (req, res, next) => {
   console.log(`getting location clusters in bounds: [${southWest}:${northEast}]`);
 
   let clusterFactor = CLUSTER_FACTOR;
-  const horizontalDiff = Math.abs(southWest[1] - northEast[1]);
-  if (horizontalDiff < .005) {
-    clusterFactor += 9
+  const diagonalDist = getDistance(southWest, northEast);
+  console.log(diagonalDist);
+  if (diagonalDist >= 20 && diagonalDist < 1000)  {
+    clusterFactor += 1;
   }
-  if (horizontalDiff > .8) {
-    clusterFactor -= 1;
-  }
-  if ( horizontalDiff > 100) {
+  if (diagonalDist > 1000) {
     clusterFactor -= 1;
   }
 
@@ -55,15 +53,14 @@ app.get('/film-clusters', async (req, res, next) => {
 
   // find the centroid for each cluster
   clusters = clusters.map((cluster) => {
-    return {
-      id: cluster._id,
-      numLocations: cluster.count,
-      center: getCoordinatesCenter(cluster.points.map((point) => {return [point.coordinates[1], point.coordinates[0]];}))
-    }
+    cluster.center = getCoordinatesCenter(cluster.locations.map((location) => location.coordinate))
+
+    return cluster;
   });
 
   // filter out clusters not within the given bounds
-  const boundryMargin = horizontalDiff * .05;  // allow for clusters on the edge to still show
+  // const boundryMargin = horizontalDiff * .05;  // allow for clusters on the edge to still show
+  const boundryMargin = diagonalDist * .01;
   clusters = clusters.filter((cluster) => {
     return (
       (cluster.center[0] > southWest[0] - boundryMargin && cluster.center[0] < northEast[0] + boundryMargin) &&
