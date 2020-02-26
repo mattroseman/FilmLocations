@@ -132,4 +132,4 @@ async function addLocationsToDb(locations, movie) {
 
 module.exports = {
   getLocations
-}
+};

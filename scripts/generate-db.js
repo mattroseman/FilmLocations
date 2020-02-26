@@ -2,6 +2,7 @@ const connectToDatabase = require('../lib/db.js');
 const { addAllMoviesToDb } = require('./get-movies.js');
 const { getLocations } = require('./get-locations.js');
 const { getCoordinates } = require('./get-coordinates.js');
+const { getClusters } = require('./get-clusters.js');
 
 if (process.env.ENVIRONMENT === 'production') {
   const express = require('express');
@@ -32,6 +33,7 @@ if (process.env.ENVIRONMENT === 'production') {
 
       // await addAllMoviesToDb();
       // await getLocations();
-      await getCoordinates();
+      // await getCoordinates();
+      await getClusters();
     })();
 }

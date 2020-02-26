@@ -61,6 +61,7 @@ services:
       - ./server:/usr/src/app/server
     ports:
       - 5000:5000
+      - 9229:9229
   film_locations_dev_server:
     build:
       context: .

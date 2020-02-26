@@ -8,7 +8,6 @@ const { Location } = require('../lib/models.js');
 const { getCoordinatesCenter, getDistance } = require('../lib/utils.js');
 
 const ENVIRONMENT = process.env.ENVIRONMENT;
-const CLUSTER_FACTOR = 3;  // the higher CLUSTER_FACTOR is smaller clusters are likely to be, and there will be more
 
 let app = express();
 
@@ -31,32 +30,22 @@ app.get('/film-clusters', async (req, res, next) => {
 
   console.log(`getting location clusters in bounds: [${southWest}:${northEast}]`);
 
-  let clusterFactor = CLUSTER_FACTOR;
   const diagonalDist = getDistance(southWest, northEast);
   console.log(diagonalDist);
-  if (diagonalDist >= 20 && diagonalDist < 1000)  {
-    clusterFactor += 1;
-  }
-  if (diagonalDist > 1000) {
-    clusterFactor -= 1;
-  }
 
-  // query mongo database to get all clusters in the given boundaries, and the counts of movies for each cluster
   let clusters;
-  try {
-    clusters = await Location.getClustersInBounds(southWest, northEast, clusterFactor);
+  try { 
+    clusters = await Location.getClustersInBounds(southWest, northEast);
   } catch (err) {
-    console.error(chalk.red(`Something wen't wrong getting film locations in bounds: ${southWest}:${northEast}\n${err}`));
+    console.error(chalk.red(`Something wen't wrong getting location clusters in bounds: ${southWest}:${northEast}\n${err}`));
     next(err);
     return;
   }
 
   // find the centroid for each cluster
-  clusters = clusters.map((cluster) => {
-    cluster.center = getCoordinatesCenter(cluster.locations.map((location) => location.coordinate))
-
-    return cluster;
-  });
+  for (const cluster of clusters) {
+    cluster.center = getCoordinatesCenter(cluster.locations.map((location) => {return location.coordinate;}));
+  }
 
   // filter out clusters not within the given bounds
   // const boundryMargin = horizontalDiff * .05;  // allow for clusters on the edge to still show

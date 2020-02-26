@@ -40,7 +40,8 @@ class App extends Component {
   }
 
   handleMapMoveEnd() {
-    this.updateMapMarkers();
+    // this.updateMapMarkers();
+    console.log(this.map.current.leafletElement.getZoom());
   }
 
   /*
