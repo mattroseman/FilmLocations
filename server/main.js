@@ -8,7 +8,17 @@ const { Location } = require('../lib/models.js');
 const { getCoordinatesCenter, getDistance } = require('../lib/utils.js');
 
 const ENVIRONMENT = process.env.ENVIRONMENT;
-const CLUSTER_FACTOR = 3;  // the higher CLUSTER_FACTOR is smaller clusters are likely to be, and there will be more
+// the higher CLUSTER_FACTOR is smaller clusters are likely to be, and there will be more
+const CLUSTER_FACTORS = {
+  20: 9, 19: 9, 18: 9, 17: 9,
+  16: 7,
+  15: 6, 14: 6,
+  13: 5, 12: 5, 11: 5,
+  10: 4, 9: 4,
+  8: 3, 7: 3,
+  6: 2, 5: 2,
+  4: 1, 3: 1, 2: 1, 1: 1
+}
 
 let app = express();
 
@@ -28,18 +38,12 @@ app.get('/', (req, res) => {
 app.get('/film-clusters', async (req, res, next) => {
   const southWest = [+req.query.swlat, +req.query.swlon];
   const northEast = [+req.query.nelat, +req.query.nelon];
+  const zoomLevel = +req.query.zoom;
 
-  console.log(`getting location clusters in bounds: [${southWest}:${northEast}]`);
+  console.log(`getting location clusters in bounds: [${southWest}:${northEast}] with zoom ${zoomLevel}`);
 
-  let clusterFactor = CLUSTER_FACTOR;
+  const clusterFactor = CLUSTER_FACTORS[zoomLevel];
   const diagonalDist = getDistance(southWest, northEast);
-  console.log(diagonalDist);
-  if (diagonalDist >= 20 && diagonalDist < 1000)  {
-    clusterFactor += 1;
-  }
-  if (diagonalDist > 1000) {
-    clusterFactor -= 1;
-  }
 
   // query mongo database to get all clusters in the given boundaries, and the counts of movies for each cluster
   let clusters;
@@ -60,7 +64,8 @@ app.get('/film-clusters', async (req, res, next) => {
 
   // filter out clusters not within the given bounds
   // const boundryMargin = horizontalDiff * .05;  // allow for clusters on the edge to still show
-  const boundryMargin = diagonalDist * .01;
+  const boundryMargin = diagonalDist * .005;
+  console.log(`boundryMargin: ${boundryMargin}`);
   clusters = clusters.filter((cluster) => {
     return (
       (cluster.center[0] > southWest[0] - boundryMargin && cluster.center[0] < northEast[0] + boundryMargin) &&

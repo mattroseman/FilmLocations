@@ -49,9 +49,13 @@ class App extends Component {
   updateMapMarkers() {
     const map = this.map.current;
     const bounds = map.leafletElement.getBounds();
+    const zoomLevel = map.leafletElement.getZoom();
+    console.log(`zoomLevel: ${zoomLevel}`);
+
     const southWest = [bounds._southWest.lat, bounds._southWest.lng];
     const northEast = [bounds._northEast.lat, bounds._northEast.lng];
-    this.getClusters(southWest, northEast)
+
+    this.getClusters(southWest, northEast, zoomLevel)
       .then((clusters) => {
         this.plotClusters(clusters);
       });
@@ -61,11 +65,12 @@ class App extends Component {
    * getClusters queries the backend for all clusters in the given bounds
    * params southWest: [lat, lon] the lat lon coordinates for the south west corner of the bounds to search for locations in
    * params northEast: [lat, lon] the lat lon coordinates for the north east corner of the bounds to search for locations in
+   * params zoomLevel: an integer representing how zoomed in the map is
    * @return: [{id: <cluster id>, numLocations: <how many locations are in this cluster>, center: [lat, lon]}] an array of cluster objects
    */
-  getClusters(southWest, northEast) {
+  getClusters(southWest, northEast, zoomLevel) {
     return new Promise((resolve, reject) => {
-      fetch(`http://localhost:5000/film-clusters?swlat=${southWest[0]}&swlon=${southWest[1]}&nelat=${northEast[0]}&nelon=${northEast[1]}`)
+      fetch(`http://localhost:5000/film-clusters?swlat=${southWest[0]}&swlon=${southWest[1]}&nelat=${northEast[0]}&nelon=${northEast[1]}&zoom=${zoomLevel}`)
         .then((response) => {
           resolve(response.json());
         })
