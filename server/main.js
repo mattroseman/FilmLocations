@@ -43,7 +43,6 @@ app.get('/film-clusters', async (req, res, next) => {
   console.log(`getting location clusters in bounds: [${southWest}:${northEast}] with zoom ${zoomLevel}`);
 
   const clusterFactor = CLUSTER_FACTORS[zoomLevel];
-  const diagonalDist = getDistance(southWest, northEast);
 
   // query mongo database to get all clusters in the given boundaries, and the counts of movies for each cluster
   let clusters;
@@ -62,14 +61,15 @@ app.get('/film-clusters', async (req, res, next) => {
     return cluster;
   });
 
+  console.log(`og clusters: ${clusters.length}`);
+
   // filter out clusters not within the given bounds
-  // const boundryMargin = horizontalDiff * .05;  // allow for clusters on the edge to still show
-  const boundryMargin = diagonalDist * .005;
-  console.log(`boundryMargin: ${boundryMargin}`);
+  const horizontalMargin = Math.abs(northEast[1] - southWest[1]) * .1;
+  const verticalMargin = Math.abs(northEast[0] - southWest[0]) * .1;
   clusters = clusters.filter((cluster) => {
     return (
-      (cluster.center[0] > southWest[0] - boundryMargin && cluster.center[0] < northEast[0] + boundryMargin) &&
-      (cluster.center[1]  > southWest[1] - boundryMargin && cluster.center[1] < northEast[1] + boundryMargin)
+      (cluster.center[0] > southWest[0] - verticalMargin && cluster.center[0] < northEast[0] + verticalMargin) &&
+      (cluster.center[1]  > southWest[1] - horizontalMargin && cluster.center[1] < northEast[1] + horizontalMargin)
     );
   });
 
