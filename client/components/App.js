@@ -70,7 +70,9 @@ class App extends Component {
    */
   getClusters(southWest, northEast, zoomLevel) {
     return new Promise((resolve, reject) => {
-      fetch(`http://localhost:5000/film-clusters?swlat=${southWest[0]}&swlon=${southWest[1]}&nelat=${northEast[0]}&nelon=${northEast[1]}&zoom=${zoomLevel}`)
+      // when testing locally use the localhost domain name, otherwise use relative path
+      const domain = window.location.hostname.indexOf('localhost') > -1 ? 'http://localhost:5000' : ''
+      fetch(`${domain}/film-clusters?swlat=${southWest[0]}&swlon=${southWest[1]}&nelat=${northEast[0]}&nelon=${northEast[1]}&zoom=${zoomLevel}`)
         .then((response) => {
           resolve(response.json());
         })
