@@ -46,8 +46,10 @@ app.get('/film-clusters', async (req, res, next) => {
 
   // query mongo database to get all clusters in the given boundaries, and the counts of movies for each cluster
   let clusters;
+  const horizontalMargin = Math.abs(northEast[1] - southWest[1]) * .1;
+  const verticalMargin = Math.abs(northEast[0] - southWest[0]) * .1;
   try {
-    clusters = await Location.getClustersInBounds(southWest, northEast, clusterFactor);
+    clusters = await Location.getClustersInBounds(southWest, northEast, clusterFactor, horizontalMargin, verticalMargin);
   } catch (err) {
     console.error(chalk.red(`Something wen't wrong getting film locations in bounds: ${southWest}:${northEast}\n${err}`));
     next(err);
@@ -59,18 +61,6 @@ app.get('/film-clusters', async (req, res, next) => {
     cluster.center = getCoordinatesCenter(cluster.locations.map((location) => location.coordinate))
 
     return cluster;
-  });
-
-  console.log(`og clusters: ${clusters.length}`);
-
-  // filter out clusters not within the given bounds
-  const horizontalMargin = Math.abs(northEast[1] - southWest[1]) * .1;
-  const verticalMargin = Math.abs(northEast[0] - southWest[0]) * .1;
-  clusters = clusters.filter((cluster) => {
-    return (
-      (cluster.center[0] > southWest[0] - verticalMargin && cluster.center[0] < northEast[0] + verticalMargin) &&
-      (cluster.center[1]  > southWest[1] - horizontalMargin && cluster.center[1] < northEast[1] + horizontalMargin)
-    );
   });
 
   console.log(`${clusters.length} clusters found in bounds: [${southWest}:${northEast}]`);
