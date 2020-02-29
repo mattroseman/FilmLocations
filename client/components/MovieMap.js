@@ -24,10 +24,6 @@ export default function MovieMap(props) {
   }, [viewport]);
 
   const [markers, setMarkers] = useState([]);
-  const [showingMovies, setShowingMovies] = useState([]);
-  useEffect(() => {
-    props.onMoviesShowingUpdate(showingMovies);
-  }, [showingMovies]);
 
   const map = useRef(null);
 
@@ -44,9 +40,36 @@ export default function MovieMap(props) {
       return;
     }
 
+    console.time('getting clusters');
     const clusters = await getClusters(southWest, northEast, zoomLevel);
+    console.timeEnd('getting clusters');
 
     plotClusters(clusters);
+
+    console.time('parsing showing movie ids');
+    const movieIdsShowing = await getMovieIdsShowing(clusters);
+    console.timeEnd('parsing showing movie ids');
+    props.onMovieIdsShowingUpdate(movieIdsShowing);
+  }
+
+  async function getMovieIdsShowing(clusters) {
+    const movieIds = clusters.reduce((movieIds, cluster) => {
+      return [...movieIds, ...cluster.movies];
+    }, []);
+
+    return Array.from(new Set(movieIds));
+    /*
+    let topMovies;
+    try {
+      const response = await fetch(`${domain}/top-movies?swlat=${southWest[0]}&swlon=${southWest[1]}&nelat=${northEast[0]}&nelon=${northEast[1]}&limit=${limit}`)
+      topMovies = response.json();
+    } catch (err) {
+      console.error(`something wen't wrong getting top movies within current viewport\n${err}`);
+      return [];
+    }
+
+    return topMovies;
+    */
   }
 
   /*
@@ -87,16 +110,7 @@ export default function MovieMap(props) {
    */
   function plotClusters(clusters) {
     // create a new markers array for the state
-    let newShowingMovies = [];
     const newMarkers = clusters.map((cluster) => {
-      // also collect all movie id's that are being shown while iterating through clusters
-      newShowingMovies = newShowingMovies.concat(
-        cluster.locations.reduce((movieIds, location) => {
-          movieIds = movieIds.concat(location.movies);
-          return movieIds;
-        }, [])
-      );
-
       return {
         id: cluster.id,
         count: cluster.numLocations,
@@ -106,8 +120,8 @@ export default function MovieMap(props) {
     });
 
     setMarkers(newMarkers);
-    setShowingMovies(newShowingMovies);
   }
+
 
   /*
    * handleViewportChanged updates the maps viewport state whenever it changes

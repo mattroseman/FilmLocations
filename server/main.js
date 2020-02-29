@@ -64,15 +64,37 @@ app.get('/film-clusters', async (req, res, next) => {
   }
 
   // find the centroid for each cluster
-  clusters = clusters.map((cluster) => {
-    cluster.center = getCoordinatesCenter(cluster.locations.map((location) => location.coordinate))
-
-    return cluster;
+  clusters.forEach((cluster) => {
+    cluster.center = getCoordinatesCenter(cluster.locations.map((location) => location.coordinate));
   });
 
   console.log(`${clusters.length} clusters found in bounds: [${southWest}:${northEast}]`);
 
   res.send(clusters);
+});
+
+app.get('/top-movies', async(req, res, next) => {
+  const southWest = [+req.query.swlat, +req.query.swlon];
+  const northEast = [+req.query.nelat, +req.query.nelon];
+  const limit = +req.query.limit;
+
+  console.log(`getting ${limit} top movies in bounds: [${southWest}:${northEast}]`);
+
+  // query mongo database to get the limit top movies in the given bounds
+  let topMovies = [];
+  try {
+    console.time(`[${southWest}:${northEast}] top movies query`);
+    topMovies = await Location.getTopMovies(southWest, northEast, limit);
+    console.timeEnd(`[${southWest}:${northEast}] top movies query`);
+  } catch (err) {
+    console.error(chalk.red(`Something wen't wrong getting ${limit} top movies in bounds [${southWest}:${northEast}]\n${err}`));
+    next(err);
+    return;
+  }
+
+  console.log(`got ${topMovies.length} top movies in bounds: [${southWest}:${northEast}]`);
+
+  res.send(topMovies);
 });
 
 app.post('/top-movies', async (req, res, next) => {

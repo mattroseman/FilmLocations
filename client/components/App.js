@@ -16,18 +16,17 @@ class App extends Component {
     DOMAIN = window.location.hostname.indexOf('localhost') > -1 ? 'http://localhost:5000' : ''
 
     this.state = {
-      showingMovies: []
+      topMoviesShowing: [],
+      topMoviesLimit: 100
     };
 
-    this.handleMoviesShowingUpdate = this.handleMoviesShowingUpdate.bind(this);
+    this.handleMovieIdsShowingUpdate = this.handleMovieIdsShowingUpdate.bind(this);
+    this.handleTopMoviesShowingUpdate = this.handleTopMoviesShowingUpdate.bind(this);
   }
 
-  /*
-   * handleMoviesShowingUpdate get's info for all the currently showing movies
-   * @param newMovieIds: an array of movie ids currently showing
-   */
-  async handleMoviesShowingUpdate(newMovieIds) {
-    let movies = [];
+  async handleMovieIdsShowingUpdate(movieIdsShowing) {
+    console.time('getting movie info from showing ids');
+    let topMoviesShowing = [];
     try {
       const response = await fetch(`${DOMAIN}/top-movies`, {
         method: 'post',
@@ -36,24 +35,48 @@ class App extends Component {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          movieIds: newMovieIds,
+          movieIds: movieIdsShowing,
           limit: 100
         })
       });
-      movies = await response.json();
+      topMoviesShowing = await response.json();
     } catch (err) {
       console.error(`something wen't wrong getting info on currently showing movies\n${err}`);
       return;
     }
+    console.timeEnd('getting movie info from showing ids');
 
-    console.log(movies.map((movie) => {return movie.title;}));
+    this.setState({
+      topMoviesShowing: topMoviesShowing
+    });
+  }
+
+  /*
+   * handleTopMoviesShowingUpdate is called when the top movies showing has changed
+   * @param topMovies: an array of movie objects, sorted by number of votes
+   *    [{
+   *      _id: <unique id for movie>
+   *      title: <title string>
+   *      numVotes: <a rating of how popular the movie is>
+   *      locations: [<location id>] an array of location ids this movie was shot at
+   *    }]
+   */
+  async handleTopMoviesShowingUpdate(topMovies) {
+    this.setState({
+      topMoviesShowing: topMovies
+    });
   }
 
   render() {
     return (
       <DomainContext.Provider value={DOMAIN}>
         <div id="map-container">
-          <MovieMap onMoviesShowingUpdate={this.handleMoviesShowingUpdate}></MovieMap>
+          <MovieMap
+            onMovieIdsShowingUpdate={this.handleMovieIdsShowingUpdate}
+            onTopMoviesShowingUpdate={this.handleTopMoviesShowingUpdate}
+            toMoviesLimit={this.state.topMoviesLimit}
+          >
+          </MovieMap>
         </div>
       </DomainContext.Provider>
     );
