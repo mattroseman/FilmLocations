@@ -39,7 +39,10 @@ export default function MovieMap(props) {
     const northEast = viewport.bounds.northEast;
     const zoomLevel = viewport.zoom;
 
-    console.log(`zoomLevel: ${zoomLevel}`);
+    // if the bounds havn't been set yet, don't try and get clusters
+    if (southWest.length === 0 || northEast.length === 0) {
+      return;
+    }
 
     const clusters = await getClusters(southWest, northEast, zoomLevel);
 
@@ -107,9 +110,9 @@ export default function MovieMap(props) {
   }
 
   /*
-   * handleMapMoveEnd updates the maps viewport state whenever it changes
+   * handleViewportChanged updates the maps viewport state whenever it changes
    */
-  function handleViewportChange() {
+  function handleViewportChanged() {
     const leafletElement = map.current.leafletElement;
     const bounds = leafletElement.getBounds();
     setViewport({
@@ -127,7 +130,8 @@ export default function MovieMap(props) {
       ref={map}
       worldCopyJump={true}
       viewport={viewport}
-      onViewportChanged={handleViewportChange}
+      onViewportChanged={handleViewportChanged}
+      whenReady={handleViewportChanged}
     >
       <TileLayer
         attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
