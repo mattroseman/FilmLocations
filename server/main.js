@@ -99,7 +99,7 @@ app.get('/top-movies', async(req, res, next) => {
 
 app.post('/top-movies', async (req, res, next) => {
   const movieIds = req.body.movieIds;
-  const limit = req.body.limit;
+  const limit = +req.body.limit;
 
   console.log(`getting top ${limit} movies out of ${movieIds.length}`);
 

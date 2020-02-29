@@ -40,36 +40,31 @@ export default function MovieMap(props) {
       return;
     }
 
-    console.time('getting clusters');
     const clusters = await getClusters(southWest, northEast, zoomLevel);
-    console.timeEnd('getting clusters');
 
     plotClusters(clusters);
 
-    console.time('parsing showing movie ids');
     const movieIdsShowing = await getMovieIdsShowing(clusters);
-    console.timeEnd('parsing showing movie ids');
     props.onMovieIdsShowingUpdate(movieIdsShowing);
   }
 
+  /*
+   * getMovieIdsShowing takes an array of clusters and parses out a single array of all unique movie ids
+   * @param clusters: an array of cluster objects
+   *  [{
+   *    id: <cluster id>,
+   *    numLocations: <how many locations are in this cluster>,
+   *    center: [lat, lon],
+   *    movies: [<movie ids>]
+   *  }]
+   * @return: an array of unique movie ids from the given clusters
+   */
   async function getMovieIdsShowing(clusters) {
     const movieIds = clusters.reduce((movieIds, cluster) => {
       return [...movieIds, ...cluster.movies];
     }, []);
 
     return Array.from(new Set(movieIds));
-    /*
-    let topMovies;
-    try {
-      const response = await fetch(`${domain}/top-movies?swlat=${southWest[0]}&swlon=${southWest[1]}&nelat=${northEast[0]}&nelon=${northEast[1]}&limit=${limit}`)
-      topMovies = response.json();
-    } catch (err) {
-      console.error(`something wen't wrong getting top movies within current viewport\n${err}`);
-      return [];
-    }
-
-    return topMovies;
-    */
   }
 
   /*

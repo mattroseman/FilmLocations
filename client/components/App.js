@@ -3,6 +3,7 @@ import { hot } from 'react-hot-loader/root';
 
 import { DomainContext } from './Context.js';
 import MovieMap from './MovieMap.js';
+import MovieInfo from './MovieInfo.js';
 
 import './App.css';
 
@@ -21,11 +22,14 @@ class App extends Component {
     };
 
     this.handleMovieIdsShowingUpdate = this.handleMovieIdsShowingUpdate.bind(this);
-    this.handleTopMoviesShowingUpdate = this.handleTopMoviesShowingUpdate.bind(this);
   }
 
+  /*
+   * handleMovieIdsShowingUpdate is called when the movies id's showing in the MovieMap changes
+   * It get's info for all the movie ids and updates the topMoviesShowing state
+   * @param movieIdsShowing: an array of movie ids that are currently showing
+   */
   async handleMovieIdsShowingUpdate(movieIdsShowing) {
-    console.time('getting movie info from showing ids');
     let topMoviesShowing = [];
     try {
       const response = await fetch(`${DOMAIN}/top-movies`, {
@@ -36,7 +40,7 @@ class App extends Component {
         },
         body: JSON.stringify({
           movieIds: movieIdsShowing,
-          limit: 100
+          limit: this.state.topMoviesLimit
         })
       });
       topMoviesShowing = await response.json();
@@ -44,41 +48,30 @@ class App extends Component {
       console.error(`something wen't wrong getting info on currently showing movies\n${err}`);
       return;
     }
-    console.timeEnd('getting movie info from showing ids');
+
+    console.log(`${topMoviesShowing.length} top movies showing`);
 
     this.setState({
       topMoviesShowing: topMoviesShowing
     });
   }
 
-  /*
-   * handleTopMoviesShowingUpdate is called when the top movies showing has changed
-   * @param topMovies: an array of movie objects, sorted by number of votes
-   *    [{
-   *      _id: <unique id for movie>
-   *      title: <title string>
-   *      numVotes: <a rating of how popular the movie is>
-   *      locations: [<location id>] an array of location ids this movie was shot at
-   *    }]
-   */
-  async handleTopMoviesShowingUpdate(topMovies) {
-    this.setState({
-      topMoviesShowing: topMovies
-    });
-  }
-
   render() {
     return (
-      <DomainContext.Provider value={DOMAIN}>
-        <div id="map-container">
-          <MovieMap
-            onMovieIdsShowingUpdate={this.handleMovieIdsShowingUpdate}
-            onTopMoviesShowingUpdate={this.handleTopMoviesShowingUpdate}
-            toMoviesLimit={this.state.topMoviesLimit}
-          >
-          </MovieMap>
-        </div>
-      </DomainContext.Provider>
+      <div id="app-container">
+        <DomainContext.Provider value={DOMAIN}>
+          <div id="map-container">
+            <MovieMap
+              onMovieIdsShowingUpdate={this.handleMovieIdsShowingUpdate}
+              onTopMoviesShowingUpdate={this.handleTopMoviesShowingUpdate}
+            >
+            </MovieMap>
+          </div>
+          <div id="movie-info-container">
+            <MovieInfo movies={this.state.topMoviesShowing}></MovieInfo>
+          </div>
+        </DomainContext.Provider>
+      </div>
     );
   }
 }
