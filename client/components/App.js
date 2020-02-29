@@ -26,10 +26,27 @@ class App extends Component {
    * handleMoviesShowingUpdate get's info for all the currently showing movies
    * @param newMovieIds: an array of movie ids currently showing
    */
-  handleMoviesShowingUpdate(newMovieIds) {
-    console.log(`${newMovieIds.length} movies within view`);
-    // TODO query for the top movies from within newMovieIds
-    // TODO update the top movies state
+  async handleMoviesShowingUpdate(newMovieIds) {
+    let movies = [];
+    try {
+      const response = await fetch(`${DOMAIN}/top-movies`, {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          movieIds: newMovieIds,
+          limit: 100
+        })
+      });
+      movies = await response.json();
+    } catch (err) {
+      console.error(`something wen't wrong getting info on currently showing movies\n${err}`);
+      return;
+    }
+
+    console.log(movies.map((movie) => {return movie.title;}));
   }
 
   render() {

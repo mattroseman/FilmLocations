@@ -25,24 +25,11 @@ export default function MovieMap(props) {
 
   const [markers, setMarkers] = useState([]);
   const [showingMovies, setShowingMovies] = useState([]);
+  useEffect(() => {
+    props.onMoviesShowingUpdate(showingMovies);
+  }, [showingMovies]);
 
   const map = useRef(null);
-
-  /*
-   * handleMapMoveEnd updates the maps viewport state whenever it changes
-   */
-  function handleViewportChange() {
-    const leafletElement = map.current.leafletElement;
-    const bounds = leafletElement.getBounds();
-    setViewport({
-      center: leafletElement.getCenter(),
-      zoom: leafletElement.getZoom(),
-      bounds: {
-        southWest: [bounds._southWest.lat, bounds._southWest.lng],
-        northEast: [bounds._northEast.lat, bounds._northEast.lng]
-      }
-    });
-  }
 
   /*
    * updateMarkers gets all the clusters for the current bounds and zoom level, then plots them
@@ -96,9 +83,10 @@ export default function MovieMap(props) {
    *  }]
    */
   function plotClusters(clusters) {
-    // create a new markers array for the state, and also collect all movies that are shown
+    // create a new markers array for the state
     let newShowingMovies = [];
     const newMarkers = clusters.map((cluster) => {
+      // also collect all movie id's that are being shown while iterating through clusters
       newShowingMovies = newShowingMovies.concat(
         cluster.locations.reduce((movieIds, location) => {
           movieIds = movieIds.concat(location.movies);
@@ -116,6 +104,22 @@ export default function MovieMap(props) {
 
     setMarkers(newMarkers);
     setShowingMovies(newShowingMovies);
+  }
+
+  /*
+   * handleMapMoveEnd updates the maps viewport state whenever it changes
+   */
+  function handleViewportChange() {
+    const leafletElement = map.current.leafletElement;
+    const bounds = leafletElement.getBounds();
+    setViewport({
+      center: leafletElement.getCenter(),
+      zoom: leafletElement.getZoom(),
+      bounds: {
+        southWest: [bounds._southWest.lat, bounds._southWest.lng],
+        northEast: [bounds._northEast.lat, bounds._northEast.lng]
+      }
+    });
   }
 
   return (

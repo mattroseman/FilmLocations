@@ -1,10 +1,11 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const chalk = require('chalk');
 
 const connectToDatabase = require('../lib/db.js');
-const { Location } = require('../lib/models.js');
+const { Location, Movie } = require('../lib/models.js');
 const { getCoordinatesCenter } = require('../lib/utils.js');
 
 const ENVIRONMENT = process.env.ENVIRONMENT;
@@ -29,6 +30,10 @@ if (ENVIRONMENT !== 'production') {
 // SETUP PUBLIC FILES
 app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use(express.static(path.join(__dirname, '../client/public')));
+
+// SETUP MIDDLEWARE
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // SETUP PATHS
 app.get('/', (req, res) => {
@@ -68,6 +73,26 @@ app.get('/film-clusters', async (req, res, next) => {
   console.log(`${clusters.length} clusters found in bounds: [${southWest}:${northEast}]`);
 
   res.send(clusters);
+});
+
+app.post('/top-movies', async (req, res, next) => {
+  const movieIds = req.body.movieIds;
+  const limit = req.body.limit;
+
+  console.log(`getting top ${limit} movies out of ${movieIds.length}`);
+
+  let topMovies
+  try {
+    topMovies = await Movie.getTopMovies(movieIds, limit);
+  } catch (err) {
+    console.error(chalk.red(`Something wen't wrong getting top ${limit} movies out of ${movieIds.length} ids`));
+    next(err);
+    return;
+  }
+
+  console.log(`got top ${topMovies.length} movies out of ${movieIds.length}`);
+
+  res.send(topMovies);
 });
 
 const port = process.env.PORT || 5000;
