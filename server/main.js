@@ -5,7 +5,7 @@ const chalk = require('chalk');
 
 const connectToDatabase = require('../lib/db.js');
 const { Location } = require('../lib/models.js');
-const { getCoordinatesCenter, getDistance } = require('../lib/utils.js');
+const { getCoordinatesCenter } = require('../lib/utils.js');
 
 const ENVIRONMENT = process.env.ENVIRONMENT;
 // the higher CLUSTER_FACTOR is smaller clusters are likely to be, and there will be more
@@ -49,7 +49,9 @@ app.get('/film-clusters', async (req, res, next) => {
   const horizontalMargin = Math.abs(northEast[1] - southWest[1]) * .1;
   const verticalMargin = Math.abs(northEast[0] - southWest[0]) * .1;
   try {
+    console.time(`[${southWest}:${northEast}] mongodb query`)
     clusters = await Location.getClustersInBounds(southWest, northEast, clusterFactor, horizontalMargin, verticalMargin);
+    console.timeEnd(`[${southWest}:${northEast}] mongodb query`)
   } catch (err) {
     console.error(chalk.red(`Something wen't wrong getting film locations in bounds: ${southWest}:${northEast}\n${err}`));
     next(err);
