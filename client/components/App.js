@@ -18,7 +18,8 @@ class App extends Component {
 
     this.state = {
       topMoviesShowing: [],
-      topMoviesLimit: 100
+      topMoviesLimit: 100,
+      specificMovie: null
     };
 
     this.handleMovieIdsShowingUpdate = this.handleMovieIdsShowingUpdate.bind(this);

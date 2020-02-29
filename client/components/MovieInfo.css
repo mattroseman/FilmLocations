@@ -12,4 +12,6 @@
 
 .movie-info-card {
   margin-bottom: 2rem;
+
+  cursor: pointer;
 }
