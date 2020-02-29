@@ -4,12 +4,17 @@ import './MovieInfo.css';
 
 export default function MovieInfo(props) {
   return (
-    <ul id="movie-info">
+    <div id="movie-info">
       {props.movies.map((movie) => {
         return (
-          <li key={movie._id}>{movie.title}</li>
+          <div
+            key={movie._id}
+            className="movie-info-card"
+          >
+            {movie.title}
+          </div>
         );
       })}
-    </ul>
+    </div>
   );
 }

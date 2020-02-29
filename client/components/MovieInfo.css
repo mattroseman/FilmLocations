@@ -1,0 +1,15 @@
+#movie-info {
+  box-sizing: border-box;
+
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+
+  background-color: #212121;
+  color: #FFFFFF;
+}
+
+.movie-info-card {
+  margin-bottom: 2rem;
+}
