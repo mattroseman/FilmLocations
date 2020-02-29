@@ -32,8 +32,8 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use(express.static(path.join(__dirname, '../client/public')));
 
 // SETUP MIDDLEWARE
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }));
+app.use(bodyParser.json({ limit: '5mb' }));
 
 // SETUP PATHS
 app.get('/', (req, res) => {
