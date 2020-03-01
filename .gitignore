@@ -1,0 +1,6 @@
+node_modules
+
+data/*
+!data/init-mongo.sh
+
+client/dist
