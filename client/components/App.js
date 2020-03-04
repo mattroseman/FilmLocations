@@ -8,6 +8,7 @@ import MovieInfo from './MovieInfo.js';
 import './App.css';
 
 let DOMAIN = '';
+const TOP_MOVIES_LIMIT = 20;
 
 class App extends Component {
   constructor(props) {
@@ -17,12 +18,30 @@ class App extends Component {
     DOMAIN = window.location.hostname.indexOf('localhost') > -1 ? 'http://localhost:5000' : ''
 
     this.state = {
+      mapViewport: {
+        center: [41.5, -81.6864795],
+        zoom: 14,
+        bounds: {
+          southWest: [],
+          northEast: []
+        }
+      },
       topMoviesShowing: [],
-      topMoviesLimit: 100,
-      specificMovie: null
+      topMoviesLoading: false
     };
 
     this.handleMovieIdsShowingUpdate = this.handleMovieIdsShowingUpdate.bind(this);
+    this.handleMapViewportChanged = this.handleMapViewportChanged.bind(this);
+  }
+
+  /*
+   * handleMapViewportChanged updates the maps viewport state whenever it changes
+   */
+  handleMapViewportChanged(newMapViewport) {
+    this.setState({
+      mapViewport: newMapViewport,
+      topMoviesLoading: true
+    });
   }
 
   /*
@@ -32,6 +51,8 @@ class App extends Component {
    */
   async handleMovieIdsShowingUpdate(movieIdsShowing) {
     let topMoviesShowing = [];
+
+    // get movie info for all the movie ids showing
     try {
       const response = await fetch(`${DOMAIN}/top-movies`, {
         method: 'post',
@@ -41,7 +62,7 @@ class App extends Component {
         },
         body: JSON.stringify({
           movieIds: movieIdsShowing,
-          limit: this.state.topMoviesLimit
+          limit: TOP_MOVIES_LIMIT
         })
       });
       topMoviesShowing = await response.json();
@@ -50,10 +71,26 @@ class App extends Component {
       return;
     }
 
-    console.log(`${topMoviesShowing.length} top movies showing`);
+    // parse the data, to only include location info within viewbox
+    const bounds = this.state.mapViewport.bounds;
+    topMoviesShowing = topMoviesShowing.map((movie) => {
+      movie.locations = movie.locations.filter((location) => {
+        if (location.locationPoint === undefined) {
+          return false;
+        }
+
+        return (
+          location.locationPoint[0] > bounds.southWest[0] && location.locationPoint[1] > bounds.southWest[1] &&
+          location.locationPoint[0] < bounds.northEast[0] && location.locationPoint[1] < bounds.northEast[1]
+        );
+      });
+
+      return movie;
+    });
 
     this.setState({
-      topMoviesShowing: topMoviesShowing
+      topMoviesShowing: topMoviesShowing,
+      topMoviesLoading: false
     });
   }
 
@@ -63,13 +100,19 @@ class App extends Component {
         <DomainContext.Provider value={DOMAIN}>
           <div id="map-container">
             <MovieMap
+              viewport={this.state.mapViewport}
+              onViewportChanged={this.handleMapViewportChanged}
               onMovieIdsShowingUpdate={this.handleMovieIdsShowingUpdate}
               onTopMoviesShowingUpdate={this.handleTopMoviesShowingUpdate}
             >
             </MovieMap>
           </div>
           <div id="movie-info-container">
-            <MovieInfo movies={this.state.topMoviesShowing}></MovieInfo>
+            <MovieInfo
+              movies={this.state.topMoviesShowing}
+              loading={this.state.topMoviesLoading}
+            >
+            </MovieInfo>
           </div>
         </DomainContext.Provider>
       </div>

@@ -31,7 +31,7 @@ if (process.env.ENVIRONMENT === 'production') {
       }
 
       // await addAllMoviesToDb();
-      // await getLocations();
-      await getCoordinates();
+      await getLocations();
+      // await getCoordinates();
     })();
 }

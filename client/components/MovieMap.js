@@ -11,17 +11,9 @@ import './MovieMap.css';
 export default function MovieMap(props) {
   const domain = useContext(DomainContext);
 
-  const [viewport, setViewport] = useState({
-    center: [41.5, -81.6864795],
-    zoom: 14,
-    bounds: {
-      southWest: [],
-      northEast: []
-    }
-  });
   useEffect(() => {
     updateMarkers();
-  }, [viewport]);
+  }, [props.viewport]);
 
   const [markers, setMarkers] = useState([]);
 
@@ -31,9 +23,9 @@ export default function MovieMap(props) {
    * updateMarkers gets all the clusters for the current bounds and zoom level, then plots them
    */
   async function updateMarkers() {
-    const southWest = viewport.bounds.southWest;
-    const northEast = viewport.bounds.northEast;
-    const zoomLevel = viewport.zoom;
+    const southWest = props.viewport.bounds.southWest;
+    const northEast = props.viewport.bounds.northEast;
+    const zoomLevel = props.viewport.zoom;
 
     // if the bounds havn't been set yet, don't try and get clusters
     if (southWest.length === 0 || northEast.length === 0) {
@@ -82,8 +74,10 @@ export default function MovieMap(props) {
    */
   async function getClusters(southWest, northEast, zoomLevel) {
     let clusters;
+    const horizontalMargin = Math.abs(northEast[1] - southWest[1]) * .2;
+    const verticalMargin = Math.abs(northEast[0] - southWest[0]) * .2;
     try {
-      const response = await fetch(`${domain}/film-clusters?swlat=${southWest[0]}&swlon=${southWest[1]}&nelat=${northEast[0]}&nelon=${northEast[1]}&zoom=${zoomLevel}`)
+      const response = await fetch(`${domain}/film-clusters?swlat=${southWest[0] - verticalMargin}&swlon=${southWest[1] - horizontalMargin}&nelat=${northEast[0] + verticalMargin}&nelon=${northEast[1] + horizontalMargin}&zoom=${zoomLevel}`)
       clusters = response.json();
     } catch (err) {
       console.error(`something wen't wrong getting clusters for current map\n${err}`);
@@ -124,7 +118,7 @@ export default function MovieMap(props) {
   function handleViewportChanged() {
     const leafletElement = map.current.leafletElement;
     const bounds = leafletElement.getBounds();
-    setViewport({
+    props.onViewportChanged({
       center: leafletElement.getCenter(),
       zoom: leafletElement.getZoom(),
       bounds: {
@@ -138,8 +132,10 @@ export default function MovieMap(props) {
     <Map
       ref={map}
       worldCopyJump={true}
-      viewport={viewport}
+      viewport={props.viewport}
       onViewportChanged={handleViewportChanged}
+      minZoom={4}
+      maxZoom={20}
       whenReady={handleViewportChanged}
     >
       <TileLayer

@@ -51,11 +51,9 @@ app.get('/film-clusters', async (req, res, next) => {
 
   // query mongo database to get all clusters in the given boundaries, and the counts of movies for each cluster
   let clusters;
-  const horizontalMargin = Math.abs(northEast[1] - southWest[1]) * .1;
-  const verticalMargin = Math.abs(northEast[0] - southWest[0]) * .1;
   try {
     console.time(`[${southWest}:${northEast}] mongodb query`)
-    clusters = await Location.getClustersInBounds(southWest, northEast, clusterFactor, horizontalMargin, verticalMargin);
+    clusters = await Location.getClustersInBounds(southWest, northEast, clusterFactor);
     console.timeEnd(`[${southWest}:${northEast}] mongodb query`)
   } catch (err) {
     console.error(chalk.red(`Something wen't wrong getting film locations in bounds: ${southWest}:${northEast}\n${err}`));

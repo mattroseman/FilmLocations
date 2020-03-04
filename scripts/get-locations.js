@@ -19,8 +19,8 @@ async function getLocations() {
   }
 
   // query DB to get list of movies
-  // const movieIds = await Movie.getAllIds();
-  const movieIds = await Movie.getAllRelevantIds(RELEVANT_MOVIE_VOTE_MIN);
+  // const movieIds = await Movie.getAllRelevantIds(RELEVANT_MOVIE_VOTE_MIN);
+  const movieIds = await Movie.getAllMovieIdsWithLocations();
   const totalMovieCount = movieIds.length;
 
   console.log(`There are ${totalMovieCount} movies in the database`);
@@ -44,7 +44,7 @@ async function getLocations() {
     scrapingPromise
       .then(async (locations) => {
         if (locations !== null) {
-          console.log(`movie: ${movieId} locations: ["${locations.join('", "')}"]`);
+          console.log(`movie: ${movieId} locations: ["${locations.map((location) => {return location.locationString}).join('", "')}"]`);
 
           try {
             const movie = await Movie.findOne({ _id: movieId });
@@ -89,11 +89,15 @@ async function scrapeLocations(movieId) {
   const locationHtml = response.data;
   const $ = cheerio.load(locationHtml);
   // get all the location links on the page
-  const $locationElements = $('#filming_locations dt > a');
+  const $locationElements = $('#filming_locations > div');
 
   return $locationElements.map((i, el) => {
-    // remove whitespace or newlines at beginning or end of the location text
-    return $(el).text().trim().replace(/\n/g, '');
+    // remove whitespace or newlines at beginning or end of the location text and description
+    return {
+      locationString: $(el).find('dt > a').text().trim().replace(/\n/g, ''),
+      description: $(el).find('dd').text().trim().replace(/\n|^\(|\)$/g, '')
+    }
+    // return $(el).text().trim().replace(/\n/g, '');
   }).get();
 }
 
@@ -103,7 +107,8 @@ async function scrapeLocations(movieId) {
  * @param movie: a mongoose Movie object
  */
 async function addLocationsToDb(locations, movie) {
-  for (const locationString of locations) {
+  for (const locationData of locations) {
+    const locationString = locationData.locationString;
     let location = await Location.findOne({ locationString });
 
     // if there isn't already a location document in the database, create it
@@ -113,21 +118,32 @@ async function addLocationsToDb(locations, movie) {
       });
     }
 
-    // add the location id to the movie's location property
-    if (!movie.locations.includes(location._id)) {
-      movie.locations.push(location._id);
+    if (movie.newLocations.map((newLocation) => newLocation.locationId).indexOf(location._id) < 0) {
+      await Movie.update({'_id': movie._id}, {
+        $push: {
+          newLocations: {
+            locationId: location._id,
+            description: locationData.description ? locationData.description : ''
+          }
+        }
+      });
     }
 
-    // add the movie id to the location's movies property
-    if (!location.movies.includes(movie._id)) {
-      location.movies.push(movie._id);
+    if (location.newMovies.map((newMovie) => newMovie.movieId).indexOf(movie._id) < 0) {
+      await Location.update({'_id': location._id}, {
+        $push: {
+          newMovies: {
+            movieId: movie._id,
+            description: locationData.description ? locationData.description : ''
+          }
+        }
+      });
     }
-
-    location.save();
   }
 
   movie.lastLocationUpdateDate = Date.now();
-  movie.save();
+
+  await movie.save();
 }
 
 module.exports = {
