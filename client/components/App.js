@@ -86,6 +86,8 @@ class App extends Component {
       });
 
       return movie;
+    }).filter((movie) => {
+      return movie.locations.length > 0;
     });
 
     this.setState({

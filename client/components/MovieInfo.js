@@ -16,9 +16,9 @@ export default function MovieInfo(props) {
       {props.movies.map((movie) => {
         movie.locations = movie.locations.map((movieLocation) => {
           return (
-            <li key={movieLocation._id}>
-              {movieLocation.locationString}<br/>
-              {movieLocation.description !== '' && movieLocation.description}
+            <li key={movieLocation._id} className='movie-info-location'>
+              <h4 className='movie-info-location-name'>{movieLocation.locationString}</h4>
+              <small className='movie-info-location-description'>{movieLocation.description !== '' && movieLocation.description}</small>
             </li>
           );
         });
