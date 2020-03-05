@@ -1,9 +1,11 @@
+const { Worker } = require('worker_threads');
+
 const axios = require('axios');
 const cheerio = require('cheerio');
 const chalk = require('chalk');
 
 const connectToDatabase = require('../lib/db.js');
-const { Movie, Location } = require('../lib/models.js');
+const { Movie } = require('../lib/models.js');
 
 const RELEVANT_MOVIE_VOTE_MIN = +process.env.RELEVANT_MOVIE_VOTE_MIN;
 const MAX_CONCURRENT_REQUESTS = +process.env.MAX_CONCURRENT_REQUESTS;
@@ -19,14 +21,25 @@ async function getLocations() {
   }
 
   // query DB to get list of movies
-  // const movieIds = await Movie.getAllRelevantIds(RELEVANT_MOVIE_VOTE_MIN);
-  const movieIds = await Movie.getAllMovieIdsWithLocations();
+  const movieIds = await Movie.getAllRelevantIds(RELEVANT_MOVIE_VOTE_MIN);
   const totalMovieCount = movieIds.length;
+  let numMoviesProcessed = 0;
 
-  console.log(`There are ${totalMovieCount} movies in the database`);
+  console.log(`There are ${totalMovieCount} relevant movies in the database`);
+
+  // start worker thread to add data to database
+  const worker = new Worker('./scripts/get-locations-worker.js');
+  worker.on('message', (message) => {
+    // if a worker successfully finishes processing movie and it's locations
+    if (message.success) {
+      numMoviesProcessed++;
+      console.log(`${numMoviesProcessed}/${totalMovieCount} movies processed`);
+    } else {
+      console.error(chalk.red(`Something wen't wrong adding locations to database for movie: ${message.movieId}\n${message.error}`));
+    }
+  });
 
   // asynchronously scrape IMDb for each movie, and then add those locations to the database
-  let numMoviesProcessed = totalMovieCount - movieIds.length;
   const scrapingPromises = [];
   for (const movieId of movieIds) {
     // stop processing movies until a scraping promise resolves, and more requests can be made
@@ -46,16 +59,11 @@ async function getLocations() {
         if (locations !== null) {
           console.log(`movie: ${movieId} locations: ["${locations.map((location) => {return location.locationString}).join('", "')}"]`);
 
-          try {
-            const movie = await Movie.findOne({ _id: movieId });
-            await addLocationsToDb(locations, movie);
-          } catch(err) {
-            console.error(chalk.red(`Something wen't wrong adding locations to database for movie: ${movieId}\n${err}`));
-          }
+          worker.postMessage({
+            movieId: movieId,
+            locations: locations
+          });
         }
-
-        numMoviesProcessed++;
-        console.log(`${numMoviesProcessed}/${totalMovieCount} movies processed`);
       })
       .catch((err) => {
         console.error(chalk.red(`Something wen't wrong scraping location info for movie: ${movieId}\n${err}`));
@@ -99,51 +107,6 @@ async function scrapeLocations(movieId) {
     }
     // return $(el).text().trim().replace(/\n/g, '');
   }).get();
-}
-
-/*
- * addLocationsToDb adds/updates each of the given locations documents in the database so the movies property includes the given movie's id, and vice versa
- * @param locations: a list of location strings
- * @param movie: a mongoose Movie object
- */
-async function addLocationsToDb(locations, movie) {
-  for (const locationData of locations) {
-    const locationString = locationData.locationString;
-    let location = await Location.findOne({ locationString });
-
-    // if there isn't already a location document in the database, create it
-    if (!location) {
-      location = new Location({
-        locationString
-      });
-    }
-
-    if (movie.newLocations.map((newLocation) => newLocation.locationId).indexOf(location._id) < 0) {
-      await Movie.update({'_id': movie._id}, {
-        $push: {
-          newLocations: {
-            locationId: location._id,
-            description: locationData.description ? locationData.description : ''
-          }
-        }
-      });
-    }
-
-    if (location.newMovies.map((newMovie) => newMovie.movieId).indexOf(movie._id) < 0) {
-      await Location.update({'_id': location._id}, {
-        $push: {
-          newMovies: {
-            movieId: movie._id,
-            description: locationData.description ? locationData.description : ''
-          }
-        }
-      });
-    }
-  }
-
-  movie.lastLocationUpdateDate = Date.now();
-
-  await movie.save();
 }
 
 module.exports = {

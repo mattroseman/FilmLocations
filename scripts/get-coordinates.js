@@ -40,7 +40,7 @@ async function getCoordinates() {
   const geocodeResultPromises = [];
   for (const location of locations) {
     // skip any locations that already have geocode results
-    if (location.geocodeResult !== null) {
+    if (location.geocodeResult !== undefined) {
       continue;
     }
 
@@ -116,6 +116,17 @@ async function getCoordinates() {
 
     if (!location.geohash) {
       location.geohash = geohash.encode(location.locationPoint.coordinates[1], location.locationPoint.coordinates[0]);
+      location.geohashPrefixes = {
+        9: location.geohash.slice(0, 9),
+        8: location.geohash.slice(0, 8),
+        7: location.geohash.slice(0, 7),
+        6: location.geohash.slice(0, 6),
+        5: location.geohash.slice(0, 5),
+        4: location.geohash.slice(0, 4),
+        3: location.geohash.slice(0, 3),
+        2: location.geohash.slice(0, 2),
+        1: location.geohash.slice(0, 1),
+      };
       console.log(`${numLocationsProcessed}/${numLocations} location ${location.locationString} has geohash: ${location.geohash}`);
     }
 

@@ -30,8 +30,8 @@ if (process.env.ENVIRONMENT === 'production') {
         return;
       }
 
-      // await addAllMoviesToDb();
+      await addAllMoviesToDb();
       await getLocations();
-      // await getCoordinates();
+      await getCoordinates();
     })();
 }

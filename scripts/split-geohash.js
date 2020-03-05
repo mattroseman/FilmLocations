@@ -5,7 +5,12 @@ const { Location } = require('../lib/models.js');
 connectToDatabase();
 
 (async () => {
-  const locationIds = await Location.find({'geohash': {$exists: true}}).distinct('_id');
+  const locationIds = await Location.find({
+    $and: [
+      {'geohash': {$exists: true}},
+      {'geohashPrefixes': {$exists: false}}
+    ]
+  }).distinct('_id');
 
   const numLocations = locationIds.length;
   let locationsProcessed = 0;
