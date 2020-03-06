@@ -60,6 +60,7 @@ services:
       - ./lib:/usr/src/app/lib
       - ./credentials:/usr/src/app/credentials
       - ./server:/usr/src/app/server
+      - ./scripts:/usr/src/app/scripts
     ports:
       - 5000:5000
       - 9229:9229
