@@ -13,6 +13,12 @@ export default function MovieSearch(props) {
     // TODO query backend to get autocomplete suggestions for what was just typed
   }
 
+  function handleMovieTitleKeyDown(event) {
+    if (event.keyCode === 13) {
+      handleMovieTitleSearch();
+    }
+  }
+
   function handleMovieTitleSearch() {
     props.onShowSpecificMovie(movieTitle);
   }
@@ -23,6 +29,7 @@ export default function MovieSearch(props) {
         id='movie-search-field'
         type='text'
         onChange={handleMovieTitleChange}
+        onKeyDown={handleMovieTitleKeyDown}
         value={movieTitle}
         placeholder='Search Movies'
       />

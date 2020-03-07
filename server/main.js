@@ -76,28 +76,58 @@ app.get('/film-clusters', async (req, res, next) => {
   res.send(clusters);
 });
 
-app.get('/top-movies', async(req, res, next) => {
-  const southWest = [+req.query.swlat, +req.query.swlon];
-  const northEast = [+req.query.nelat, +req.query.nelon];
-  const limit = +req.query.limit;
+app.get('/movie', async (req, res, next) => {
+  const movieId = req.query.id;
+  const movieTitle = req.query.title;
 
-  console.log(`getting ${limit} top movies in bounds: [${southWest}:${northEast}]`);
+  let query;
+  if (movieId) {
+    query = {_id: movieId};
+  } else if (movieTitle) {
+    query = {title: {$regex: new RegExp(`^${movieTitle}$`, 'i')}};
+  } else {
+    // missing required url parameters
+    res.sendStatus(422);
+    return;
+  }
 
-  // query mongo database to get the limit top movies in the given bounds
-  let topMovies = [];
+  let movie;
   try {
-    console.time(`[${southWest}:${northEast}] top movies query`);
-    topMovies = await Location.getTopMovies(southWest, northEast, limit);
-    console.timeEnd(`[${southWest}:${northEast}] top movies query`);
+    movie = await Movie.findOne(query).populate('locations.locationId');
   } catch (err) {
-    console.error(chalk.red(`Something wen't wrong getting ${limit} top movies in bounds [${southWest}:${northEast}]\n${err}`));
+    console.error(chalk.red(`Something wen't wrong getting movie with title: ${movieTitle} or id: ${movieId}\n${err}`));
     next(err);
     return;
   }
 
-  console.log(`got ${topMovies.length} top movies in bounds: [${southWest}:${northEast}]`);
+  if (!movie) {
+    res.send({
+      success: false,
+      movie: null
+    });
+    return;
+  }
 
-  res.send(topMovies);
+  movie = {
+    _id: movie._id,
+    title: movie.title,
+    year: movie.year,
+    locations: movie.locations.map((location) => {
+      return {
+        description: location.description,
+        location: {
+          _id: location.locationId._id,
+          geohash: location.locationId.geohash,
+          point: location.locationId.locationPoint.coordinates.reverse()
+        }
+      }
+    })
+  }
+
+  res.send({
+    success: true,
+    movie: movie
+  });
 });
 
 app.post('/top-movies', async (req, res, next) => {

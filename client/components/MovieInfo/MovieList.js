@@ -14,7 +14,7 @@ export default function MovieList(props) {
   return (
     <div id="movie-list">
       {props.movies.map((movie) => {
-        movie.locations = movie.locations.map((movieLocation) => {
+        const movieLocations = movie.locations.map((movieLocation) => {
           return (
             <li key={movieLocation._id} className='movie-list-location'>
               <h4 className='movie-list-location-name'>{movieLocation.locationString}</h4>
@@ -29,7 +29,7 @@ export default function MovieList(props) {
               {movie.title}
             </h3>
             <ul className="movie-list-locations">
-              {movie.locations}
+              {movieLocations}
             </ul>
           </div>
         );

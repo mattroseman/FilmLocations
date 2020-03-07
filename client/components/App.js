@@ -33,6 +33,7 @@ class App extends Component {
 
     this.handleMovieIdsShowingUpdate = this.handleMovieIdsShowingUpdate.bind(this);
     this.handleMapViewportChanged = this.handleMapViewportChanged.bind(this);
+    this.handleShowSpecificMovie = this.handleShowSpecificMovie.bind(this);
   }
 
   /*
@@ -103,16 +104,22 @@ class App extends Component {
    */
   async handleShowSpecificMovie(movieTitle) {
     let movie;
+    let success;
     try {
       const response = await fetch(`${DOMAIN}/movie?title=${movieTitle}`);
-      movie = response.json();
+      const body = await response.json();
+      console.log(body);
+      success = body.success;
+      movie = body.movie;
     } catch (err) {
       console.error(`something wen't wrong getting info for movie: ${movieTitle}\n${err}`);
     }
 
-    this.setState({
-      currentShowingMovie: movie
-    });
+    if (success) {
+      this.setState({
+        specificMovieShowing: movie
+      });
+    }
   }
 
   render() {
