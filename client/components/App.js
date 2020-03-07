@@ -138,6 +138,7 @@ class App extends Component {
     }, {minSouthWest: {lat: Infinity, lon: Infinity}, maxNorthEast: {lat: -Infinity, lon: -Infinity}});
     */
 
+    console.log(movie);
     this.setState({
       specificMovieShowing: movie,
     });

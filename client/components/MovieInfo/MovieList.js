@@ -4,7 +4,6 @@ import './MovieList.css';
 
 export default function MovieList(props) {
   if (props.specificMovie) {
-    console.log(props.specificMovie);
     return (
       <div id="movie-list">
         <div className="movie-list-card">

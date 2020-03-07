@@ -33,8 +33,12 @@ export default function MovieMap(props) {
    * showLocations changes the maps viewport to show the given list of locations and puts a marker at each spot
    */
   function showLocations(locations) {
+    const locationsWithPoints = locations.filter((location) => {
+      return location.point !== null && location.point !== undefined;
+    });
+
     // create a new markers array for each location
-    const newMarkers = locations.map((location) => {
+    const newMarkers = locationsWithPoints.map((location) => {
       return {
         id: location.id,
         count: 1,
@@ -43,8 +47,9 @@ export default function MovieMap(props) {
       };
     });
 
+
     const leafletElement = map.current.leafletElement;
-    leafletElement.flyToBounds(locations.map((location) => {
+    leafletElement.fitBounds(locationsWithPoints.map((location) => {
       return location.point
     }));
 

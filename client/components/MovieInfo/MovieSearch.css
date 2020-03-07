@@ -25,6 +25,11 @@
   position: absolute;
   top: 100%;
   width: 100%;
+
+  display:none;
+}
+#movie-search-field:focus + #movie-search-suggestions {
+  display: block;
 }
 
 .movie-search-suggestion {
@@ -34,4 +39,9 @@
   padding-bottom: .5rem;
   padding-left: 1rem;
   padding-right: 1rem;
+
+  cursor: pointer;
+}
+.movie-search-suggestion:hover {
+  background-color: #202020;
 }

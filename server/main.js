@@ -120,9 +120,24 @@ app.get('/movie', async (req, res, next) => {
         description: location.description,
         locationString: location.locationId.locationString,
         geohash: location.locationId.geohash,
-        point: location.locationId.locationPoint.coordinates.reverse()
+        point: location.locationId.locationPoint !== undefined ? location.locationId.locationPoint.coordinates.reverse() : null
       }
-    })
+    }).reduce((uniqueLocations, location) => {
+      // remove any duplicate locations and combine their descriptions
+      for (const uniqueLocation of uniqueLocations) {
+        if (location.id === uniqueLocation.id) {
+          if (uniqueLocation.description.length > 0 && location.description.length > 0) {
+            uniqueLocation.description = `${uniqueLocation.description}, ${location.description}`;
+          } else {
+            uniqueLocation.description = `${uniqueLocation.description}${location.description}`;
+          }
+
+          return uniqueLocations;
+        }
+      }
+
+      return [...uniqueLocations, location]
+    }, [])
   }
 
   res.send({

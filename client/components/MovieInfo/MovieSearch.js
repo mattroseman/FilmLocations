@@ -57,13 +57,17 @@ export default function MovieSearch(props) {
   }
 
   async function handleSuggestionClick(suggestion) {
-    await setMovieTitle(suggestion.title);
+    setMovieTitle(suggestion.title);
     props.onShowSpecificMovie(suggestion.id);
+
+    setMovieTitleSuggestions([]);
   }
 
   function handleMovieTitleKeyDown(event) {
     if (event.keyCode === 13) {
       props.onShowSpecificMovie(null, movieTitle);
+
+      setMovieTitleSuggestions([]);
     }
   }
 
@@ -89,7 +93,7 @@ function MovieSearchSuggestions(props) {
     <div id='movie-search-suggestions'>
       {props.suggestions.map((suggestion) => {
         return (
-          <div key={suggestion.id} className='movie-search-suggestion' onClick={() => {props.onSuggestionClick(suggestion);}}>
+          <div key={suggestion.id} className='movie-search-suggestion' onMouseDown={() => {props.onSuggestionClick(suggestion);}}>
             {suggestion.title}
           </div>
         )
