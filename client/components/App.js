@@ -108,18 +108,39 @@ class App extends Component {
     try {
       const response = await fetch(`${DOMAIN}/movie?title=${movieTitle}`);
       const body = await response.json();
-      console.log(body);
       success = body.success;
       movie = body.movie;
     } catch (err) {
       console.error(`something wen't wrong getting info for movie: ${movieTitle}\n${err}`);
     }
 
-    if (success) {
-      this.setState({
-        specificMovieShowing: movie
-      });
+    if (!success) {
+      // TODO show alert saying this
+      console.log(`movie: ${movieTitle} not found`);
+      return;
     }
+
+    if (movie.locations.length === 0) {
+      // TODO show alert saying this
+      console.log(`movie: ${movieTitle} has no locations`);
+      return;
+    }
+
+    /*
+    const movieBounds = movie.locations.reduce((movieBounds, location) => {
+      movieBounds.minSouthWest.lat = Math.min(location.point[0], movieBounds.minSouthWest.lat);
+      movieBounds.minSouthWest.lon = Math.min(location.point[1], movieBounds.minSouthWest.lon);
+
+      movieBounds.maxNorthEast.lat = Math.max(location.point[0], movieBounds.maxNorthEast.lat);
+      movieBounds.maxNorthEast.lon = Math.max(location.point[1], movieBounds.maxNorthEast.lon);
+
+      return movieBounds;
+    }, {minSouthWest: {lat: Infinity, lon: Infinity}, maxNorthEast: {lat: -Infinity, lon: -Infinity}});
+    */
+
+    this.setState({
+      specificMovieShowing: movie,
+    });
   }
 
   render() {
@@ -129,6 +150,7 @@ class App extends Component {
           <div id="map-container">
             <MovieMap
               viewport={this.state.mapViewport}
+              locations={this.state.specificMovieShowing ? this.state.specificMovieShowing.locations : null}
               onViewportChanged={this.handleMapViewportChanged}
               onMovieIdsShowingUpdate={this.handleMovieIdsShowingUpdate}
               onTopMoviesShowingUpdate={this.handleTopMoviesShowingUpdate}

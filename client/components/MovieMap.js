@@ -11,13 +11,45 @@ import './MovieMap.css';
 export default function MovieMap(props) {
   const domain = useContext(DomainContext);
 
+  // if parent element has set a specific viewport to show
   useEffect(() => {
-    updateMarkers();
+    if (props.locations === null) {
+      updateMarkers();
+    }
   }, [props.viewport]);
+
+  // if parent element gives a list of locations to mark
+  useEffect(() => {
+    if (props.locations !== null) {
+      showLocations(props.locations);
+    }
+  }, [props.locations]);
 
   const [markers, setMarkers] = useState([]);
 
   const map = useRef(null);
+
+  /*
+   * showLocations changes the maps viewport to show the given list of locations and puts a marker at each spot
+   */
+  function showLocations(locations) {
+    // create a new markers array for each location
+    const newMarkers = locations.map((location) => {
+      return {
+        id: location.id,
+        count: 1,
+        coordinate: location.point,
+        locations: [{locationString: location.locationString}],
+      };
+    });
+
+    const leafletElement = map.current.leafletElement;
+    leafletElement.flyToBounds(locations.map((location) => {
+      return location.point
+    }));
+
+    setMarkers(newMarkers);
+  }
 
   /*
    * updateMarkers gets all the clusters for the current bounds and zoom level, then plots them

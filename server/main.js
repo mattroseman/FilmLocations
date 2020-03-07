@@ -114,12 +114,10 @@ app.get('/movie', async (req, res, next) => {
     year: movie.year,
     locations: movie.locations.map((location) => {
       return {
+        id: location.locationId._id,
         description: location.description,
-        location: {
-          _id: location.locationId._id,
-          geohash: location.locationId.geohash,
-          point: location.locationId.locationPoint.coordinates.reverse()
-        }
+        geohash: location.locationId.geohash,
+        point: location.locationId.locationPoint.coordinates.reverse()
       }
     })
   }
