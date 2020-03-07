@@ -116,6 +116,7 @@ app.get('/movie', async (req, res, next) => {
       return {
         id: location.locationId._id,
         description: location.description,
+        locationString: location.locationId.locationString,
         geohash: location.locationId.geohash,
         point: location.locationId.locationPoint.coordinates.reverse()
       }

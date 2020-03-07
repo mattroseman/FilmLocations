@@ -8,7 +8,7 @@ function LocationMarker(props) {
       position={props.marker.coordinate}
       onClick={() => console.log(props.marker.locations[0].locationString)}
     >
-      <Popup>
+      <Popup autoPan={false}>
         {props.marker.locations[0].locationString}
       </Popup>
     </Marker>

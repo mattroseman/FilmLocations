@@ -160,6 +160,7 @@ class App extends Component {
           <div id="movie-info-container">
             <MovieInfo
               movies={this.state.topMoviesShowing}
+              specificMovie={this.state.specificMovieShowing}
               loading={this.state.topMoviesLoading}
               onShowSpecificMovie={this.handleShowSpecificMovie}
             >
