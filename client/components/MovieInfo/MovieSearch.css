@@ -4,6 +4,10 @@
   justify-content: center;
   align-items: center;
 
+  position: relative;
+  top: 0rem;
+  left: 0rem;
+
   min-height: 2rem;
 }
 
@@ -12,4 +16,22 @@
   color: #FFFFFF;
 
   width: 100%;
+}
+
+#movie-search-suggestions {
+  background-color: #333333;
+  color: #FFFFFF;
+
+  position: absolute;
+  top: 100%;
+  width: 100%;
+}
+
+.movie-search-suggestion {
+  font-size: 1.5rem;
+
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }

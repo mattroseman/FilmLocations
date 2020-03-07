@@ -102,27 +102,27 @@ class App extends Component {
    * handleShowSpecificMovie sets a single movie to show on the website.
    * Queries for the movie data and sets the currently showing movie state
    */
-  async handleShowSpecificMovie(movieTitle) {
+  async handleShowSpecificMovie(id=null, title=null) {
     let movie;
     let success;
     try {
-      const response = await fetch(`${DOMAIN}/movie?title=${movieTitle}`);
+      const response = await fetch(`${DOMAIN}/movie?id=${id}&title=${title}`);
       const body = await response.json();
       success = body.success;
       movie = body.movie;
     } catch (err) {
-      console.error(`something wen't wrong getting info for movie: ${movieTitle}\n${err}`);
+      console.error(`something wen't wrong getting info for movie: id=${id} title=${title}\n${err}`);
     }
 
     if (!success) {
       // TODO show alert saying this
-      console.log(`movie: ${movieTitle} not found`);
+      console.log(`movie: id=${id} title=${title} not found`);
       return;
     }
 
     if (movie.locations.length === 0) {
       // TODO show alert saying this
-      console.log(`movie: ${movieTitle} has no locations`);
+      console.log(`movie: id=${id} title=${title} has no locations`);
       return;
     }
 

@@ -81,9 +81,11 @@ app.get('/movie', async (req, res, next) => {
   const movieTitle = req.query.title;
 
   let query;
-  if (movieId) {
+  if (movieId && movieId !== 'null') {
+    console.log(`getting movie info for movie with id: ${movieId}`);
     query = {_id: movieId};
-  } else if (movieTitle) {
+  } else if (movieTitle && movieTitle !== 'null') {
+    console.log(`getting movie info for movie with title: ${movieTitle}`);
     query = {title: {$regex: new RegExp(`^${movieTitle}$`, 'i')}};
   } else {
     // missing required url parameters
