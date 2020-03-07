@@ -7,6 +7,7 @@ const chalk = require('chalk');
 const connectToDatabase = require('../lib/db.js');
 const { Location, Movie } = require('../lib/models.js');
 const { getCoordinatesCenter } = require('../lib/utils.js');
+const MovieTrie = require('../lib/movieTrie.js');
 
 const ENVIRONMENT = process.env.ENVIRONMENT;
 // the higher CLUSTER_FACTOR is smaller clusters are likely to be, and there will be more
@@ -34,6 +35,10 @@ app.use(express.static(path.join(__dirname, '../client/public')));
 // SETUP MIDDLEWARE
 app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }));
 app.use(bodyParser.json({ limit: '5mb' }));
+
+// LOAD MOVIE TRIE
+let movieTrie = new MovieTrie();
+movieTrie.generateMovieTrie();
 
 // SETUP PATHS
 app.get('/', (req, res) => {
@@ -71,28 +76,74 @@ app.get('/film-clusters', async (req, res, next) => {
   res.send(clusters);
 });
 
-app.get('/top-movies', async(req, res, next) => {
-  const southWest = [+req.query.swlat, +req.query.swlon];
-  const northEast = [+req.query.nelat, +req.query.nelon];
-  const limit = +req.query.limit;
+app.get('/movie', async (req, res, next) => {
+  const movieId = req.query.id;
+  const movieTitle = req.query.title;
 
-  console.log(`getting ${limit} top movies in bounds: [${southWest}:${northEast}]`);
+  let query;
+  if (movieId && movieId !== 'null') {
+    console.log(`getting movie info for movie with id: ${movieId}`);
+    query = {_id: movieId};
+  } else if (movieTitle && movieTitle !== 'null') {
+    console.log(`getting movie info for movie with title: ${movieTitle}`);
+    query = {title: {$regex: new RegExp(`^${movieTitle}$`, 'i')}};
+  } else {
+    // missing required url parameters
+    res.sendStatus(422);
+    return;
+  }
 
-  // query mongo database to get the limit top movies in the given bounds
-  let topMovies = [];
+  let movie;
   try {
-    console.time(`[${southWest}:${northEast}] top movies query`);
-    topMovies = await Location.getTopMovies(southWest, northEast, limit);
-    console.timeEnd(`[${southWest}:${northEast}] top movies query`);
+    movie = await Movie.findOne(query).populate('locations.locationId');
   } catch (err) {
-    console.error(chalk.red(`Something wen't wrong getting ${limit} top movies in bounds [${southWest}:${northEast}]\n${err}`));
+    console.error(chalk.red(`Something wen't wrong getting movie with title: ${movieTitle} or id: ${movieId}\n${err}`));
     next(err);
     return;
   }
 
-  console.log(`got ${topMovies.length} top movies in bounds: [${southWest}:${northEast}]`);
+  if (!movie) {
+    res.send({
+      success: false,
+      movie: null
+    });
+    return;
+  }
 
-  res.send(topMovies);
+  movie = {
+    _id: movie._id,
+    title: movie.title,
+    year: movie.year,
+    locations: movie.locations.map((location) => {
+      return {
+        id: location.locationId._id,
+        description: location.description,
+        locationString: location.locationId.locationString,
+        geohash: location.locationId.geohash,
+        point: location.locationId.locationPoint !== undefined ? location.locationId.locationPoint.coordinates.reverse() : null
+      }
+    }).reduce((uniqueLocations, location) => {
+      // remove any duplicate locations and combine their descriptions
+      for (const uniqueLocation of uniqueLocations) {
+        if (location.id === uniqueLocation.id) {
+          if (uniqueLocation.description.length > 0 && location.description.length > 0) {
+            uniqueLocation.description = `${uniqueLocation.description}, ${location.description}`;
+          } else {
+            uniqueLocation.description = `${uniqueLocation.description}${location.description}`;
+          }
+
+          return uniqueLocations;
+        }
+      }
+
+      return [...uniqueLocations, location]
+    }, [])
+  }
+
+  res.send({
+    success: true,
+    movie: movie
+  });
 });
 
 app.post('/top-movies', async (req, res, next) => {
@@ -113,6 +164,39 @@ app.post('/top-movies', async (req, res, next) => {
   console.log(`got top ${topMovies.length} movies out of ${movieIds.length}`);
 
   res.send(topMovies);
+});
+
+app.get('/movie-titles', async (req, res, next) => {
+  const prefix = req.query.prefix;
+
+  const cancelToken = {
+    cancelled: false
+  };
+
+  req.on('close', () => {
+    console.log(`movie titles request for prefix: ${prefix} cancelled`);
+    cancelToken.cancelled = true;
+  });
+
+  console.log(`getting movie titles for prefix: ${prefix}`);
+
+  let movieTitles = [];
+  try {
+    movieTitles = await movieTrie.getMovieTitlesFromPrefix(prefix, cancelToken);
+  } catch (err) {
+    if (err === 'getWords cancelled') {
+      res.send(movieTitles);
+      return;
+    }
+
+    console.error(chalk.red(`Something wen't wrong getting movie titles for prefix ${prefix}\n${err}`));
+    next(err);
+    return;
+  }
+
+  console.log(`got ${movieTitles.length} titles for prefix: ${prefix}`);
+
+  res.send(movieTitles);
 });
 
 const port = process.env.PORT || 5000;

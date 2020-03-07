@@ -1,0 +1,47 @@
+#movie-search {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+  top: 0rem;
+  left: 0rem;
+
+  min-height: 2rem;
+}
+
+#movie-search-field {
+  background-color: #333333;
+  color: #FFFFFF;
+
+  width: 100%;
+}
+
+#movie-search-suggestions {
+  background-color: #333333;
+  color: #FFFFFF;
+
+  position: absolute;
+  top: 100%;
+  width: 100%;
+
+  display:none;
+}
+#movie-search-field:focus + #movie-search-suggestions {
+  display: block;
+}
+
+.movie-search-suggestion {
+  font-size: 1.5rem;
+
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  cursor: pointer;
+}
+.movie-search-suggestion:hover {
+  background-color: #202020;
+}

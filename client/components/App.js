@@ -3,7 +3,7 @@ import { hot } from 'react-hot-loader/root';
 
 import { DomainContext } from './Context.js';
 import MovieMap from './MovieMap.js';
-import MovieInfo from './MovieInfo.js';
+import MovieInfo from './MovieInfo/MovieInfo.js';
 
 import './App.css';
 
@@ -27,11 +27,13 @@ class App extends Component {
         }
       },
       topMoviesShowing: [],
-      topMoviesLoading: false
+      topMoviesLoading: false,
+      specificMovieShowing: null
     };
 
     this.handleMovieIdsShowingUpdate = this.handleMovieIdsShowingUpdate.bind(this);
     this.handleMapViewportChanged = this.handleMapViewportChanged.bind(this);
+    this.handleShowSpecificMovie = this.handleShowSpecificMovie.bind(this);
   }
 
   /*
@@ -96,6 +98,52 @@ class App extends Component {
     });
   }
 
+  /*
+   * handleShowSpecificMovie sets a single movie to show on the website.
+   * Queries for the movie data and sets the currently showing movie state
+   */
+  async handleShowSpecificMovie(id=null, title=null) {
+    let movie;
+    let success;
+    try {
+      const response = await fetch(`${DOMAIN}/movie?id=${id}&title=${title}`);
+      const body = await response.json();
+      success = body.success;
+      movie = body.movie;
+    } catch (err) {
+      console.error(`something wen't wrong getting info for movie: id=${id} title=${title}\n${err}`);
+    }
+
+    if (!success) {
+      // TODO show alert saying this
+      console.log(`movie: id=${id} title=${title} not found`);
+      return;
+    }
+
+    if (movie.locations.length === 0) {
+      // TODO show alert saying this
+      console.log(`movie: id=${id} title=${title} has no locations`);
+      return;
+    }
+
+    /*
+    const movieBounds = movie.locations.reduce((movieBounds, location) => {
+      movieBounds.minSouthWest.lat = Math.min(location.point[0], movieBounds.minSouthWest.lat);
+      movieBounds.minSouthWest.lon = Math.min(location.point[1], movieBounds.minSouthWest.lon);
+
+      movieBounds.maxNorthEast.lat = Math.max(location.point[0], movieBounds.maxNorthEast.lat);
+      movieBounds.maxNorthEast.lon = Math.max(location.point[1], movieBounds.maxNorthEast.lon);
+
+      return movieBounds;
+    }, {minSouthWest: {lat: Infinity, lon: Infinity}, maxNorthEast: {lat: -Infinity, lon: -Infinity}});
+    */
+
+    console.log(movie);
+    this.setState({
+      specificMovieShowing: movie,
+    });
+  }
+
   render() {
     return (
       <div id="app-container">
@@ -103,6 +151,7 @@ class App extends Component {
           <div id="map-container">
             <MovieMap
               viewport={this.state.mapViewport}
+              locations={this.state.specificMovieShowing ? this.state.specificMovieShowing.locations : null}
               onViewportChanged={this.handleMapViewportChanged}
               onMovieIdsShowingUpdate={this.handleMovieIdsShowingUpdate}
               onTopMoviesShowingUpdate={this.handleTopMoviesShowingUpdate}
@@ -112,7 +161,9 @@ class App extends Component {
           <div id="movie-info-container">
             <MovieInfo
               movies={this.state.topMoviesShowing}
+              specificMovie={this.state.specificMovieShowing}
               loading={this.state.topMoviesLoading}
+              onShowSpecificMovie={this.handleShowSpecificMovie}
             >
             </MovieInfo>
           </div>
