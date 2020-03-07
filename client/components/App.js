@@ -3,7 +3,7 @@ import { hot } from 'react-hot-loader/root';
 
 import { DomainContext } from './Context.js';
 import MovieMap from './MovieMap.js';
-import MovieInfo from './MovieInfo.js';
+import MovieInfo from './MovieInfo/MovieInfo.js';
 
 import './App.css';
 
@@ -27,7 +27,8 @@ class App extends Component {
         }
       },
       topMoviesShowing: [],
-      topMoviesLoading: false
+      topMoviesLoading: false,
+      specificMovieShowing: null
     };
 
     this.handleMovieIdsShowingUpdate = this.handleMovieIdsShowingUpdate.bind(this);
@@ -96,6 +97,24 @@ class App extends Component {
     });
   }
 
+  /*
+   * handleShowSpecificMovie sets a single movie to show on the website.
+   * Queries for the movie data and sets the currently showing movie state
+   */
+  async handleShowSpecificMovie(movieTitle) {
+    let movie;
+    try {
+      const response = await fetch(`${DOMAIN}/movie?title=${movieTitle}`);
+      movie = response.json();
+    } catch (err) {
+      console.error(`something wen't wrong getting info for movie: ${movieTitle}\n${err}`);
+    }
+
+    this.setState({
+      currentShowingMovie: movie
+    });
+  }
+
   render() {
     return (
       <div id="app-container">
@@ -113,6 +132,7 @@ class App extends Component {
             <MovieInfo
               movies={this.state.topMoviesShowing}
               loading={this.state.topMoviesLoading}
+              onShowSpecificMovie={this.handleShowSpecificMovie}
             >
             </MovieInfo>
           </div>

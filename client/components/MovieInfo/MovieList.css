@@ -1,11 +1,11 @@
-#movie-info {
+#movie-list {
+  flex: 1;
   box-shadow: inset 8px 0px 6px 0px #111111;
 
   box-sizing: border-box;
 
   overflow-y: scroll;
 
-  height: 100%;
   width: 100%;
 
   padding-top: 1.5rem;
@@ -18,41 +18,41 @@
 
   scrollbar-color: #212121 #D9D9D9;
 }
-#movie-info::-webkit-scrollbar {
+#movie-list::-webkit-scrollbar {
   background-color: #212121;
   width: .6rem;
 }
 
-#movie-info::-webkit-scrollbar-thumb {
+#movie-list::-webkit-scrollbar-thumb {
   background-color: #D9D9D9;
   border-radius: 1rem;
 }
 @media only screen and (max-width: 575px) {
-  #movie-info {
+  #movie-list {
     box-shadow: inset 0px 8px 6px 0px #111111;
   }
 }
 
-#movie-info.loading {
+#movie-list.loading {
   text-align: center;
 }
 
-.movie-info-card {
+.movie-list-card {
   margin-bottom: 2rem;
 }
 
-.movie-info-title {
+.movie-list-title {
   color: #FFFFFF;
 
   cursor: pointer;
 }
 
-.movie-info-location {
+.movie-list-location {
 }
 
-.movie-info-location-name {
+.movie-list-location-name {
   cursor: pointer;
 }
 
-.movie-info-location-description {
+.movie-list-location-description {
 }

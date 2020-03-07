@@ -52,3 +52,19 @@ html, body, #root {
     max-height: 40%;
   }
 }
+
+input, input:focus {
+  border: none;
+  outline: none;
+  outline-offset: 0;
+
+  box-sizing: border-box;
+
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+input[type="text"] {
+  font-size: 1.5rem;
+}
