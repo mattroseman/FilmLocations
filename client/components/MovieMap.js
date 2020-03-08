@@ -178,7 +178,7 @@ export default function MovieMap(props) {
       worldCopyJump={true}
       viewport={props.viewport}
       onViewportChanged={handleViewportChanged}
-      minZoom={window.screen.size < 576 ? 2 : 4}
+      minZoom={window.screen.width < 576 ? 2 : 4}
       maxZoom={20}
       whenReady={handleViewportChanged}
     >
