@@ -2,6 +2,8 @@
 
 Interactive map of filming locations around the world. Built with a Node backend and React frontend, with [Leafletjs](https://leafletjs.com/) for the interactive map.
 
+![screenshot](moviemap_screenshot.png)
+
 ## Installation
 
 This project is built around [docker](https://www.docker.com/products/docker-desktop), but can be run without it.
