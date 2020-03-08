@@ -11,6 +11,13 @@ import './MovieMap.css';
 export default function MovieMap(props) {
   const domain = useContext(DomainContext);
 
+  // make sure the map resizes when movie info shows/hides
+  useEffect(() => {
+    if (map !== undefined) {
+      map.current.leafletElement.invalidateSize();
+    }
+  }, [props.movieInfoShowing]);
+
   // if parent element has set a specific viewport to show
   useEffect(() => {
     if (props.locations === null) {

@@ -26,7 +26,7 @@ class App extends Component {
           northEast: []
         }
       },
-      movieInfoShowing: false,
+      movieInfoShowing: window.screen.width < 576 ? false : true,
       topMoviesShowing: [],
       topMoviesLoading: false,
       specificMovieShowing: null
@@ -185,6 +185,7 @@ class App extends Component {
               onViewportChanged={this.handleMapViewportChanged}
               onMovieIdsShowingUpdate={this.handleMovieIdsShowingUpdate}
               onTopMoviesShowingUpdate={this.handleTopMoviesShowingUpdate}
+              movieInfoShowing={this.state.movieInfoShowing}
             >
             </MovieMap>
           </div>
