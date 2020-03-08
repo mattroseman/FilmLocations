@@ -17,9 +17,46 @@ html, body, #root {
 
   margin: 0rem;
 }
+
+#toggle-movie-info-btn {
+  position: absolute;
+  z-index: 2000; /* to appear over leaflet map */
+  top: 10px;
+  left: -155px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  background-color: rgb(33, 33, 33, 0.5);
+  color: #FFFFFF;
+  border: #FFFFFF 1px solid;
+
+  font-size: 1.2rem;
+
+  cursor: pointer;
+
+  user-select: none;
+}
+#toggle-movie-info-btn:hover {
+  background-color: rgb(33, 33, 33, 0.8);
+}
 @media only screen and (max-width: 575px) {
-  #app-container {
-    flex-direction: column;
+  #toggle-movie-info-btn {
+    top: 10px;
+    left: -125px;
+  }
+
+  #toggle-movie-info-btn.showing {
+    position: static;
+
+    background-color: #202020;
   }
 }
 
@@ -28,28 +65,29 @@ html, body, #root {
 
   margin: 0rem;
 }
-@media only screen and (max-width: 575px) {
-  #map-container {
-    flex: 3;
-  }
-}
 
 #movie-info-container {
-  margin: 0rem;
-}
-@media only screen and (min-width: 576px) {
-  #movie-info-container {
-    flex: 2;
+  position: relative;
 
-    height: 100%;
-  }
+  flex: 2;
+
+  margin: 0rem;
+
+  height: 100%;
+}
+#movie-info-container.hidden {
+  flex: 0;
+  width: 0rem;
 }
 @media only screen and (max-width: 575px) {
   #movie-info-container {
-    flex: 2;
+    position: fixed;
+    z-index: 3000;
+    top: 0;
+    right: 0;
 
+    height: 100%;
     width: 100%;
-    max-height: 40%;
   }
 }
 

@@ -26,6 +26,7 @@ class App extends Component {
           northEast: []
         }
       },
+      movieInfoShowing: false,
       topMoviesShowing: [],
       topMoviesLoading: false,
       specificMovieShowing: null
@@ -34,6 +35,7 @@ class App extends Component {
     this.handleMovieIdsShowingUpdate = this.handleMovieIdsShowingUpdate.bind(this);
     this.handleMapViewportChanged = this.handleMapViewportChanged.bind(this);
     this.handleShowSpecificMovie = this.handleShowSpecificMovie.bind(this);
+    this.handleToggleShowMovieInfo = this.handleToggleShowMovieInfo.bind(this);
   }
 
   /*
@@ -103,6 +105,11 @@ class App extends Component {
    * Queries for the movie data and sets the currently showing movie state
    */
   async handleShowSpecificMovie(id=null, title=null) {
+    // hide the movie info pane if on mobile
+    this.setState({
+      movieInfoShowing: false
+    });
+
     let movie;
     let success;
     try {
@@ -144,7 +151,30 @@ class App extends Component {
     });
   }
 
+  handleToggleShowMovieInfo() {
+    this.setState({
+      movieInfoShowing: !this.state.movieInfoShowing
+    });
+  }
+
   render() {
+    const mobileScreen = window.screen.width < 576;
+
+    let toggleMovieInfoBtnContent = '< Movie Info';
+    if (mobileScreen) {
+      if (this.state.movieInfoShowing) {
+        toggleMovieInfoBtnContent = 'Movies >';
+      } else {
+        toggleMovieInfoBtnContent = '< Movies';
+      }
+    } else {
+      if (this.state.movieInfoShowing) {
+        toggleMovieInfoBtnContent = 'Movie Info >';
+      } else {
+        toggleMovieInfoBtnContent = '< Movie Info';
+      }
+    }
+
     return (
       <div id="app-container">
         <DomainContext.Provider value={DOMAIN}>
@@ -158,7 +188,13 @@ class App extends Component {
             >
             </MovieMap>
           </div>
-          <div id="movie-info-container">
+
+          <div id="movie-info-container" className={this.state.movieInfoShowing ? '' : 'hidden'}>
+            <div id="toggle-movie-info-btn" className={this.state.movieInfoShowing ? 'showing' : ''} onClick={this.handleToggleShowMovieInfo}>
+              {toggleMovieInfoBtnContent}
+            </div>
+
+            {this.state.movieInfoShowing &&
             <MovieInfo
               movies={this.state.topMoviesShowing}
               specificMovie={this.state.specificMovieShowing}
@@ -166,6 +202,7 @@ class App extends Component {
               onShowSpecificMovie={this.handleShowSpecificMovie}
             >
             </MovieInfo>
+            }
           </div>
         </DomainContext.Provider>
       </div>
