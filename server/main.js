@@ -110,22 +110,26 @@ app.get('/movie', async (req, res, next) => {
     return;
   }
 
+  /*
+  console.log(movie.locations.map((location) => {
+    return {
+      id: location.locationId._id,
+      description: location.description,
+      locationString: location.locationId.locationString,
+      geohash: location.locationId.geohash,
+      point: location.locationId.locationPoint !== undefined ? location.locationId.locationPoint.coordinates.reverse() : null
+    }
+  }));
+  */
+
   movie = {
     _id: movie._id,
     title: movie.title,
     year: movie.year,
-    locations: movie.locations.map((location) => {
-      return {
-        id: location.locationId._id,
-        description: location.description,
-        locationString: location.locationId.locationString,
-        geohash: location.locationId.geohash,
-        point: location.locationId.locationPoint !== undefined ? location.locationId.locationPoint.coordinates.reverse() : null
-      }
-    }).reduce((uniqueLocations, location) => {
-      // remove any duplicate locations and combine their descriptions
+    locations: movie.locations.reduce((uniqueLocations, location) => {
+      // if this location was already added to uniqueLocations, simply append to the already existing description
       for (const uniqueLocation of uniqueLocations) {
-        if (location.id === uniqueLocation.id) {
+        if (location.locationId._id === uniqueLocation.id) {
           if (uniqueLocation.description.length > 0 && location.description.length > 0) {
             uniqueLocation.description = `${uniqueLocation.description}, ${location.description}`;
           } else {
@@ -136,7 +140,14 @@ app.get('/movie', async (req, res, next) => {
         }
       }
 
-      return [...uniqueLocations, location]
+      // add this location to uniqueLocations, and convert it to more readable object for frontend
+      return [...uniqueLocations, {
+        id: location.locationId._id,
+        description: location.description,
+        locationString: location.locationId.locationString,
+        geohash: location.locationId.geohash,
+        point: location.locationId.locationPoint !== undefined ? location.locationId.locationPoint.coordinates.reverse() : null
+      }]
     }, [])
   }
 

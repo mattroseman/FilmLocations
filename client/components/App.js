@@ -106,9 +106,11 @@ class App extends Component {
    */
   async handleShowSpecificMovie(id=null, title=null) {
     // hide the movie info pane if on mobile
-    this.setState({
-      movieInfoShowing: false
-    });
+    if (window.screen.width < 576) {
+      this.setState({
+        movieInfoShowing: false
+      });
+    }
 
     let movie;
     let success;
@@ -145,9 +147,9 @@ class App extends Component {
     }, {minSouthWest: {lat: Infinity, lon: Infinity}, maxNorthEast: {lat: -Infinity, lon: -Infinity}});
     */
 
-    console.log(movie);
     this.setState({
       specificMovieShowing: movie,
+      topMoviesLoading: false
     });
   }
 

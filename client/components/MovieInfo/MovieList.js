@@ -47,7 +47,7 @@ export default function MovieList(props) {
 
         return (
           <div key={movie._id} className="movie-list-card">
-            <h3 className="movie-list-title">
+            <h3 className="movie-list-title" onClick={() => {props.onShowSpecificMovie(movie._id)}}>
               {movie.title}
             </h3>
             <ul className="movie-list-locations">
