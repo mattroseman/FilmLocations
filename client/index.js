@@ -1,8 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+import { createStore, compose, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import thunkMiddleware from 'redux-thunk';
+
+import filmLocationsApp from './components/reducers.js';
+
 import App from './components/App.js';
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(
+  filmLocationsApp,
+  composeEnhancers(
+    applyMiddleware(
+      thunkMiddleware
+    )
+  )
+);
+
 ReactDOM.render(
-  <App />,
+  <Provider store={store}>
+    <App />
+  </Provider>,
   document.getElementById('root')
 );

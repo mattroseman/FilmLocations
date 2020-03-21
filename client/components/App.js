@@ -1,43 +1,35 @@
 import React, { useEffect } from 'react';
 import { hot } from 'react-hot-loader/root';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { useDispatch } from 'react-redux';
+import { setDomain } from './actions.js';
 
-import { DomainContext } from './Context.js';
-import filmLocationsApp from './reducers.js';
 import MovieMap from './MovieMap.js';
 import MovieInfo from './MovieInfo/MovieInfo.js';
 
 import './App.css';
 
-const store = createStore(
-  filmLocationsApp,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
-
 let DOMAIN = '';
 // const TOP_MOVIES_LIMIT = 20;
 
 function App() {
+  const dispatch = useDispatch();
+
   useEffect(() => {
     // initialize DOMAIN to localhost:5000 if running locally, otherwise leave blank
     DOMAIN = window.location.hostname.indexOf('localhost') > -1 ? 'http://localhost:5000' : '';
+    dispatch(setDomain(DOMAIN));
   }, []);
 
   return (
-    <Provider store={store}>
-      <div id="app-container">
-        <DomainContext.Provider value={DOMAIN}>
-          <div id="map-container">
-            <MovieMap></MovieMap>
-          </div>
-
-          <div id="movie-info-container">
-            {"<MovieInfo></MovieInfo>"}
-          </div>
-        </DomainContext.Provider>
+    <div id="app-container">
+      <div id="map-container">
+        <MovieMap></MovieMap>
       </div>
-    </Provider>
+
+      <div id="movie-info-container">
+        {"<MovieInfo></MovieInfo>"}
+      </div>
+    </div>
   );
 }
 

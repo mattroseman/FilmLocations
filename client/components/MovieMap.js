@@ -1,23 +1,31 @@
-import React, { useContext, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { setMapViewport, setMapBounds } from './actions.js';
+import React, { useRef, useEffect } from 'react';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { setMapViewport, setMapBounds, fetchMapMarkers } from './actions.js';
 
 import { Map, TileLayer } from 'react-leaflet';
 
-import { DomainContext } from './Context.js';
 import ClusterMarker from './ClusterMarker.js';
 import LocationMarker from './LocationMarker.js';
 
 import './MovieMap.css';
 
-export default function MovieMap(props) {
+export default function MovieMap() {
   const dispatch = useDispatch();
-
-  const DOMAIN = useContext(DomainContext);
 
   const map = useRef(null);
 
-  const viewport = useSelector(state => state.map.viewport);
+  const viewport = useSelector(state => state.map.viewport, shallowEqual);
+  const bounds = useSelector(state => state.map.bounds, shallowEqual);
+  useEffect(() => {
+    if (
+      bounds.southWest[0] !== undefined && bounds.southWest[1] !== undefined &&
+      bounds.northEast !== undefined && bounds.northEast[1] !== undefined
+    ) {
+      dispatch(fetchMapMarkers(bounds, viewport.zoom));
+    }
+  }, [bounds]);
+
+  const markers = useSelector(state => state.map.markers, shallowEqual);
 
   return (
     <Map
@@ -26,22 +34,35 @@ export default function MovieMap(props) {
       minZoom={window.screen.width < 576 ? 2 : 4}
       maxZoom={20}
       viewport={viewport}
+      whenReady={() => {
+        const leafletElement = map.current.leafletElement;
+        const bounds = leafletElement.getBounds();
+        dispatch(setMapBounds(bounds));
+      }}
       onViewportChanged={(newViewport) => {
         dispatch(setMapViewport(newViewport));
         // grab the new bounds from the leafletElement dynamic property
         const leafletElement = map.current.leafletElement;
         const bounds = leafletElement.getBounds();
-        const newBounds = {
-          southWest: [bounds._southWest.lat, bounds._southWest.lng],
-          northEast: [bounds._northEast.lat, bounds._northEast.lng]
-        }
-        dispatch(setMapBounds(newBounds));
+        dispatch(setMapBounds(bounds));
       }}
     >
       <TileLayer
         attribution={'&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'}
         url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
       />
+
+      {Object.values(markers).map((marker) => {
+        if (marker.count > 1) {
+          return (
+            <ClusterMarker key={marker.id} marker={marker}></ClusterMarker>
+          );
+        } else {
+          return (
+            <LocationMarker key={marker.id} marker={marker}></LocationMarker>
+          );
+        }
+      })}
     </Map>
   );
 }

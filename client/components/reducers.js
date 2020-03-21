@@ -12,7 +12,7 @@ const initialState = {
       southWest: [undefined, undefined],
       northEast: [undefined, undefined]
     },
-    markers: []
+    markers: {}
   },
   movieInfo: {
     showing: true,
@@ -22,7 +22,8 @@ const initialState = {
       title: '',
       suggestions: []
     }
-  }
+  },
+  domain: ''
 };
 
 function map(state=initialState.map, action) {
@@ -41,9 +42,9 @@ function map(state=initialState.map, action) {
           bounds: action.newBounds
         }
       };
-    case actions.REQUEST_MAP_MARKERS:
+    case actions.REQUEST_LOCATION_CLUSTERS:
       return state;
-    case actions.RECEIVE_MAP_MARKERS:
+    case actions.SET_MAP_MARKERS:
       return {
         ...state,
         ...{
@@ -111,9 +112,19 @@ function movieInfo(state=initialState.movieInfo, action) {
   }
 }
 
+function domain(state=initialState.domain, action) {
+  switch(action.type) {
+    case actions.SET_DOMAIN:
+      return action.domain;
+    default:
+      return state;
+  }
+}
+
 const filmLocationsApp = combineReducers({
   map,
-  movieInfo
+  movieInfo,
+  domain
 });
 
 export default filmLocationsApp;
