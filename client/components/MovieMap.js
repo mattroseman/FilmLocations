@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import { setMapViewport, setMapBounds, fetchMapMarkers } from './actions.js';
+import { setMapViewport, setMapBounds, fetchMapMarkers } from '../actions';
 
 import { Map, TileLayer } from 'react-leaflet';
 

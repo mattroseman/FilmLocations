@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { useDispatch } from 'react-redux';
-import { setDomain } from './actions.js';
+import { setDomain } from '../actions';
 
 import MovieMap from './MovieMap.js';
 import MovieInfo from './MovieInfo/MovieInfo.js';
