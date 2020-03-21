@@ -25,9 +25,9 @@ export {
 
   hideMovieInfo,
   showMovieInfo,
-  requestMOvieInfoMoviesShowing,
+  requestMovieInfoMoviesShowing,
   receiveMovieInfoMoviesShowing,
   setMovieInfoSearchTitle,
   requestMovieInfoSearchSuggestions,
-  receiveMOvieInfoSearchSuggestions
+  receiveMovieInfoSearchSuggestions
 } from './movie-info-actions.js';
