@@ -1,0 +1,19 @@
+.movie-card {
+  margin-bottom: 2rem;
+}
+
+.movie-card-title {
+  color: #FFFFFF;
+
+  cursor: pointer;
+}
+
+.movie-card-location {
+}
+
+.movie-card-location-name {
+  cursor: pointer;
+}
+
+.movie-card-location-description {
+}

@@ -33,30 +33,6 @@
   }
 }
 
-#movie-list.loading {
-  text-align: center;
-}
-
-.movie-list-card {
-  margin-bottom: 2rem;
-}
-
-.movie-list-title {
-  color: #FFFFFF;
-
-  cursor: pointer;
-}
-
-.movie-list-location {
-}
-
-.movie-list-location-name {
-  cursor: pointer;
-}
-
-.movie-list-location-description {
-}
-
 #movie-list-loading {
   text-align: center;
 }
