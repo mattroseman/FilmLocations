@@ -6,14 +6,15 @@ export default function movieInfo(state=initialState.movieInfo, action) {
     case actions.SET_MOVIE_IDS_SHOWING:
       return {
         ...state,
-        movieIdsShowing: action.movieIdsShowing
+        movieIdsShowing: action.movieIdsShowing,
+        topMovies: []
       }
     case actions.REQUEST_TOP_MOVIES:
       return {
         ...state,
         isLoading: true
       };
-    case actions.SET_TOP_MOVIES:
+    case actions.UPDATE_TOP_MOVIES:
       return {
         ...state,
         isLoading: false,

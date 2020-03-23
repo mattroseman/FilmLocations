@@ -159,13 +159,14 @@ app.get('/movie', async (req, res, next) => {
 
 app.post('/top-movies', async (req, res, next) => {
   const movieIds = req.body.movieIds;
+  const offset = +req.body.offset;
   const limit = +req.body.limit;
 
-  console.log(`getting top ${limit} movies out of ${movieIds.length}`);
+  console.log(`getting top movies from ${offset} to ${offset + limit} out of ${movieIds.length} total movies`);
 
   let topMovies
   try {
-    topMovies = await Movie.getTopMovies(movieIds, limit);
+    topMovies = await Movie.getTopMovies(movieIds, limit, offset);
   } catch (err) {
     console.error(chalk.red(`Something wen't wrong getting top ${limit} movies out of ${movieIds.length} ids`));
     next(err);

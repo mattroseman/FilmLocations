@@ -9,7 +9,7 @@ export default function MovieInfo() {
   return (
     <div id="movie-info">
       {"<MovieSearch />"}
-      {"<MovieList />"}
+      <MovieList />
     </div>
   );
 }

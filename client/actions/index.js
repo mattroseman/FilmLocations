@@ -17,7 +17,7 @@ export {
 export {
   SET_MOVIE_IDS_SHOWING,
   REQUEST_TOP_MOVIES,
-  SET_TOP_MOVIES,
+  UPDATE_TOP_MOVIES,
 
   fetchTopMovies
 } from './movie-info-actions.js';
