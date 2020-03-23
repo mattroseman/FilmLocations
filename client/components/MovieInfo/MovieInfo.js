@@ -5,11 +5,20 @@ import MovieList from './MovieList.js';
 
 import './MovieInfo.css';
 
-export default function MovieInfo(props) {
+export default function MovieInfo() {
   return (
     <div id="movie-info">
-      <MovieSearch onShowSpecificMovie={props.onShowSpecificMovie}></MovieSearch>
-      <MovieList loading={props.loading} movies={props.movies} specificMovie={props.specificMovie} onShowSpecificMovie={props.onShowSpecificMovie}></MovieList>
+      {"<MovieSearch />"}
+      {"<MovieList />"}
     </div>
   );
 }
+
+// export default function MovieInfo(props) {
+//   return (
+//     <div id="movie-info">
+//       <MovieSearch onShowSpecificMovie={props.onShowSpecificMovie}></MovieSearch>
+//       <MovieList loading={props.loading} movies={props.movies} specificMovie={props.specificMovie} onShowSpecificMovie={props.onShowSpecificMovie}></MovieList>
+//     </div>
+//   );
+// }

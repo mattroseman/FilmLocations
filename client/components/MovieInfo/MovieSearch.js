@@ -1,7 +1,5 @@
 import React, { useState, useContext } from 'react';
 
-import { DomainContext } from '../Context.js';
-
 import './MovieSearch.css';
 
 // these are used to cancel previous suggestion requests when a new character is typed
@@ -10,8 +8,6 @@ let signal;
 
 
 export default function MovieSearch(props) {
-  const domain = useContext(DomainContext);
-
   const [movieTitle, setMovieTitle] = useState('');
 
   const [movieTitleSuggestions, setMovieTitleSuggestions] = useState([]);

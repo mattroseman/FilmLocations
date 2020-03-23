@@ -13,7 +13,8 @@ const initialState = {
   movieInfo: {
     showing: true,
     isLoading: false,
-    moviesShowing: [],
+    movieIdsShowing: [],
+    topMovies: {},
     search: {
       title: '',
       suggestions: []

@@ -3,7 +3,7 @@ import { hot } from 'react-hot-loader/root';
 import { useDispatch } from 'react-redux';
 import { setDomain } from '../actions';
 
-import MovieMap from './MovieMap.js';
+import MovieMap from './MovieMap/MovieMap.js';
 import MovieInfo from './MovieInfo/MovieInfo.js';
 
 import './App.css';
@@ -27,7 +27,7 @@ function App() {
       </div>
 
       <div id="movie-info-container">
-        {"<MovieInfo></MovieInfo>"}
+        <MovieInfo></MovieInfo>
       </div>
     </div>
   );

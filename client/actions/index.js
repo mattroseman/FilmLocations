@@ -15,19 +15,9 @@ export {
 } from './map-actions.js';
 
 export {
-  HIDE_MOVIE_INFO,
-  SHOW_MOVIE_INFO,
-  REQUEST_MOVIE_INFO_MOVIES_SHOWING,
-  RECEIVE_MOVIE_INFO_MOVIES_SHOWING,
-  SET_MOVIE_INFO_SEARCH_TITLE,
-  REQUEST_MOVIE_INFO_SEARCH_SUGGESTIONS,
-  RECEIVE_MOVIE_INFO_SEARCH_SUGGESTIONS,
+  SET_MOVIE_IDS_SHOWING,
+  REQUEST_TOP_MOVIES,
+  SET_TOP_MOVIES,
 
-  hideMovieInfo,
-  showMovieInfo,
-  requestMovieInfoMoviesShowing,
-  receiveMovieInfoMoviesShowing,
-  setMovieInfoSearchTitle,
-  requestMovieInfoSearchSuggestions,
-  receiveMovieInfoSearchSuggestions
+  fetchTopMovies
 } from './movie-info-actions.js';

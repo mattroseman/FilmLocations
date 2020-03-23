@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import { setMapViewport, setMapBounds, fetchMapMarkers } from '../actions';
+import { setMapViewport, setMapBounds, fetchMapMarkers } from '../../actions';
 
 import { Map, TileLayer } from 'react-leaflet';
 
@@ -16,6 +16,7 @@ export default function MovieMap() {
 
   const viewport = useSelector(state => state.map.viewport, shallowEqual);
   const bounds = useSelector(state => state.map.bounds, shallowEqual);
+  // Whenever the bounds of the map change, fetch the new map markers
   useEffect(() => {
     if (
       bounds.southWest[0] !== undefined && bounds.southWest[1] !== undefined &&

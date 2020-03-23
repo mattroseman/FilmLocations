@@ -1,3 +1,5 @@
+import { setMovieIdsShowing } from './movie-info-actions.js';
+
 /*
  * ACTION TYPES
  */
@@ -54,6 +56,13 @@ function setMapMarkers(locationClusters) {
   };
 }
 
+/*
+ * fetchMapMarkers requests all location clusters within the given bounds/zoom.
+ * Converts each cluster into a map marker, and updates the markers state.
+ * extracts a list of movieIds each cluster contains, and dispatches an action to update moviesShowing.
+ * @param bounds: {southWest: [<lat>, <lon>], northEast: [<lat>, <lon>]} an object describing the southwest and northeast bounds to get location clusters for
+ * @param zoom: the current zoom level of the map.
+ */
 export function fetchMapMarkers(bounds, zoom) {
   return async function(dispatch, getState) {
     dispatch(requestLocationClusters(bounds, zoom));
@@ -73,5 +82,11 @@ export function fetchMapMarkers(bounds, zoom) {
     }
 
     dispatch(setMapMarkers(clusters));
+
+    const movieIds = clusters.reduce((movieIds, cluster) => {
+      return [...movieIds, ...cluster.movies];
+    }, []);
+
+    dispatch(setMovieIdsShowing(movieIds));
   }
 }
