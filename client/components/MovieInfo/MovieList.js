@@ -21,12 +21,11 @@ export default function MovieList() {
   const loading = useSelector(state => state.movieInfo.isLoading);
   const topMovies = useSelector(state => state.movieInfo.topMovies, shallowEqual);
 
-  if (loading) {
-    return (
-      <div id="movie-list" className="loading">
-        loading...
-      </div>
-    )
+  /*
+   * handleLoadMoreClick is called when the user clicks the load more link at the bottom of the movie list.
+   */
+  function handleLoadMoreClick() {
+    dispatch(fetchTopMovies());
   }
 
   return (
@@ -52,6 +51,18 @@ export default function MovieList() {
           </div>
         );
       })}
+
+      {loading &&
+      <div id="movie-list-loading" className="loading">
+        loading...
+      </div>
+      }
+
+      {!loading && topMovies.length < movieIdsShowing.length &&
+      <div id="movie-list-load-more" onClick={handleLoadMoreClick}>
+        Load More Movies
+      </div>
+      }
     </div>
   );
 }

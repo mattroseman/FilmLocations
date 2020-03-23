@@ -56,3 +56,17 @@
 
 .movie-list-location-description {
 }
+
+#movie-list-loading {
+  text-align: center;
+}
+
+#movie-list-load-more {
+  text-align: center;
+
+  cursor: pointer;
+}
+#movie-list-load-more:hover {
+  color: #FFFFFF;
+  text-decoration: underline;
+}

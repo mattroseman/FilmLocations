@@ -18,7 +18,7 @@ export default function movieInfo(state=initialState.movieInfo, action) {
       return {
         ...state,
         isLoading: false,
-        topMovies: action.topMovies
+        topMovies: [...state.topMovies, ...action.topMovies]
       }
     default:
       return state;
