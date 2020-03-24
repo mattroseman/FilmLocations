@@ -1,4 +1,6 @@
 .movie-card {
+  border-bottom: #D9D9D9 1px solid;
+
   margin-bottom: 2rem;
 }
 
