@@ -6,6 +6,10 @@ export const SET_MOVIE_IDS_SHOWING = 'SET_MOVIE_IDS_SHOWING';
 export const REQUEST_TOP_MOVIES = 'REQUEST_TOP_MOVIES';
 export const UPDATE_TOP_MOVIES = 'UPDATE_TOP_MOVIES';
 
+export const SET_SEARCH_TITLE = 'SET_SEARCH_TITLE';
+export const REQUEST_SEARCH_SUGGESTIONS = 'REQUEST_SEARCH_SUGGESTIONS';
+export const SET_SEARCH_SUGGESTIONS = 'SET_SEARCH_SUGGESTIONS';
+
 /*
  * ACTION CREATORS
  */
@@ -77,4 +81,65 @@ export function fetchTopMovies() {
 
     dispatch(updateTopMovies(newTopMovies));
   };
+}
+
+export function setSearchTitle(movieTitle) {
+  return {
+    type: SET_SEARCH_TITLE,
+    movieTitle
+  }
+}
+
+function requestSearchSuggestions(moviePrefix) {
+  return {
+    type: REQUEST_SEARCH_SUGGESTIONS,
+    moviePrefix
+  }
+}
+
+export function setSearchSuggestions(suggestions) {
+  return {
+    type: SET_SEARCH_SUGGESTIONS,
+    suggestions
+  }
+}
+
+// these are used to cancel previous suggestion requests when a new character is typed
+let abortController;
+let signal;
+export function fetchSearchSuggestions(prefix) {
+  return async function(dispatch, getState) {
+    // clear suggestions if prefix is a blank string
+    if (prefix.length === 0) {
+      dispatch(setSearchSuggestions([]));
+      return;
+    }
+
+    dispatch(requestSearchSuggestions(prefix));
+
+    const { domain } = getState();
+
+    // cancel any previous request
+    if (abortController !== undefined) {
+      abortController.abort();
+    }
+    if ('AbortController' in window) {
+      abortController = new AbortController();
+      signal = abortController.signal;
+    }
+
+    let suggestions = [];
+
+    try {
+      const response = await fetch(`${domain}/movie-titles?prefix=${prefix}`, {signal});
+      suggestions = await response.json();
+    } catch (err) {
+      // AbortError's are expected
+      if (err.name !== 'AbortError') {
+        console.error(`something wen't wrong getting suggestions for prefix ${prefix}\n${err}`);
+      }
+    }
+
+    dispatch(setSearchSuggestions(suggestions));
+  }
 }

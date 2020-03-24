@@ -20,6 +20,24 @@ export default function movieInfo(state=initialState.movieInfo, action) {
         isLoading: false,
         topMovies: [...state.topMovies, ...action.topMovies]
       }
+    case actions.SET_SEARCH_TITLE:
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          title: action.movieTitle
+        }
+      }
+    case actions.REQUEST_SEARCH_SUGGESTIONS:
+      return state;
+    case actions.SET_SEARCH_SUGGESTIONS:
+      return {
+        ...state,
+        search: {
+          ...state.search,
+          suggestions: action.suggestions
+        }
+      }
     default:
       return state;
   }

@@ -1,70 +1,37 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { setSearchTitle, fetchSearchSuggestions, setSearchSuggestions } from '../../actions';
 
 import './MovieSearch.css';
 
-// these are used to cancel previous suggestion requests when a new character is typed
-let abortController;
-let signal;
+export default function MovieSearch() {
+  const dispatch = useDispatch();
 
-
-export default function MovieSearch(props) {
-  const [movieTitle, setMovieTitle] = useState('');
-
-  const [movieTitleSuggestions, setMovieTitleSuggestions] = useState([]);
+  const movieTitle = useSelector(state => state.movieInfo.search.title);
 
   async function handleMovieTitleChange(event) {
-    const newMovieTitle = event.target.value;
+    const movieTitle = event.target.value;
 
-    setMovieTitle(newMovieTitle);
-
-    // cancel any previous requests
-    if (abortController !== undefined) {
-      abortController.abort();
-    }
-    if ('AbortController' in window) {
-      abortController = new AbortController();
-      signal = abortController.signal;
-    }
-
-    if (newMovieTitle === '') {
-      setMovieTitleSuggestions([]);
-      return;
-    }
-
-    // query backend to get autocomplete suggestions for what was just typed
-    let suggestions;
-    try {
-      const response = await fetch(
-        `${domain}/movie-titles?prefix=${newMovieTitle}`,
-        {signal: signal}
-      );
-      suggestions = await response.json();
-    } catch (err) {
-      // AbortError's are expected
-      if (err.name === 'AbortError') {
-        return;
-      }
-
-      console.error(`problem getting suggestions for prefix ${newMovieTitle}\n${err}`);
-      return;
-    }
-
-    setMovieTitleSuggestions(suggestions);
-  }
-
-  async function handleSuggestionClick(suggestion) {
-    setMovieTitle(suggestion.title);
-    props.onShowSpecificMovie(suggestion.id);
-
-    setMovieTitleSuggestions([]);
+    dispatch(setSearchTitle(movieTitle));
+    dispatch(fetchSearchSuggestions(movieTitle));
   }
 
   function handleMovieTitleKeyDown(event) {
     if (event.keyCode === 13) {
-      props.onShowSpecificMovie(null, movieTitle);
+      // TODO handle specific movie in actions
+      // props.onShowSpecificMovie(null, movieTitle);
 
-      setMovieTitleSuggestions([]);
+      // setMovieTitleSuggestions([]);
     }
+  }
+
+  const suggestions = useSelector(state => state.movieInfo.search.suggestions, shallowEqual);
+
+  async function handleSuggestionClick(suggestion) {
+    dispatch(setSearchTitle(suggestion.title));
+    dispatch(setSearchSuggestions([]));
+
+    // TODO show specific movie that's the clicked on suggestion
   }
 
   return (
@@ -79,7 +46,10 @@ export default function MovieSearch(props) {
         autoComplete='off'
       />
 
-      <MovieSearchSuggestions suggestions={movieTitleSuggestions} onSuggestionClick={handleSuggestionClick}></MovieSearchSuggestions>
+      <MovieSearchSuggestions
+        suggestions={suggestions}
+        onSuggestionClick={handleSuggestionClick}
+      />
     </div>
   );
 }

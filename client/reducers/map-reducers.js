@@ -6,25 +6,19 @@ export default function map(state=initialState.map, action) {
     case actions.SET_MAP_VIEWPORT:
       return {
         ...state,
-        ...{
-          viewport: action.viewport
-        }
+        viewport: action.viewport
       };
     case actions.SET_MAP_BOUNDS:
       return {
         ...state,
-        ...{
-          bounds: action.bounds
-        }
+        bounds: action.bounds
       };
     case actions.REQUEST_LOCATION_CLUSTERS:
       return state;
     case actions.SET_MAP_MARKERS:
       return {
         ...state,
-        ...{
-          markers: action.markers
-        }
+        markers: action.markers
       };
     default:
       return state;

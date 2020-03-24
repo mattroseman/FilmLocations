@@ -18,6 +18,12 @@ export {
   SET_MOVIE_IDS_SHOWING,
   REQUEST_TOP_MOVIES,
   UPDATE_TOP_MOVIES,
+  SET_SEARCH_TITLE,
+  REQUEST_SEARCH_SUGGESTIONS,
+  SET_SEARCH_SUGGESTIONS,
 
-  fetchTopMovies
+  fetchTopMovies,
+  setSearchTitle,
+  setSearchSuggestions,
+  fetchSearchSuggestions
 } from './movie-info-actions.js';
