@@ -10,7 +10,7 @@ import movieInfo from './movie-info-reducers.js';
 const filmLocationsApp = combineReducers({
   map,
   movieInfo,
-  specificMovieShowing: (state=initialState.specificMovie, action) => {
+  specificMovie: (state=initialState.specificMovie, action) => {
     switch(action.type) {
       case actions.SHOW_SPECIFIC_MOVIE:
         return action.specificMovie;
