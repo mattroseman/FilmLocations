@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { showAllTopMovieLocations, showDefaultTopMovieLocations } from '../../actions';
+import { showAllTopMovieLocations, showDefaultTopMovieLocations, showSpecificMovie } from '../../actions';
 
 import './MovieCard.css';
 
@@ -28,6 +28,10 @@ export default function MovieCard(props) {
       );
     });
 
+  function handleShowSpecificMovie() {
+    dispatch(showSpecificMovie(movie));
+  }
+
   function handleToggleShowAllLocations() {
     if (movie.showDefaultNumLocations) {
       dispatch(showAllTopMovieLocations(movie._id));
@@ -38,7 +42,7 @@ export default function MovieCard(props) {
 
   return (
     <div className="movie-card">
-      <h3 className="movie-card-title">
+      <h3 className="movie-card-title" onClick={handleShowSpecificMovie}>
         {movie.title}
       </h3>
 

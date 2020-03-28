@@ -6,6 +6,7 @@ export {
 
   setMapViewport,
   setMapBounds,
+  setSpecificMovieMapMarkers,
   fetchMapMarkers
 } from './map-actions.js';
 

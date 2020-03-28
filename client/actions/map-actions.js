@@ -47,13 +47,34 @@ function setMapMarkers(locationClusters) {
       count: cluster.numLocations,
       coordinate: cluster.center,
       locations: cluster.locations
-    }
+    };
   }
 
   return {
     type: SET_MAP_MARKERS,
     markers: markers
   };
+}
+
+/*
+ * setSpecificMovieMarkers sets map markers for locations for a singular movie
+ */
+export function setSpecificMovieMapMarkers(movie) {
+  const markers = {};
+
+  for (const movieLocation of movie.locations) {
+    markers[movieLocation._id] = {
+      id: movieLocation._id,
+      count: 1,
+      coordinate: movieLocation.locationPoint,
+      locations: [movieLocation]
+    };
+  }
+
+  return {
+    type: SET_MAP_MARKERS,
+    markers: markers
+  }
 }
 
 /*

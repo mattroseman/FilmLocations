@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import { setMapViewport, setMapBounds, fetchMapMarkers } from '../../actions';
+import { setMapViewport, setMapBounds, fetchMapMarkers, setSpecificMovieMapMarkers } from '../../actions';
 
 import { Map, TileLayer } from 'react-leaflet';
 
@@ -16,15 +16,34 @@ export default function MovieMap() {
 
   const viewport = useSelector(state => state.map.viewport, shallowEqual);
   const bounds = useSelector(state => state.map.bounds, shallowEqual);
-  // Whenever the bounds of the map change, fetch the new map markers
+
+  const specificMovie = useSelector(state => state.specificMovie, shallowEqual);
+
   useEffect(() => {
+    // if no specific movie is showing, don't do anything
+    if (specificMovie === null) {
+      return;
+    }
+
+    dispatch(setSpecificMovieMapMarkers(specificMovie));
+  }, [specificMovie]);
+
+  // if the bounds of the map change, update the map markers
+  // or if a specific movie stops being shown, re get the map markers
+  useEffect(() => {
+    // if a specific movie is showing, don't update markers
+    if (specificMovie !== null) {
+      return;
+    }
+
     if (
       bounds.southWest[0] !== undefined && bounds.southWest[1] !== undefined &&
       bounds.northEast !== undefined && bounds.northEast[1] !== undefined
     ) {
       dispatch(fetchMapMarkers(bounds, viewport.zoom));
     }
-  }, [bounds]);
+  }, [bounds, specificMovie]);
+
 
   const markers = useSelector(state => state.map.markers, shallowEqual);
 
