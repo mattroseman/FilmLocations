@@ -5,7 +5,7 @@ import { createStore, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 
-import filmLocationsApp from './reducers/reducers.js';
+import filmLocationsApp from './reducers';
 
 import App from './components/App.js';
 

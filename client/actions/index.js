@@ -1,9 +1,4 @@
 export {
-  SET_DOMAIN,
-  setDomain
-} from './domain-actions.js';
-
-export {
   SET_MAP_VIEWPORT,
   SET_MAP_BOUNDS,
   REQUEST_LOCATION_CLUSTERS,
@@ -31,3 +26,20 @@ export {
   setSearchSuggestions,
   fetchSearchSuggestions
 } from './movie-info-actions.js';
+
+/*
+ * ACTION TYPES
+ */
+
+export const SET_DOMAIN = 'SET_DOMAIN';
+
+/*
+ * ACTION CREATORS
+ */
+
+export function setDomain(domain) {
+  return {
+    type: SET_DOMAIN,
+    domain
+  };
+}
