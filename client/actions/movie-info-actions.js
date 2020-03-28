@@ -62,10 +62,10 @@ export function fetchTopMovies() {
       return;
     }
 
-    const offset = topMovies.length;
+    const offset = Object.keys(topMovies).length;
     const size = topMoviesPageSize;
 
-    dispatch(requestTopMovies(movieIdsShowing, topMovies.length, topMoviesPageSize));
+    dispatch(requestTopMovies(movieIdsShowing, offset, size));
 
     const { domain } = getState();
 

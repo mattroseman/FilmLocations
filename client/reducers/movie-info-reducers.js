@@ -7,7 +7,7 @@ export default function movieInfo(state=initialState.movieInfo, action) {
       return {
         ...state,
         movieIdsShowing: action.movieIdsShowing,
-        topMovies: []
+        topMovies: {}
       }
     case actions.REQUEST_TOP_MOVIES:
       return {
