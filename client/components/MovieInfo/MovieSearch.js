@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { setSearchTitle, fetchSearchSuggestions, setSearchSuggestions } from '../../actions';
+import { setSearchTitle, fetchSearchSuggestions, setSearchSuggestions, fetchSpecificMovie } from '../../actions';
 
 import './MovieSearch.css';
 
@@ -18,10 +18,8 @@ export default function MovieSearch() {
 
   function handleMovieTitleKeyDown(event) {
     if (event.keyCode === 13) {
-      // TODO handle specific movie in actions
-      // props.onShowSpecificMovie(null, movieTitle);
-
-      // setMovieTitleSuggestions([]);
+      dispatch(fetchSpecificMovie('', movieTitle));
+      dispatch(setSearchSuggestions([]));
     }
   }
 

@@ -28,30 +28,25 @@ export {
   fetchSearchSuggestions
 } from './movie-info-actions.js';
 
+export {
+  REQUEST_SPECIFIC_MOVIE,
+  SET_SPECIFIC_MOVIE,
+  UNSET_SPECIFIC_MOVIE,
+
+  showSpecificMovie,
+  fetchSpecificMovie,
+  unsetSpecificMovie
+} from './specific-movie-actions.js';
+
 /*
  * ACTION TYPES
  */
 
-export const SHOW_SPECIFIC_MOVIE = 'SHOW_SPECIFIC_MOVIE';
-export const SHOW_ALL_MOVIES = 'SHOW_ALL_MOVIES';
 export const SET_DOMAIN = 'SET_DOMAIN';
 
 /*
  * ACTION CREATORS
  */
-
-export function showSpecificMovie(specificMovie) {
-  return {
-    type: SHOW_SPECIFIC_MOVIE,
-    specificMovie
-  };
-}
-
-export function showAllMovies() {
-  return {
-    type: SHOW_ALL_MOVIES
-  };
-}
 
 export function setDomain(domain) {
   return {
