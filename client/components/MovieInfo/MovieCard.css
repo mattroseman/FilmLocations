@@ -19,3 +19,7 @@
 
 .movie-card-location-description {
 }
+
+.movie-card-toggle-show-all-locations {
+  cursor: pointer;
+}

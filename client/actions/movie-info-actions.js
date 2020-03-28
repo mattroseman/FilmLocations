@@ -6,6 +6,9 @@ export const SET_MOVIE_IDS_SHOWING = 'SET_MOVIE_IDS_SHOWING';
 export const REQUEST_TOP_MOVIES = 'REQUEST_TOP_MOVIES';
 export const UPDATE_TOP_MOVIES = 'UPDATE_TOP_MOVIES';
 
+export const SHOW_ALL_TOP_MOVIE_LOCATIONS = 'SHOW_ALL_TOP_MOVIE_LOCATIONS';
+export const SHOW_DEFAULT_TOP_MOVIE_LOCATIONS = 'SHOW_DEFAULT_TOP_MOVIE_LOCATIONS';
+
 export const SET_SEARCH_TITLE = 'SET_SEARCH_TITLE';
 export const REQUEST_SEARCH_SUGGESTIONS = 'REQUEST_SEARCH_SUGGESTIONS';
 export const SET_SEARCH_SUGGESTIONS = 'SET_SEARCH_SUGGESTIONS';
@@ -31,6 +34,14 @@ function requestTopMovies(movieIds, offset, size) {
 }
 
 function updateTopMovies(topMovies) {
+  const topMoviesObj = {};
+
+  for (const topMovie of topMovies) {
+    topMoviesObj[topMovie._id] = {
+      ...topMovie
+    };
+  }
+
   return {
     type: UPDATE_TOP_MOVIES,
     topMovies: topMovies
@@ -80,6 +91,20 @@ export function fetchTopMovies() {
     }
 
     dispatch(updateTopMovies(newTopMovies));
+  };
+}
+
+export function showAllTopMovieLocations(topMovieId) {
+  return {
+    type: SHOW_ALL_TOP_MOVIE_LOCATIONS,
+    topMovieId
+  };
+}
+
+export function showDefaultTopMovieLocations(topMovieId) {
+  return {
+    type: SHOW_DEFAULT_TOP_MOVIE_LOCATIONS,
+    topMovieId
   };
 }
 

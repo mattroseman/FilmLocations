@@ -14,11 +14,48 @@ export default function movieInfo(state=initialState.movieInfo, action) {
         ...state,
         isLoading: true
       };
-    case actions.UPDATE_TOP_MOVIES:
+    case actions.UPDATE_TOP_MOVIES: {
+      const topMoviesObj = {};
+
+      // convert the array of topMovies to an object
+      // and include the numLocationsShowing property
+      for (const topMovie of action.topMovies) {
+        topMoviesObj[topMovie._id] = {
+          ...topMovie,
+          showDefaultNumLocations: true
+        }
+      }
+
       return {
         ...state,
         isLoading: false,
-        topMovies: [...state.topMovies, ...action.topMovies]
+        topMovies: {
+          ...state.topMovies,
+          ...topMoviesObj
+        }
+      }
+    }
+    case actions.SHOW_ALL_TOP_MOVIE_LOCATIONS:
+      return {
+        ...state,
+        topMovies: {
+          ...state.topMovies,
+          [action.topMovieId]: {
+            ...state.topMovies[action.topMovieId],
+            showDefaultNumLocations: false
+          }
+        }
+      }
+    case actions.SHOW_DEFAULT_TOP_MOVIE_LOCATIONS:
+      return {
+        ...state,
+        topMovies: {
+          ...state.topMovies,
+          [action.topMovieId]: {
+            ...state.topMovies[action.topMovieId],
+            showDefaultNumLocations: true
+          }
+        }
       }
     case actions.SET_SEARCH_TITLE:
       return {

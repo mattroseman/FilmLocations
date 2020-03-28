@@ -32,8 +32,8 @@ export default function MovieList() {
 
   return (
     <div id="movie-list">
-      {topMovies.map((movie) => {
-        return <MovieCard key={movie._id} movie={movie} />;
+      {Object.keys(topMovies).map((movieId) => {
+        return <MovieCard key={movieId} movieId={movieId} />;
       })}
 
       {loading &&

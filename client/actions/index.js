@@ -18,11 +18,15 @@ export {
   SET_MOVIE_IDS_SHOWING,
   REQUEST_TOP_MOVIES,
   UPDATE_TOP_MOVIES,
+  SHOW_ALL_TOP_MOVIE_LOCATIONS,
+  SHOW_DEFAULT_TOP_MOVIE_LOCATIONS,
   SET_SEARCH_TITLE,
   REQUEST_SEARCH_SUGGESTIONS,
   SET_SEARCH_SUGGESTIONS,
 
   fetchTopMovies,
+  showAllTopMovieLocations,
+  showDefaultTopMovieLocations,
   setSearchTitle,
   setSearchSuggestions,
   fetchSearchSuggestions
