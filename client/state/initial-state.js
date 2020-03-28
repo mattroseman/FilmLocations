@@ -22,6 +22,7 @@ const initialState = {
       suggestions: []
     }
   },
+  specificMovie: null,
   domain: ''
 };
 

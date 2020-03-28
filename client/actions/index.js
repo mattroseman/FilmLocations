@@ -31,11 +31,26 @@ export {
  * ACTION TYPES
  */
 
+export const SHOW_SPECIFIC_MOVIE = 'SHOW_SPECIFIC_MOVIE';
+export const SHOW_ALL_MOVIES = 'SHOW_ALL_MOVIES';
 export const SET_DOMAIN = 'SET_DOMAIN';
 
 /*
  * ACTION CREATORS
  */
+
+export function showSpecificMovie(specificMovie) {
+  return {
+    type: SHOW_SPECIFIC_MOVIE,
+    specificMovie
+  };
+}
+
+export function showAllMovies() {
+  return {
+    type: SHOW_ALL_MOVIES
+  };
+}
 
 export function setDomain(domain) {
   return {
