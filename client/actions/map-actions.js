@@ -8,6 +8,8 @@ export const SET_MAP_VIEWPORT = 'SET_MAP_VIEWPORT';
 export const SET_MAP_BOUNDS = 'SET_MAP_BOUNDS';
 export const REQUEST_LOCATION_CLUSTERS = 'REQUEST_LOCATION_CLUSTERS';
 export const SET_MAP_MARKERS = 'SET_MAP_MARKERS';
+export const HIGHLIGHT_MARKER = 'HIGHLIGHT_MARKER';
+export const UNHIGHLIGHT_MARKER = 'UNHIGHLIGHT_MARKER';
 
 /*
  * ACTION CREATORS
@@ -110,4 +112,17 @@ export function fetchMapMarkers(bounds, zoom) {
 
     dispatch(setMovieIdsShowing(movieIds));
   }
+}
+
+export function highlightMarker(locationId) {
+  return {
+    type: HIGHLIGHT_MARKER,
+    locationId
+  };
+}
+
+export function unhighlightMarker() {
+  return {
+    type: UNHIGHLIGHT_MARKER,
+  };
 }

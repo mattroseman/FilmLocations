@@ -1,6 +1,12 @@
 import React from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { showAllTopMovieLocations, showDefaultTopMovieLocations, showSpecificMovie, hideMovieInfo } from '../../actions';
+import {
+  showAllTopMovieLocations,
+  showDefaultTopMovieLocations,
+  showSpecificMovie,
+  hideMovieInfo,
+  highlightMarker
+} from '../../actions';
 
 import './MovieCard.css';
 
@@ -18,7 +24,7 @@ export default function MovieCard(props) {
     .slice(0, movie.showDefaultNumLocations ? defaultNumLocationsToShow : -1)
     .map((movieLocation) => {
       return (
-        <li key={movieLocation.id} className='movie-card-location'>
+        <li key={movieLocation.id} className='movie-card-location' onClick={() => handleMovieLocationClick(movieLocation)}>
           <h4 className='movie-card-location-name'>{movieLocation.locationString}</h4>
 
           <small className='movie-card-location-description'>
@@ -43,6 +49,10 @@ export default function MovieCard(props) {
     } else {
       dispatch(showDefaultTopMovieLocations(movie.id));
     }
+  }
+
+  function handleMovieLocationClick(movieLocation) {
+    dispatch(highlightMarker(movieLocation.id));
   }
 
   return (

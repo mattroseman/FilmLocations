@@ -20,6 +20,21 @@ export default function map(state=initialState.map, action) {
         ...state,
         markers: action.markers
       };
+    case actions.HIGHLIGHT_MARKER:
+      // get the marker that has the given id
+      for (const marker of Object.values(state.markers)) {
+        for (const markerLocation of marker.locations) {
+          if (markerLocation.id === action.locationId) {
+            return {
+              ...state,
+              highlightedMarker: marker.id
+            };
+          }
+        }
+      }
+
+      // if no marker is found that has the given location id, don't change anything
+      return state;
     default:
       return state;
   }

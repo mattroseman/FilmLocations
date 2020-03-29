@@ -8,7 +8,8 @@ const initialState = {
       southWest: [undefined, undefined],
       northEast: [undefined, undefined]
     },
-    markers: {}
+    markers: {},
+    highlightedMarker: null
   },
   movieInfo: {
     showing: true,

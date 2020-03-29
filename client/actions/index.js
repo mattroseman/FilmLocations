@@ -3,11 +3,15 @@ export {
   SET_MAP_BOUNDS,
   REQUEST_LOCATION_CLUSTERS,
   SET_MAP_MARKERS,
+  HIGHLIGHT_MARKER,
+  UNHIGHLIGHT_MARKER,
 
   setMapViewport,
   setMapBounds,
   setSpecificMovieMapMarkers,
-  fetchMapMarkers
+  fetchMapMarkers,
+  highlightMarker,
+  unhighlightMarker
 } from './map-actions.js';
 
 export {
@@ -31,7 +35,7 @@ export {
   setSearchSuggestions,
   fetchSearchSuggestions,
   showMovieInfo,
-  hideMovieInfo
+  hideMovieInfo,
 } from './movie-info-actions.js';
 
 export {
