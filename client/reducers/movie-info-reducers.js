@@ -4,20 +4,11 @@ import initialState from '../state/initial-state.js';
 export default function movieInfo(state=initialState.movieInfo, action) {
   switch(action.type) {
     case actions.SET_MOVIE_IDS_SHOWING: {
-      const newTopMovies = {...state.topMovies};
-
-      // remove any top movies that aren't in the new movie ids showing array
-      for (const topMovieId of Object.keys(newTopMovies)) {
-        if (action.movieIdsShowing.indexOf(topMovieId) < 0) {
-          delete newTopMovies[topMovieId];
-        }
-      }
-
       return {
         ...state,
         movieIdsShowing: action.movieIdsShowing,
-        topMovies: newTopMovies
-      }
+        topMovies: []
+      };
     }
     case actions.REQUEST_TOP_MOVIES:
       return {

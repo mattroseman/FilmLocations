@@ -48,7 +48,8 @@ function setMapMarkers(locationClusters) {
       id: cluster.id,
       count: cluster.numLocations,
       coordinate: cluster.center,
-      locations: cluster.locations
+      locations: cluster.locations,
+      highlighted: false
     };
   }
 
@@ -121,8 +122,9 @@ export function highlightMarker(locationId) {
   };
 }
 
-export function unhighlightMarker() {
+export function unhighlightMarker(locationId) {
   return {
     type: UNHIGHLIGHT_MARKER,
+    locationId
   };
 }

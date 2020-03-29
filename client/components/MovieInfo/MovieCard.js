@@ -5,7 +5,8 @@ import {
   showDefaultTopMovieLocations,
   showSpecificMovie,
   hideMovieInfo,
-  highlightMarker
+  highlightMarker,
+  unhighlightMarker
 } from '../../actions';
 
 import './MovieCard.css';
@@ -24,7 +25,13 @@ export default function MovieCard(props) {
     .slice(0, movie.showDefaultNumLocations ? defaultNumLocationsToShow : -1)
     .map((movieLocation) => {
       return (
-        <li key={movieLocation.id} className='movie-card-location' onClick={() => handleMovieLocationClick(movieLocation)}>
+        <li
+          key={movieLocation.id}
+          className='movie-card-location'
+          onClick={() => handleMovieLocationClick(movieLocation)}
+          onMouseEnter={() => dispatch(highlightMarker(movieLocation.id))}
+          onMouseLeave={() => dispatch(unhighlightMarker(movieLocation.id))}
+        >
           <h4 className='movie-card-location-name'>{movieLocation.locationString}</h4>
 
           <small className='movie-card-location-description'>
@@ -52,7 +59,7 @@ export default function MovieCard(props) {
   }
 
   function handleMovieLocationClick(movieLocation) {
-    dispatch(highlightMarker(movieLocation.id));
+    // dispatch(highlightMarker(movieLocation.id));
   }
 
   return (
