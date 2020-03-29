@@ -20,7 +20,7 @@
 }
 #movie-list::-webkit-scrollbar {
   background-color: #212121;
-  width: .6rem;
+  width: .4rem;
 }
 #movie-list::-webkit-scrollbar-thumb {
   background-color: #D9D9D9;
