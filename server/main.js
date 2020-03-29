@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const chalk = require('chalk');
+const escapeStringRegexp = require('escape-string-regexp');
 
 const connectToDatabase = require('../lib/db.js');
 const { Location, Movie } = require('../lib/models.js');
@@ -77,8 +78,9 @@ app.get('/film-clusters', async (req, res, next) => {
 });
 
 app.get('/movie', async (req, res, next) => {
+  // TODO sanitize this data
   const movieId = req.query.id;
-  const movieTitle = req.query.title;
+  let movieTitle = req.query.title;
 
   let query;
   if (movieId && movieId !== 'null') {
@@ -86,6 +88,8 @@ app.get('/movie', async (req, res, next) => {
     query = {_id: movieId};
   } else if (movieTitle && movieTitle !== 'null') {
     console.log(`getting movie info for movie with title: ${movieTitle}`);
+    movieTitle = movieTitle.replace(/\(.*?\)$/, '').trim();
+    movieTitle = escapeStringRegexp(movieTitle);
     query = {title: {$regex: new RegExp(`^${movieTitle}$`, 'i')}};
   } else {
     // missing required url parameters
@@ -95,20 +99,22 @@ app.get('/movie', async (req, res, next) => {
 
   let movie;
   try {
-    movie = await Movie.findOne(query).populate('locations.locationId');
+    movie = await Movie.find(query).sort('-numVotes').limit(1).populate('locations.locationId');
   } catch (err) {
     console.error(chalk.red(`Something wen't wrong getting movie with title: ${movieTitle} or id: ${movieId}\n${err}`));
     next(err);
     return;
   }
 
-  if (!movie) {
+  if (movie.length === 0) {
     res.send({
       success: false,
       movie: null
     });
     return;
   }
+
+  movie = movie[0];
 
   movie = {
     id: movie._id,
