@@ -1,12 +1,14 @@
 import React from 'react';
 
-import { CircleMarker, Popup } from 'react-leaflet';
+import { Marker, Popup } from 'react-leaflet';
+
+import './ClusterMarker.css';
 
 const CIRCLE_MARKER_RADII = [
-  { max: 10, radius: 20 },
-  { max: 30, radius: 25 },
-  { max: 100, radius: 30 },
-  { max: 500, radius: 40 },
+  { max: 10, radius: 25 },
+  { max: 30, radius: 30 },
+  { max: 100, radius: 40 },
+  { max: 500, radius: 50 },
   { max: 1000, radius: 60 },
   { max: Infinity, radius: 80 }
 ];
@@ -29,15 +31,17 @@ function getCircleMarkerRadius(numLocations) {
 
 function ClusterMarker(props) {
   return (
-    <CircleMarker
-      center={props.marker.coordinate}
-      radius={getCircleMarkerRadius(props.marker.count)}
-      color={props.marker.highlighted ? "red" : "blue"}
+    <Marker
+      position={props.marker.coordinate}
+      icon={L.divIcon({
+        className: props.marker.highlighted ? 'cluster-marker-icon highlighted' : 'cluster-marker-icon',
+        iconSize: 2 * getCircleMarkerRadius(props.marker.count)
+      })}
     >
       <Popup>
         {props.marker.count}
       </Popup>
-    </CircleMarker>
+    </Marker>
   );
 }
 

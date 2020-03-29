@@ -1,0 +1,10 @@
+.cluster-marker-icon {
+  border: 2px solid #0068CF;
+  border-radius: 100%;
+
+  background: #0068CF70;
+}
+.cluster-marker-icon.highlighted {
+  border-color: #E74D8E;
+  background: #E74D8E70;
+}
