@@ -12,10 +12,9 @@ export const UNSET_SPECIFIC_MOVIE = 'UNSET_SPECIFIC_MOVIE';
  * ACTION CREATORS
  */
 
-function requestSpecificMovie(movieId, movieTitle) {
+function requestSpecificMovie(movieTitle) {
   return {
     type: REQUEST_SPECIFIC_MOVIE,
-    movieId,
     movieTitle
   };
 }
@@ -34,26 +33,34 @@ function setSpecificMovie(movie) {
 export function showSpecificMovie(movie) {
   return async function(dispatch) {
     dispatch(setSpecificMovie(movie));
-    dispatch(setMovieIdsShowing([movie._id]));
+    dispatch(setMovieIdsShowing([movie.id]));
   }
 }
 
 /*
  * fetchSpecificMovie requests for movie info for the given id.
  */
-export function fetchSpecificMovie(movieId='', movieTitle='') {
+export function fetchSpecificMovie(movieTitle='') {
   return async function(dispatch, getState) {
-    dispatch(requestSpecificMovie(movieId, movieTitle));
+    dispatch(requestSpecificMovie(movieTitle));
 
     const { domain } = getState();
 
     let movie = null;
 
     try {
-      const response = await fetch(`${domain}/movie?id=${movieId}&title=${movieTitle}`);
-      movie = await response.json();
+      const response = await fetch(`${domain}/movie?title=${movieTitle}`);
+      const body = await response.json();
+
+      if (!body.success) {
+        console.error(`something wen't wrong getting movie info for ${movieTitle}\n${body}`);
+        return;
+      }
+
+      movie = body.movie;
     } catch (err) {
-      console.error(`something wen't wrong getting movie info for movie with id: ${movieId}\n${err}`);
+      console.error(`something wen't wrong getting movie info for "${movieTitle}"\n${err}`);
+      return;
     }
 
     dispatch(showSpecificMovie(movie));

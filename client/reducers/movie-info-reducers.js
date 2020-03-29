@@ -30,7 +30,7 @@ export default function movieInfo(state=initialState.movieInfo, action) {
       // convert the array of topMovies to an object
       // and include the numLocationsShowing property
       for (const topMovie of action.topMovies) {
-        topMoviesObj[topMovie._id] = {
+        topMoviesObj[topMovie.id] = {
           ...topMovie,
           showDefaultNumLocations: true
         }

@@ -34,14 +34,6 @@ function requestTopMovies(movieIds, offset, size) {
 }
 
 function updateTopMovies(topMovies) {
-  const topMoviesObj = {};
-
-  for (const topMovie of topMovies) {
-    topMoviesObj[topMovie._id] = {
-      ...topMovie
-    };
-  }
-
   return {
     type: UPDATE_TOP_MOVIES,
     topMovies: topMovies

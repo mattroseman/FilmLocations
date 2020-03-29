@@ -18,7 +18,7 @@ export default function MovieCard(props) {
     .slice(0, movie.showDefaultNumLocations ? defaultNumLocationsToShow : -1)
     .map((movieLocation) => {
       return (
-        <li key={movieLocation._id} className='movie-card-location'>
+        <li key={movieLocation.id} className='movie-card-location'>
           <h4 className='movie-card-location-name'>{movieLocation.locationString}</h4>
 
           <small className='movie-card-location-description'>
@@ -34,9 +34,9 @@ export default function MovieCard(props) {
 
   function handleToggleShowAllLocations() {
     if (movie.showDefaultNumLocations) {
-      dispatch(showAllTopMovieLocations(movie._id));
+      dispatch(showAllTopMovieLocations(movie.id));
     } else {
-      dispatch(showDefaultTopMovieLocations(movie._id));
+      dispatch(showDefaultTopMovieLocations(movie.id));
     }
   }
 
@@ -66,20 +66,20 @@ function sortLocations(locations, bounds) {
   // sort the given locations by those in the map bounds.
   // if two locations are both in bounds, sort by length of their descriptions
   return locations.sort((a, b) => {
-    if (a.locationPoint !== undefined && b.locationPoint === undefined) {
+    if (a.point !== undefined && b.point === undefined) {
       return -1;
-    } else if (b.locationPoint !== undefined && a.locationPoint === undefined) {
+    } else if (b.point !== undefined && a.point === undefined) {
       return 1;
     }
 
-    if (a.locationPoint !== undefined && b.locationPoint !== undefined) {
+    if (a.point !== undefined && b.point !== undefined) {
       const aInBounds = (
-        a.locationPoint[0] > bounds.southWest[0] && a.locationPoint[0] < bounds.northEast[0] &&
-        a.locationPoint[1] > bounds.southWest[1] && a.locationPoint[0] < bounds.northEast[1]
+        a.point[0] > bounds.southWest[0] && a.point[0] < bounds.northEast[0] &&
+        a.point[1] > bounds.southWest[1] && a.point[0] < bounds.northEast[1]
       );
       const bInBounds = (
-        b.locationPoint[0] > bounds.southWest[0] && b.locationPoint[0] < bounds.northEast[0] &&
-        b.locationPoint[1] > bounds.southWest[1] && b.locationPoint[0] < bounds.northEast[1]
+        b.point[0] > bounds.southWest[0] && b.point[0] < bounds.northEast[0] &&
+        b.point[1] > bounds.southWest[1] && b.point[0] < bounds.northEast[1]
       );
 
       if (aInBounds && !bInBounds) {

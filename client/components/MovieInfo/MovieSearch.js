@@ -18,8 +18,9 @@ export default function MovieSearch() {
 
   function handleMovieTitleKeyDown(event) {
     if (event.keyCode === 13) {
-      dispatch(fetchSpecificMovie('', movieTitle));
       dispatch(setSearchSuggestions([]));
+
+      dispatch(fetchSpecificMovie(movieTitle));
     }
   }
 
@@ -29,7 +30,7 @@ export default function MovieSearch() {
     dispatch(setSearchTitle(suggestion.title));
     dispatch(setSearchSuggestions([]));
 
-    // TODO show specific movie that's the clicked on suggestion
+    dispatch(fetchSpecificMovie(suggestion.title));
   }
 
   return (

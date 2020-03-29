@@ -110,20 +110,8 @@ app.get('/movie', async (req, res, next) => {
     return;
   }
 
-  /*
-  console.log(movie.locations.map((location) => {
-    return {
-      id: location.locationId._id,
-      description: location.description,
-      locationString: location.locationId.locationString,
-      geohash: location.locationId.geohash,
-      point: location.locationId.locationPoint !== undefined ? location.locationId.locationPoint.coordinates.reverse() : null
-    }
-  }));
-  */
-
   movie = {
-    _id: movie._id,
+    id: movie._id,
     title: movie.title,
     year: movie.year,
     locations: movie.locations.reduce((uniqueLocations, location) => {

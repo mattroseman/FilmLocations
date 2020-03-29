@@ -63,10 +63,10 @@ export function setSpecificMovieMapMarkers(movie) {
   const markers = {};
 
   for (const movieLocation of movie.locations) {
-    markers[movieLocation._id] = {
-      id: movieLocation._id,
+    markers[movieLocation.id] = {
+      id: movieLocation.id,
       count: 1,
-      coordinate: movieLocation.locationPoint,
+      coordinate: movieLocation.point,
       locations: [movieLocation]
     };
   }
