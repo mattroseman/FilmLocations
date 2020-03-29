@@ -90,20 +90,22 @@ function sortLocations(locations, bounds) {
   // sort the given locations by those in the map bounds.
   // if two locations are both in bounds, sort by length of their descriptions
   return locations.sort((a, b) => {
+    // if a location has a point, and b does not, sort a before b and vice versa
     if (a.point !== undefined && b.point === undefined) {
       return -1;
     } else if (b.point !== undefined && a.point === undefined) {
       return 1;
     }
 
+    // if both locations have coordinates
     if (a.point !== undefined && b.point !== undefined) {
       const aInBounds = (
         a.point[0] > bounds.southWest[0] && a.point[0] < bounds.northEast[0] &&
-        a.point[1] > bounds.southWest[1] && a.point[0] < bounds.northEast[1]
+        a.point[1] > bounds.southWest[1] && a.point[1] < bounds.northEast[1]
       );
       const bInBounds = (
         b.point[0] > bounds.southWest[0] && b.point[0] < bounds.northEast[0] &&
-        b.point[1] > bounds.southWest[1] && b.point[0] < bounds.northEast[1]
+        b.point[1] > bounds.southWest[1] && b.point[1] < bounds.northEast[1]
       );
 
       if (aInBounds && !bInBounds) {
