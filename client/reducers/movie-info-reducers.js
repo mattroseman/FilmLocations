@@ -31,8 +31,8 @@ export default function movieInfo(state=initialState.movieInfo, action) {
       // and include the numLocationsShowing property
       for (const topMovie of action.topMovies) {
         topMoviesObj[topMovie.id] = {
-          ...topMovie,
-          showDefaultNumLocations: true
+          showDefaultNumLocations: true,  // this property is the default, but can be overwritten if topMovie has something set
+          ...topMovie
         }
       }
 
