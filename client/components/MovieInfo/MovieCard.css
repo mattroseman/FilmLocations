@@ -1,4 +1,9 @@
 .movie-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+
   /* border-bottom: #D9D9D9 1px solid; */
 
   margin-bottom: 2rem;
@@ -8,6 +13,10 @@
   color: #FFFFFF;
 
   cursor: pointer;
+}
+
+.movie-card-locations {
+  margin: 0rem;
 }
 
 .movie-card-location {
@@ -21,5 +30,22 @@
 }
 
 .movie-card-toggle-show-all-locations {
+  align-self: center;
+
+  border: 1px solid;
+  border-radius: 2rem;
+
+  margin-top: 2rem;
+
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  text-align: center;
+
   cursor: pointer;
+}
+.movie-card-toggle-show-all-locations:hover {
+  color: #FFFFFF;
 }

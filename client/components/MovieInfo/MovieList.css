@@ -1,6 +1,6 @@
 #movie-list {
   flex: 1;
-  box-shadow: inset 8px 0px 6px 0px #111111;
+  /* box-shadow: inset 8px 0px 6px 0px #111111; */
 
   box-sizing: border-box;
 
@@ -29,7 +29,7 @@
 }
 @media only screen and (max-width: 575px) {
   #movie-list {
-    box-shadow: inset 0px 8px 6px 0px #111111;
+    /* box-shadow: inset 0px 8px 6px 0px #111111; */
   }
 }
 
