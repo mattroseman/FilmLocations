@@ -1,0 +1,9 @@
+.location-marker-icon > i {
+  color: #0068CF;
+
+  margin-top: -36px;
+  padding: 1px;
+}
+.location-marker-icon.highlighted > i {
+  color: #E74D8E;
+}

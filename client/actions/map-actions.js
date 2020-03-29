@@ -99,7 +99,9 @@ export function fetchMapMarkers(bounds, zoom) {
     let clusters = [];
 
     try {
-      const response = await fetch(`${domain}/film-clusters?swlat=${southWest[0]}&swlon=${southWest[1]}&nelat=${northEast[0]}&nelon=${northEast[1]}&zoom=${zoom}`)
+      const response = await fetch(
+        `${domain}/film-clusters?swlat=${southWest[0]}&swlon=${southWest[1]}&nelat=${northEast[0]}&nelon=${northEast[1]}&zoom=${zoom}`
+      );
       clusters = await response.json();
     } catch (err) {
       console.error(`something wen't wrong getting clusters for current bounds: ${bounds} at zoom: ${zoom}\n${err}`);
