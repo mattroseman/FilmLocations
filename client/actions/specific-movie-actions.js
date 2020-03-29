@@ -1,4 +1,4 @@
-import { setMovieIdsShowing } from './movie-info-actions.js';
+import { setMovieIdsShowing, updateTopMovies } from './movie-info-actions.js';
 
 /*
  * ACTION TYPES
@@ -28,13 +28,15 @@ function setSpecificMovie(movie) {
 
 /*
  * showSpecificMovie dispatches actions to set the specific movie to the given movie,
- * and an action to update movieIds showing
+ * and actions to update movie info states
  */
 export function showSpecificMovie(movie) {
   return async function(dispatch) {
     dispatch(setSpecificMovie(movie));
+
     dispatch(setMovieIdsShowing([movie.id]));
-  }
+    dispatch(updateTopMovies([movie]));
+  };
 }
 
 /*

@@ -20,6 +20,8 @@ export {
   REQUEST_SEARCH_SUGGESTIONS,
   SET_SEARCH_SUGGESTIONS,
 
+  setMovieIdsShowing,
+  updateTopMovies,
   fetchTopMovies,
   showAllTopMovieLocations,
   showDefaultTopMovieLocations,

@@ -33,10 +33,10 @@ function requestTopMovies(movieIds, offset, size) {
   }
 }
 
-function updateTopMovies(topMovies) {
+export function updateTopMovies(topMovies) {
   return {
     type: UPDATE_TOP_MOVIES,
-    topMovies: topMovies
+    topMovies
   };
 }
 
