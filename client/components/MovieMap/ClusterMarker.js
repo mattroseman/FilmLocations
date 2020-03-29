@@ -32,6 +32,7 @@ function ClusterMarker(props) {
     <CircleMarker
       center={props.marker.coordinate}
       radius={getCircleMarkerRadius(props.marker.count)}
+      color={props.marker.highlighted ? "red" : "blue"}
     >
       <Popup>
         {props.marker.count}

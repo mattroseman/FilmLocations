@@ -1,6 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import { setMapViewport, setMapBounds, fetchMapMarkers, setSpecificMovieMapMarkers } from '../../actions';
+import {
+  setMapViewport,
+  setMapBounds,
+  fetchMapMarkers,
+  setSpecificMovieMapMarkers
+} from '../../actions';
 
 import { Map, TileLayer } from 'react-leaflet';
 
@@ -46,7 +51,14 @@ export default function MovieMap() {
   }, [bounds, specificMovie]);
 
 
-  const markers = useSelector(state => state.map.markers, shallowEqual);
+  let markers = useSelector(state => state.map.markers, shallowEqual);
+  const highlightedMarker = useSelector(state => state.map.highlightedMarker);
+  // set the markers highlighted values
+  if (highlightedMarker) {
+    for (const markerId of Object.keys(markers)) {
+      markers[markerId].highlighted = markerId === highlightedMarker;
+    }
+  }
 
   // if a specific movie is showing, when markers change fit the map to show the new markers
   useEffect(() => {
