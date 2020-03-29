@@ -85,6 +85,16 @@ export default function movieInfo(state=initialState.movieInfo, action) {
           suggestions: action.suggestions
         }
       }
+    case actions.SHOW_MOVIE_INFO:
+      return {
+        ...state,
+        showing: true
+      }
+    case actions.HIDE_MOVIE_INFO:
+      return {
+        ...state,
+        showing: false
+      }
     default:
       return state;
   }

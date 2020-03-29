@@ -21,8 +21,8 @@ html, body, #root {
 #toggle-movie-info-btn {
   position: absolute;
   z-index: 2000; /* to appear over leaflet map */
-  top: 10px;
-  left: -155px;
+  top: 1.5rem;
+  right: 3rem;
 
   display: flex;
   flex-direction: row;
@@ -49,26 +49,24 @@ html, body, #root {
 }
 @media only screen and (max-width: 575px) {
   #toggle-movie-info-btn {
-    top: 10px;
-    left: -125px;
+    top: 1.5rem;
+    right: 2rem;
   }
 
-  #toggle-movie-info-btn.showing {
-    position: static;
-
-    background-color: #202020;
+  #toggle-movie-info-btn.hide-movie-info {
+    display: none;
   }
 }
 
 #map-container {
+  position: relative;
+
   flex: 8;
 
   margin: 0rem;
 }
 
 #movie-info-container {
-  position: relative;
-
   flex: 2;
 
   margin: 0rem;
@@ -76,18 +74,19 @@ html, body, #root {
   height: 100%;
 }
 #movie-info-container.hidden {
+  display: none;
+
   flex: 0;
-  width: 0rem;
 }
 @media only screen and (max-width: 575px) {
   #movie-info-container {
-    position: fixed;
-    z-index: 3000;
+    position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
+    z-index: 2000;
 
     height: 100%;
-    width: 100%;
+    width: 90%;
   }
 }
 

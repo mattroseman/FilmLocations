@@ -22,14 +22,14 @@
   background-color: #212121;
   width: .6rem;
 }
-
 #movie-list::-webkit-scrollbar-thumb {
   background-color: #D9D9D9;
   border-radius: 1rem;
 }
 @media only screen and (max-width: 575px) {
   #movie-list {
-    /* box-shadow: inset 0px 8px 6px 0px #111111; */
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
 

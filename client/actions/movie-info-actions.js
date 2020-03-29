@@ -13,6 +13,9 @@ export const SET_SEARCH_TITLE = 'SET_SEARCH_TITLE';
 export const REQUEST_SEARCH_SUGGESTIONS = 'REQUEST_SEARCH_SUGGESTIONS';
 export const SET_SEARCH_SUGGESTIONS = 'SET_SEARCH_SUGGESTIONS';
 
+export const SHOW_MOVIE_INFO = 'SHOW_MOVIE_INFO';
+export const HIDE_MOVIE_INFO = 'HIDE_MOVIE_INFO';
+
 /*
  * ACTION CREATORS
  */
@@ -159,4 +162,16 @@ export function fetchSearchSuggestions(prefix) {
 
     dispatch(setSearchSuggestions(suggestions));
   }
+}
+
+export function showMovieInfo() {
+  return {
+    type: SHOW_MOVIE_INFO
+  };
+}
+
+export function hideMovieInfo() {
+  return {
+    type: HIDE_MOVIE_INFO
+  };
 }

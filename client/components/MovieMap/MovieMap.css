@@ -4,3 +4,8 @@
 
   background: #333333;
 }
+
+.leaflet-control-attribution {
+  overflow: hidden;
+  white-space: nowrap;
+}

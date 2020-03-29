@@ -19,6 +19,8 @@ export {
   SET_SEARCH_TITLE,
   REQUEST_SEARCH_SUGGESTIONS,
   SET_SEARCH_SUGGESTIONS,
+  SHOW_MOVIE_INFO,
+  HIDE_MOVIE_INFO,
 
   setMovieIdsShowing,
   updateTopMovies,
@@ -27,7 +29,9 @@ export {
   showDefaultTopMovieLocations,
   setSearchTitle,
   setSearchSuggestions,
-  fetchSearchSuggestions
+  fetchSearchSuggestions,
+  showMovieInfo,
+  hideMovieInfo
 } from './movie-info-actions.js';
 
 export {

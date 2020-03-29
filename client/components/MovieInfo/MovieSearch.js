@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { setSearchTitle, fetchSearchSuggestions, setSearchSuggestions, fetchSpecificMovie } from '../../actions';
+import { setSearchTitle, fetchSearchSuggestions, setSearchSuggestions, fetchSpecificMovie, hideMovieInfo } from '../../actions';
 
 import './MovieSearch.css';
 
@@ -21,6 +21,11 @@ export default function MovieSearch() {
       dispatch(setSearchSuggestions([]));
 
       dispatch(fetchSpecificMovie(movieTitle));
+
+      // hide the movie info panel on mobile
+      if (window.screen.width < 576) {
+        dispatch(hideMovieInfo());
+      }
     }
   }
 
@@ -31,6 +36,11 @@ export default function MovieSearch() {
     dispatch(setSearchSuggestions([]));
 
     dispatch(fetchSpecificMovie(suggestion.title));
+
+    // hide the movie info panel on mobile
+    if (window.screen.width < 576) {
+      dispatch(hideMovieInfo());
+    }
   }
 
   return (

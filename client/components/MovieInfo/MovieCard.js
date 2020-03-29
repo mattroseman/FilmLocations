@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { showAllTopMovieLocations, showDefaultTopMovieLocations, showSpecificMovie } from '../../actions';
+import { showAllTopMovieLocations, showDefaultTopMovieLocations, showSpecificMovie, hideMovieInfo } from '../../actions';
 
 import './MovieCard.css';
 
@@ -30,6 +30,11 @@ export default function MovieCard(props) {
 
   function handleShowSpecificMovie() {
     dispatch(showSpecificMovie(movie));
+
+    // hide the movie info panel on mobile
+    if (window.screen.width < 576) {
+      dispatch(hideMovieInfo());
+    }
   }
 
   function handleToggleShowAllLocations() {
