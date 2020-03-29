@@ -43,7 +43,7 @@ export default function MovieList() {
       </div>
       }
 
-      {!loading && topMovies.length < movieIdsShowing.length &&
+      {!loading && Object.keys(topMovies).length < movieIdsShowing.length &&
       <div id="movie-list-load-more" onClick={handleLoadMoreClick}>
         Load More Movies
       </div>
