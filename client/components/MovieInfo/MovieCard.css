@@ -4,9 +4,9 @@
   justify-content: start;
   align-items: start;
 
-  /* border-bottom: #D9D9D9 1px solid; */
+  border-bottom: #D9D9D9 1px solid;
 
-  margin-bottom: 2rem;
+  margin-bottom: .5rem;
 }
 
 .movie-card-title {
@@ -17,6 +17,11 @@
 
 .movie-card-locations {
   margin: 0rem;
+}
+@media only screen and (max-width: 575px) {
+  .movie-card-locations {
+    padding-left: 1.5rem;
+  }
 }
 
 .movie-card-location {
@@ -32,15 +37,15 @@
 .movie-card-toggle-show-all-locations {
   align-self: center;
 
-  border: 1px solid;
-  border-radius: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 
-  margin-top: 2rem;
-
+  /*
   padding-top: .5rem;
   padding-bottom: .5rem;
   padding-left: 1rem;
   padding-right: 1rem;
+  */
 
   text-align: center;
 
@@ -48,4 +53,5 @@
 }
 .movie-card-toggle-show-all-locations:hover {
   color: #FFFFFF;
+  text-decoration: underline;
 }

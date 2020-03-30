@@ -82,23 +82,28 @@ function App() {
     });
   }, []);
 
-  let toggleMovieInfoBtnContent = movieInfoShowing ? 'Hide Movie Info' : 'Show Movie Info';
-  if (window.screen.width < 576) {
-    toggleMovieInfoBtnContent = movieInfoShowing ? '' : 'Movie Info';
-  }
+  let toggleMovieInfoBtn = (
+    <div
+      id="toggle-movie-info-btn"
+      className={movieInfoShowing ? "hide-movie-info" : "show-movie-info"}
+      onClick={() => toggleMovieInfo()}
+    >
+      {!movieInfoShowing && window.screen.width >= 576 &&
+      <i className="fa fa-caret-left" aria-hidden="true"></i>
+      }
+      Movie Info
+      {movieInfoShowing && window.screen.width >= 576 &&
+      <i className="fa fa-caret-right" aria-hidden="true"></i>
+      }
+    </div>
+  );
 
   return (
     <div id="app-container">
       <div id="map-container">
         <MovieMap></MovieMap>
 
-        <div
-          id="toggle-movie-info-btn"
-          className={movieInfoShowing ? "hide-movie-info" : "show-movie-info"}
-          onClick={() => toggleMovieInfo()}
-        >
-          {toggleMovieInfoBtnContent}
-        </div>
+        {toggleMovieInfoBtn}
       </div>
 
       <div id="movie-info-container" className={movieInfoShowing ? "" : "hidden"}>

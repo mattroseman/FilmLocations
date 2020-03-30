@@ -28,7 +28,6 @@ export default function MovieCard(props) {
         <li
           key={movieLocation.id}
           className='movie-card-location'
-          onClick={() => handleMovieLocationClick(movieLocation)}
           onMouseEnter={() => dispatch(highlightMarker(movieLocation.id))}
           onMouseLeave={() => dispatch(unhighlightMarker(movieLocation.id))}
         >
@@ -56,10 +55,6 @@ export default function MovieCard(props) {
     } else {
       dispatch(showDefaultTopMovieLocations(movie.id));
     }
-  }
-
-  function handleMovieLocationClick(movieLocation) {
-    // dispatch(highlightMarker(movieLocation.id));
   }
 
   return (

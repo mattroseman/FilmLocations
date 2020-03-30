@@ -40,6 +40,8 @@
 #movie-list-load-more {
   text-align: center;
 
+  margin-top: 1rem;
+
   cursor: pointer;
 }
 #movie-list-load-more:hover {

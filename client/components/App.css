@@ -36,7 +36,6 @@ html, body, #root {
   background-color: rgb(33, 33, 33, 0.5);
   color: #FFFFFF;
   border: #FFFFFF 1px solid;
-  border-radius: 5rem;
 
   font-size: 1.2rem;
 
@@ -61,6 +60,13 @@ html, body, #root {
   #toggle-movie-info-btn.hide-movie-info {
     display: none;
   }
+}
+
+#toggle-movie-info-btn > .fa-caret-left {
+  margin-right: 1rem;
+}
+#toggle-movie-info-btn > .fa-caret-right {
+  margin-left: 1rem;
 }
 
 #map-container {
