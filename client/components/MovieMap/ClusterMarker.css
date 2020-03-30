@@ -1,4 +1,8 @@
 .cluster-marker-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   border: 2px solid #0068CF;
   border-radius: 100%;
 
@@ -7,4 +11,15 @@
 .cluster-marker-icon.highlighted {
   border-color: #E74D8E;
   background: #E74D8E70;
+}
+
+.cluster-marker-count {
+  /* hide the number and find a better way to display it */
+  display: none;
+
+  color: #FFFFFF;
+
+  text-align: center;
+
+  font-size: 1rem;
 }
