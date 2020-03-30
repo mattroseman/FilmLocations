@@ -76,6 +76,7 @@ export default function MovieMap() {
       worldCopyJump={true}
       minZoom={window.screen.width < 576 ? 2 : 4}
       maxZoom={20}
+      zoomControl={window.screen.width >= 576}
       viewport={viewport}
       whenReady={() => {
         const leafletElement = map.current.leafletElement;

@@ -17,43 +17,87 @@ function App() {
     // initialize DOMAIN to localhost:5000 if running locally, otherwise leave blank
     DOMAIN = window.location.hostname.indexOf('localhost') > -1 ? 'http://localhost:5000' : '';
     dispatch(setDomain(DOMAIN));
+  }, []);
 
-    // initialize the movie info component as hidden on mobile
+  const movieInfoShowing = useSelector(state => state.movieInfo.showing);
+
+  function toggleMovieInfo(show) {
+    if (show === true || (show === undefined && !movieInfoShowing)) {
+      history.pushState({
+        movieInfoShowing: true
+      }, '');
+
+      dispatch(showMovieInfo());
+    } else {
+      history.pushState({
+        movieInfoShowing: false
+      }, '');
+
+      dispatch(hideMovieInfo());
+    }
+  }
+
+  // hide the movie info panel off the bat on mobile
+  useEffect(() => {
     if (window.screen.width < 576) {
       dispatch(hideMovieInfo());
     }
   }, []);
 
-  const movieInfoShowing = useSelector(state => state.movieInfo.showing);
-
-  function handleToggleMovieInfo() {
-    if (movieInfoShowing) {
-      dispatch(hideMovieInfo());
+  // initialize the history state
+  useEffect(() => {
+    if (window.screen.width < 576) {
+      history.replaceState({
+        movieInfoShowing: false
+      }, '');
     } else {
-      dispatch(showMovieInfo());
+      history.replaceState({
+        movieInfoShowing: true
+      }, '');
     }
-  }
+  }, []);
 
+  // handle mouse event outside of movie info panel on mobile
   useEffect(() => {
     if (window.screen.width < 576) {
       // if a mousedown event happens outside the movie info element, close it
       window.addEventListener('mousedown', (event) => {
         const movieInfoElement = document.getElementById('movie-info-container');
 
-        if (!movieInfoElement.contains(event.target) && movieInfoShowing) {
-          dispatch(hideMovieInfo());
+        if (!movieInfoElement.contains(event.target) && !movieInfoElement.classList.contains('hidden')) {
+          toggleMovieInfo(false);
         }
       });
     }
   }, []);
+
+  // add event listeners to manage browser history
+  useEffect(() => {
+    window.addEventListener('popstate', (event) => {
+      if (event.state.movieInfoShowing) {
+        dispatch(showMovieInfo());
+      } else {
+        dispatch(hideMovieInfo());
+      }
+    });
+  }, []);
+
+  let toggleMovieInfoBtnContent = movieInfoShowing ? 'Hide Movie Info' : 'Show Movie Info';
+  if (window.screen.width < 576) {
+    toggleMovieInfoBtnContent = movieInfoShowing ? '' : 'Movie Info';
+  }
 
   return (
     <div id="app-container">
       <div id="map-container">
         <MovieMap></MovieMap>
 
-        <div id="toggle-movie-info-btn" className={movieInfoShowing ? "hide-movie-info" : "show-movie-info"} onClick={handleToggleMovieInfo}>
-          {movieInfoShowing ? "Hide Movie Info" : "Show Movie Info"}
+        <div
+          id="toggle-movie-info-btn"
+          className={movieInfoShowing ? "hide-movie-info" : "show-movie-info"}
+          onClick={() => toggleMovieInfo()}
+        >
+          {toggleMovieInfoBtnContent}
         </div>
       </div>
 

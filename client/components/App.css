@@ -22,7 +22,6 @@ html, body, #root {
   position: absolute;
   z-index: 2000; /* to appear over leaflet map */
   top: 1.5rem;
-  right: 3rem;
 
   display: flex;
   flex-direction: row;
@@ -37,6 +36,7 @@ html, body, #root {
   background-color: rgb(33, 33, 33, 0.5);
   color: #FFFFFF;
   border: #FFFFFF 1px solid;
+  border-radius: 5rem;
 
   font-size: 1.2rem;
 
@@ -47,10 +47,15 @@ html, body, #root {
 #toggle-movie-info-btn:hover {
   background-color: rgb(33, 33, 33, 0.8);
 }
+@media only screen and (min-width: 576px) {
+  #toggle-movie-info-btn {
+    right: 3rem;
+  }
+}
 @media only screen and (max-width: 575px) {
   #toggle-movie-info-btn {
     top: 1.5rem;
-    right: 2rem;
+    left: 1.5rem;
   }
 
   #toggle-movie-info-btn.hide-movie-info {
