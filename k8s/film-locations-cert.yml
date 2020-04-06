@@ -1,0 +1,7 @@
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: film-locations-cert
+spec:
+  domains:
+    - www.moviemap.io

@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: film-locations-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/issuer: "letsencrypt-prod"
+spec:
+  tls:
+    - hosts:
+        - moviemap.io
+      secretName: film-locations-tls
+  rules:
+    - host: moviemap.io
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: film-locations-service
+              servicePort: 80
