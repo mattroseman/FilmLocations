@@ -1,6 +1,6 @@
 {
   "name": "film-locations",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Scrape IMDb to get filming locations for all movies",
   "main": "server/main.js",
   "scripts": {
