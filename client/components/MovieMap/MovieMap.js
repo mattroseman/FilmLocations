@@ -53,12 +53,6 @@ export default function MovieMap() {
 
   let markers = useSelector(state => state.map.markers, shallowEqual);
   const highlightedMarker = useSelector(state => state.map.highlightedMarker);
-  // set the markers highlighted values
-  if (highlightedMarker) {
-    for (const markerId of Object.keys(markers)) {
-      markers[markerId].highlighted = markerId === highlightedMarker;
-    }
-  }
 
   // if a specific movie is showing, when markers change fit the map to show the new markers
   useEffect(() => {
@@ -99,11 +93,11 @@ export default function MovieMap() {
       {Object.values(markers).map((marker) => {
         if (marker.count > 1) {
           return (
-            <ClusterMarker key={marker.id} marker={marker}></ClusterMarker>
+            <ClusterMarker key={marker.id} marker={marker} highlighted={marker.id === highlightedMarker}></ClusterMarker>
           );
         } else {
           return (
-            <LocationMarker key={marker.id} marker={marker}></LocationMarker>
+            <LocationMarker key={marker.id} marker={marker} highlighted={marker.id === highlightedMarker}></LocationMarker>
           );
         }
       })}

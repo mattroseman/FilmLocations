@@ -124,9 +124,8 @@ export function highlightMarker(locationId) {
   };
 }
 
-export function unhighlightMarker(locationId) {
+export function unhighlightMarker() {
   return {
-    type: UNHIGHLIGHT_MARKER,
-    locationId
+    type: UNHIGHLIGHT_MARKER
   };
 }

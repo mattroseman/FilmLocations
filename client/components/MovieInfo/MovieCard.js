@@ -29,7 +29,7 @@ export default function MovieCard(props) {
           key={movieLocation.id}
           className='movie-card-location'
           onMouseEnter={() => dispatch(highlightMarker(movieLocation.id))}
-          onMouseLeave={() => dispatch(unhighlightMarker(movieLocation.id))}
+          onMouseLeave={() => dispatch(unhighlightMarker())}
         >
           <h4 className='movie-card-location-name'>{movieLocation.locationString}</h4>
 
