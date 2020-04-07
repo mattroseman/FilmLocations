@@ -9,6 +9,8 @@
   background: #0068CF70;
 }
 .cluster-marker-icon.highlighted {
+  z-index: 1999 !important;
+
   border-color: #E74D8E;
   background: #E74D8E70;
 }

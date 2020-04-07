@@ -4,6 +4,9 @@
   margin-top: -36px;
   padding: 1px;
 }
+.location-marker-icon.highlighted {
+  z-index: 1999 !important;
+}
 .location-marker-icon.highlighted > i {
   color: #E74D8E;
 }
