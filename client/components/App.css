@@ -79,6 +79,7 @@ html, body, #root {
 
 #movie-info-container {
   flex: 2;
+  min-width: 25rem;
 
   margin: 0rem;
 
@@ -86,6 +87,7 @@ html, body, #root {
 }
 #movie-info-container.hidden {
   flex: 0;
+  min-width: 0;
 
   background-color: #212121;
 }
@@ -101,6 +103,7 @@ html, body, #root {
 
     height: 100%;
     width: 90%;
+    min-width: 0;
   }
 
   #movie-info-container.hidden {
