@@ -19,7 +19,7 @@ function App() {
     dispatch(setDomain(DOMAIN));
   }, []);
 
-  const movieInfoShowing = useSelector(state => state.movieInfo.showing);
+  let movieInfoShowing = useSelector(state => state.movieInfo.showing);
 
   function toggleMovieInfo(show) {
     if (show === true || (show === undefined && !movieInfoShowing)) {
@@ -39,8 +39,8 @@ function App() {
 
   // hide the movie info panel off the bat on mobile
   useEffect(() => {
-    if (window.screen.width < 576) {
-      dispatch(hideMovieInfo());
+    if (window.screen.width >= 576) {
+      dispatch(showMovieInfo());
     }
   }, []);
 

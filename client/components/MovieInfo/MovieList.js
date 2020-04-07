@@ -9,14 +9,13 @@ import './MovieList.css';
 export default function MovieList() {
   const dispatch = useDispatch();
 
-  const showing = useSelector(state => state.movieInfo.showing);
   const specificMovie = useSelector(state => state.specificMovie);
 
   const movieIdsShowing = useSelector(state => state.movieInfo.movieIdsShowing, shallowEqual);
   // If the movieIdsShowing state changes, fetchTopMovies from the top
   useEffect(() => {
     // only bother updating component if it's showing
-    if (showing && specificMovie === null) {
+    if (specificMovie === null) {
       dispatch(fetchTopMovies());
     }
   }, [movieIdsShowing]);

@@ -12,7 +12,7 @@ const initialState = {
     highlightedMarker: null
   },
   movieInfo: {
-    showing: true,
+    showing: false,
     isLoading: false,
     topMoviesPageSize: 10,
     topMoviesDefaultNumLocationsToShow: 3,

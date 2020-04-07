@@ -85,20 +85,28 @@ html, body, #root {
   height: 100%;
 }
 #movie-info-container.hidden {
-  display: none;
-
   flex: 0;
+
+  background-color: #212121;
 }
 @media only screen and (max-width: 575px) {
   #movie-info-container {
     position: absolute;
     top: 0;
-    left: 0;
+    left: -90%;
     z-index: 2000;
+
+    transform: translate(100%);
+    transition: transform .2s ease-out;
 
     height: 100%;
     width: 90%;
   }
+
+  #movie-info-container.hidden {
+    transform: translate(0);
+  }
+
 }
 
 input, input:focus {
