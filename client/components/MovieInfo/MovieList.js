@@ -19,7 +19,7 @@ export default function MovieList() {
     if (showing && specificMovie === null) {
       dispatch(fetchTopMovies());
     }
-  }, [movieIdsShowing, showing]);
+  }, [movieIdsShowing]);
 
   const loading = useSelector(state => state.movieInfo.isLoading);
   const topMovies = useSelector(state => state.movieInfo.topMovies, shallowEqual);
