@@ -54,7 +54,7 @@ async function handleGetMovieTitlesRequest(req, res, next) {
  * @return: true if the params are valid, false otherwise
  */
 function validateGetMovieTitlesParams(queryParams) {
-  if (!('prefix' in queryParams)) {
+  if (!('prefix' in queryParams) || queryParams.prefix.length < 1) {
     return false;
   }
 
