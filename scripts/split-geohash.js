@@ -1,4 +1,4 @@
-const connectToDatabase = require('../lib/db.js');
+const { connectToDatabase } = require('../lib/db.js');
 
 const { Location } = require('../lib/models.js');
 

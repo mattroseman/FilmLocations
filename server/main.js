@@ -4,10 +4,10 @@ const path = require('path');
 const cors = require('cors');
 
 const { handleGetFilmClustersRequest } = require('./film-clusters.js');
-const { handleGetMovieTitlesRequest } = require('./movie-titles.js');
+const { handleGetMovieTitlesRequest, isMovieTrieGenerated } = require('./movie-titles.js');
 const { handleGetMovieRequest, handleGetTopMoviesRequest } = require('./movie-info.js');
 
-const connectToDatabase = require('../lib/db.js');
+const { connectToDatabase, testDatabaseConnection } = require('../lib/db.js');
 
 const ENVIRONMENT = process.env.ENVIRONMENT;
 let app = express();
@@ -35,6 +35,18 @@ app.get('/movie', handleGetMovieRequest);
 app.post('/top-movies', handleGetTopMoviesRequest);
 
 app.get('/movie-titles', handleGetMovieTitlesRequest);
+
+app.get('/healthz', (req, res) => {
+  if (!isMovieTrieGenerated()) {
+    res.sendStatus(500);
+  }
+
+  if (!testDatabaseConnection()) {
+    res.sendStatus(500);
+  }
+
+  res.sendStatus(200);
+});
 
 // START THE EXPRESS APP
 const port = process.env.PORT || 5000;

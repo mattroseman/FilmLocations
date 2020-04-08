@@ -2,7 +2,7 @@ const zlib = require('zlib');
 const https = require('https');
 const chalk = require('chalk');
 
-const connectToDatabase = require('../lib/db.js');
+const { connectToDatabase } = require('../lib/db.js');
 const { Movie } = require('../lib/models.js');
 
 const IMDB_BASIC_FILE_URL = 'https://datasets.imdbws.com/title.basics.tsv.gz';

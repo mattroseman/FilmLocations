@@ -1,6 +1,5 @@
-const connectToDatabase = require('../lib/db.js');
+const { connectToDatabase } = require('../lib/db.js');
 const { addAllMoviesToDb } = require('./get-movies.js');
-const generateMovieTrie = require('./generate-movie-trie.js');
 const { getLocations } = require('./get-locations.js');
 const { getCoordinates } = require('./get-coordinates.js');
 

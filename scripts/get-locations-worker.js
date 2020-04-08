@@ -1,6 +1,6 @@
 const { parentPort } = require('worker_threads');
 
-const connectToDatabase = require('../lib/db.js');
+const { connectToDatabase } = require('../lib/db.js');
 const { Movie, Location } = require('../lib/models.js');
 
 connectToDatabase();

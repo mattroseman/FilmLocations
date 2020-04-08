@@ -4,7 +4,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const chalk = require('chalk');
 
-const connectToDatabase = require('../lib/db.js');
+const { connectToDatabase } = require('../lib/db.js');
 const { Movie } = require('../lib/models.js');
 
 const RELEVANT_MOVIE_VOTE_MIN = +process.env.RELEVANT_MOVIE_VOTE_MIN;

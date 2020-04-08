@@ -4,7 +4,15 @@ const MovieTrie = require('../lib/movieTrie.js');
 
 // LOAD MOVIE TRIE
 let movieTrie = new MovieTrie();
-movieTrie.generateMovieTrie();
+let movieTrieGenerated = false;
+movieTrie.generateMovieTrie()
+  .then(() => {
+    movieTrieGenerated = true;
+  });
+
+function isMovieTrieGenerated() {
+  return movieTrieGenerated;
+}
 
 /*
  * handleGetMovieTitlesRequest is a function that can be passed into an express `get` method to handle requests to get movie title suggestions given a prefix. (for autocomplete)
@@ -62,5 +70,6 @@ function validateGetMovieTitlesParams(queryParams) {
 }
 
 module.exports = {
-  handleGetMovieTitlesRequest
+  handleGetMovieTitlesRequest,
+  isMovieTrieGenerated
 }

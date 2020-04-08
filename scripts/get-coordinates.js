@@ -3,7 +3,7 @@ const chalk = require('chalk');
 const axios = require('axios');
 const geohash = require('ngeohash');
 
-const connectToDatabase = require('../lib/db.js');
+const { connectToDatabase } = require('../lib/db.js');
 const { Location } = require('../lib/models.js');
 
 const MAX_CONCURRENT_REQUESTS = +process.env.MAX_CONCURRENT_REQUESTS;
