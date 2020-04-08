@@ -49,4 +49,10 @@ spec:
                 secretKeyRef:
                   name: film-locations-db-secret
                   key: name
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 60
       restartPolicy: Always
