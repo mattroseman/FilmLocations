@@ -6,10 +6,10 @@ const chalk = require('chalk');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const { handleGetFilmClustersRequest } = require('./film-clusters.js');
+const { handleGetMovieTitlesRequest } = require('./movie-titles.js');
 
 const connectToDatabase = require('../lib/db.js');
 const { Movie } = require('../lib/models.js');
-const MovieTrie = require('../lib/movieTrie.js');
 
 const ENVIRONMENT = process.env.ENVIRONMENT;
 let app = express();
@@ -25,10 +25,6 @@ app.use(express.static(path.join(__dirname, '../client/public')));
 // SETUP MIDDLEWARE
 app.use(bodyParser.urlencoded({ limit: '5mb', extended: false }));
 app.use(bodyParser.json({ limit: '5mb' }));
-
-// LOAD MOVIE TRIE
-let movieTrie = new MovieTrie();
-movieTrie.generateMovieTrie();
 
 // SETUP PATHS
 app.get('/', (req, res) => {
@@ -132,38 +128,7 @@ app.post('/top-movies', async (req, res, next) => {
   res.send(topMovies);
 });
 
-app.get('/movie-titles', async (req, res, next) => {
-  const prefix = req.query.prefix;
-
-  const cancelToken = {
-    cancelled: false
-  };
-
-  req.on('close', () => {
-    console.log(`movie titles request for prefix: ${prefix} cancelled`);
-    cancelToken.cancelled = true;
-  });
-
-  console.log(`getting movie titles for prefix: ${prefix}`);
-
-  let movieTitles = [];
-  try {
-    movieTitles = await movieTrie.getMovieTitlesFromPrefix(prefix, cancelToken);
-  } catch (err) {
-    if (err === 'getWords cancelled') {
-      res.send(movieTitles);
-      return;
-    }
-
-    console.error(chalk.red(`Something wen't wrong getting movie titles for prefix ${prefix}\n${err}`));
-    next(err);
-    return;
-  }
-
-  console.log(`got ${movieTitles.length} titles for prefix: ${prefix}`);
-
-  res.send(movieTitles);
-});
+app.get('/movie-titles', handleGetMovieTitlesRequest);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
