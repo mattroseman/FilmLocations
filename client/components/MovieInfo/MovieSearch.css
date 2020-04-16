@@ -12,15 +12,15 @@
 }
 
 #movie-search-field {
-  background-color: #333333;
-  color: #FFFFFF;
+  background-color: var(--light-grey);
+  color: var(--white);
 
   width: 100%;
 }
 
 #movie-search-suggestions {
-  background-color: #333333;
-  color: #FFFFFF;
+  background-color: var(--light-grey);
+  color: var(--white);
 
   position: absolute;
   top: 100%;
@@ -43,5 +43,5 @@
   cursor: pointer;
 }
 .movie-search-suggestion:hover {
-  background-color: #202020;
+  background-color: var(--dark-grey);
 }

@@ -2,7 +2,7 @@
   height: 100%;
   width: 100%;
 
-  background: #333333;
+  background: var(--light-grey);
 }
 
 .leaflet-control-attribution {

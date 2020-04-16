@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
 
-  border: 2px solid #0068CF;
+  border: 2px solid var(--primary-color);
   border-radius: 100%;
 
   background: #0068CF70;
@@ -11,15 +11,15 @@
 .cluster-marker-icon.highlighted {
   z-index: 1999 !important;
 
-  border-color: #E74D8E;
-  background: #E74D8E70;
+  border-color: var(--secondary-color);
+  background: rgba(var(--rgb-secondary-color), .44);
 }
 
 .cluster-marker-count {
   /* hide the number and find a better way to display it */
   display: none;
 
-  color: #FFFFFF;
+  color: var(--white);
 
   text-align: center;
 
