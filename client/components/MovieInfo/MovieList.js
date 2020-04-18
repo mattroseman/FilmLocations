@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { fetchTopMovies, unsetSpecificMovie } from '../../actions';
+import { fetchTopMovies, unsetSpecificMovie, hideMovieInfo } from '../../actions';
 
 import MovieCard from './MovieCard.js';
 
@@ -32,6 +32,11 @@ export default function MovieList() {
    */
   function handleShowAllMovies() {
     dispatch(unsetSpecificMovie());
+
+    // hide the movie info panel on mobile
+    if (window.screen.width < 576) {
+      dispatch(hideMovieInfo());
+    }
   }
 
   return (
