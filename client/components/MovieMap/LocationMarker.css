@@ -1,7 +1,6 @@
 .location-marker-icon > i {
   color: var(--primary-color);
 
-  margin-top: -36px;
   padding: 1px;
 }
 .location-marker-icon.highlighted {

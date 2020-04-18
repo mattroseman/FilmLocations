@@ -70,10 +70,16 @@ export default function MovieCard(props) {
       {movie.locations.length > defaultNumLocationsToShow &&
       <div className="movie-card-toggle-show-all-locations" onClick={handleToggleShowAllLocations}>
         {movie.showDefaultNumLocations &&
-        "Show All Locations"
+        <span>
+          Show All Locations
+          <i className="fa fa-caret-down" aria-hidden="true"></i>
+        </span>
         }
         {!movie.showDefaultNumLocations &&
-        "Hide All Locations"
+        <span>
+          Hide All Locations
+          <i className="fa fa-caret-up" aria-hidden="true"></i>
+        </span>
         }
       </div>
       }

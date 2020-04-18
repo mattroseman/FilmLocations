@@ -4,13 +4,18 @@
   justify-content: start;
   align-items: start;
 
-  border-bottom: var(--off-white) 1px solid;
+  /* border-bottom: var(--off-white) 1px solid; */
+  background-color: var(--light-grey);
 
-  margin-bottom: .5rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .movie-card-title {
   color: var(--white);
+
+  margin-top: 0;
+  margin-bottom: 1rem;
 
   cursor: pointer;
 }
@@ -37,8 +42,7 @@
 .movie-card-toggle-show-all-locations {
   align-self: center;
 
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-top: 1.5rem;
 
   text-align: center;
 
@@ -47,4 +51,8 @@
 .movie-card-toggle-show-all-locations:hover {
   color: #FFFFFF;
   text-decoration: underline;
+}
+
+.movie-card-toggle-show-all-locations .fa {
+  margin-left: .5rem;
 }
