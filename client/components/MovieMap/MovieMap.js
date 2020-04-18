@@ -34,7 +34,7 @@ export default function MovieMap() {
       const leafletElement = map.current.leafletElement;
       leafletElement.fitBounds(specificMovie.locations.map((location) => {
         return location.point;
-      }));
+      }), { padding: [80, 80] });
     }
   }, [specificMovie]);
 
@@ -56,17 +56,12 @@ export default function MovieMap() {
   let markers = useSelector(state => state.map.markers, shallowEqual);
   const highlightedMarker = useSelector(state => state.map.highlightedMarker);
 
-  /*
-  // if a specific movie is showing, when markers change fit the map to show the new markers
-  useEffect(() => {
-    if (specificMovie !== null) {
-      const leafletElement = map.current.leafletElement;
-      leafletElement.fitBounds(Object.values(markers).map((marker) => {
-        return marker.coordinate
-      }));
-    }
-  }, [markers]);
-  */
+  function handleClusterMarkerClick(marker) {
+    const leafletElement = map.current.leafletElement;
+    leafletElement.fitBounds(marker.locations.map((markerLocation) => {
+      return markerLocation.coordinate;
+    }), { padding: [80, 80] });
+  }
 
   return (
     <Map
@@ -97,7 +92,14 @@ export default function MovieMap() {
       {Object.values(markers).map((marker) => {
         if (marker.count > 1) {
           return (
-            <ClusterMarker key={marker.id} marker={marker} highlighted={marker.id === highlightedMarker}></ClusterMarker>
+            <ClusterMarker
+              key={marker.id}
+              marker={marker}
+              highlighted={marker.id === highlightedMarker}
+              onClusterMarkerClick={() => {
+                handleClusterMarkerClick(marker);
+              }}
+            ></ClusterMarker>
           );
         } else {
           return (

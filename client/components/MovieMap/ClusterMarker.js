@@ -39,6 +39,7 @@ function ClusterMarker(props) {
         className: props.highlighted ? 'cluster-marker-icon highlighted' : 'cluster-marker-icon',
         iconSize: 2 * getCircleMarkerRadius(props.marker.count)
       })}
+      onClick={props.onClusterMarkerClick}
     >
     </Marker>
   );
