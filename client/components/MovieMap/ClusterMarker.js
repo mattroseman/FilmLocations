@@ -5,6 +5,7 @@ import { Marker, Popup } from 'react-leaflet';
 import './ClusterMarker.css';
 
 const CIRCLE_MARKER_RADII = [
+  { max: 5, radius: 15 },
   { max: 10, radius: 25 },
   { max: 30, radius: 30 },
   { max: 100, radius: 40 },
@@ -39,9 +40,6 @@ function ClusterMarker(props) {
         iconSize: 2 * getCircleMarkerRadius(props.marker.count)
       })}
     >
-      <Popup>
-        {props.marker.count}
-      </Popup>
     </Marker>
   );
 }

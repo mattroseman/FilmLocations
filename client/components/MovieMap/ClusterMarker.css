@@ -6,19 +6,16 @@
   border: 2px solid var(--primary-color);
   border-radius: 100%;
 
-  background: rgba(var(--rgb-primary-color), .44);
+  background: rgba(var(--rgb-primary-color), .65);
 }
 .cluster-marker-icon.highlighted {
   z-index: 1999 !important;
 
   border-color: var(--secondary-color);
-  background: rgba(var(--rgb-secondary-color), .44);
+  background: rgba(var(--rgb-secondary-color), .65);
 }
 
 .cluster-marker-count {
-  /* hide the number and find a better way to display it */
-  display: none;
-
   color: var(--white);
 
   text-align: center;
