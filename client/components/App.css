@@ -6,9 +6,10 @@ html, body, #root {
 
   margin: 0rem;
 
-  --primary-color: #0068CF;
-  --secondary-color: #E74D8E;
-  --rgb-secondary-color: 231, 77, 142;
+  --primary-color: #169C78;
+  --rgb-primary-color: 22, 156, 120;
+  --secondary-color: #EE6B22;
+  --rgb-secondary-color: 238, 107, 34;
 
   --dark-grey: #212121;
   --rgb-dark-grey: 33, 33, 33;

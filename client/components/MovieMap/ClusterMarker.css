@@ -6,7 +6,7 @@
   border: 2px solid var(--primary-color);
   border-radius: 100%;
 
-  background: #0068CF70;
+  background: rgba(var(--rgb-primary-color), .44);
 }
 .cluster-marker-icon.highlighted {
   z-index: 1999 !important;
