@@ -4,7 +4,6 @@ import {
   setMapViewport,
   setMapBounds,
   fetchMapMarkers,
-  setSpecificMovieMapMarkers
 } from '../../actions';
 
 import { Map, TileLayer } from 'react-leaflet';
@@ -31,29 +30,33 @@ export default function MovieMap() {
 
   const specificMovie = useSelector(state => state.specificMovie, shallowEqual);
   useEffect(() => {
-    if (specificMovie !== null) {
-      dispatch(setSpecificMovieMapMarkers(specificMovie));
+    if (specificMovie) {
+      const leafletElement = map.current.leafletElement;
+      leafletElement.fitBounds(specificMovie.locations.map((location) => {
+        return location.point;
+      }));
     }
   }, [specificMovie]);
 
   // set the map markers when the bounds change or a specific movie is set/unset
   useEffect(() => {
-    if (specificMovie !== null) {
-      return;
-    }
-
     if (
       bounds.southWest[0] !== undefined && bounds.southWest[1] !== undefined &&
       bounds.northEast !== undefined && bounds.northEast[1] !== undefined
     ) {
-      dispatch(fetchMapMarkers(bounds, viewport.zoom));
+      if (specificMovie) {
+        dispatch(fetchMapMarkers(bounds, viewport.zoom, specificMovie.id));
+      } else {
+        dispatch(fetchMapMarkers(bounds, viewport.zoom));
+      }
     }
-  }, [bounds, specificMovie]);
+  }, [bounds]);
 
 
   let markers = useSelector(state => state.map.markers, shallowEqual);
   const highlightedMarker = useSelector(state => state.map.highlightedMarker);
 
+  /*
   // if a specific movie is showing, when markers change fit the map to show the new markers
   useEffect(() => {
     if (specificMovie !== null) {
@@ -63,6 +66,7 @@ export default function MovieMap() {
       }));
     }
   }, [markers]);
+  */
 
   return (
     <Map

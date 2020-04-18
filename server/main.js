@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 
-const { handleGetFilmClustersRequest } = require('./film-clusters.js');
+const { handleGetLocationClustersRequest } = require('./location-clusters.js');
 const { handleGetMovieTitlesRequest, isMovieTrieGenerated } = require('./movie-titles.js');
 const { handleGetMovieRequest, handleGetTopMoviesRequest } = require('./movie-info.js');
 
@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/public/index.html'));
 });
 
-app.get('/film-clusters', handleGetFilmClustersRequest);
+app.get('/location-clusters', handleGetLocationClustersRequest);
 
 app.get('/movie', handleGetMovieRequest);
 app.post('/top-movies', handleGetTopMoviesRequest);

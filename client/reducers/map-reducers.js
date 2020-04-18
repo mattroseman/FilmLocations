@@ -15,6 +15,8 @@ export default function map(state=initialState.map, action) {
       };
     case actions.REQUEST_LOCATION_CLUSTERS:
       return state;
+    case actions.REQUEST_SPECIFIC_MOVIE_LOCATION_CLUSTERS:
+      return state;
     case actions.SET_MAP_MARKERS:
       return {
         ...state,

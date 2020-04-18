@@ -2,13 +2,13 @@ export {
   SET_MAP_VIEWPORT,
   SET_MAP_BOUNDS,
   REQUEST_LOCATION_CLUSTERS,
+  REQUEST_SPECIFIC_MOVIE_LOCATION_CLUSTERS,
   SET_MAP_MARKERS,
   HIGHLIGHT_MARKER,
   UNHIGHLIGHT_MARKER,
 
   setMapViewport,
   setMapBounds,
-  setSpecificMovieMapMarkers,
   fetchMapMarkers,
   highlightMarker,
   unhighlightMarker
