@@ -96,11 +96,15 @@ export function fetchMapMarkers(bounds, zoom, movieId) {
 
     dispatch(setMapMarkers(clusters));
 
-    const movieIds = clusters.reduce((movieIds, cluster) => {
-      return [...movieIds, ...cluster.movies];
-    }, []);
+    if (movieId) {
+      dispatch(setMovieIdsShowing([movieId]));
+    } else {
+      const movieIds = clusters.reduce((movieIds, cluster) => {
+        return [...movieIds, ...cluster.movies];
+      }, []);
 
-    dispatch(setMovieIdsShowing(movieIds));
+      dispatch(setMovieIdsShowing(movieIds));
+    }
   }
 }
 

@@ -33,11 +33,6 @@ function setSpecificMovie(movie) {
 export function showSpecificMovie(movie) {
   return async function(dispatch) {
     dispatch(setSpecificMovie(movie));
-
-    dispatch(setMovieIdsShowing([movie.id]));
-    // set specific movies to show all locations by default
-    movie.showDefaultNumLocations = false;
-    dispatch(updateTopMovies([movie]));
   };
 }
 
