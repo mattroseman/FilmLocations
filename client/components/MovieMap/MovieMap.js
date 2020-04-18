@@ -92,7 +92,7 @@ export default function MovieMap() {
       />
 
       {Object.values(markers).map((marker) => {
-        if (marker.count > 1) {
+        if (marker.count > 1 && viewport.zoom < 20) {
           return (
             <ClusterMarker
               key={marker.id}
