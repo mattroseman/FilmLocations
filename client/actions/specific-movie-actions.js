@@ -1,5 +1,3 @@
-import { setMovieIdsShowing, updateTopMovies } from './movie-info-actions.js';
-
 /*
  * ACTION TYPES
  */

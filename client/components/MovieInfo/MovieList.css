@@ -33,6 +33,18 @@
   text-align: center;
 }
 
+#movie-list-show-all-movies {
+  text-align: center;
+
+  margin-bottom: 1.5rem;
+
+  cursor: pointer;
+}
+#movie-list-show-all-movies:hover {
+  color: var(--white);
+  text-decoration: underline;
+}
+
 #movie-list-load-more {
   text-align: center;
 

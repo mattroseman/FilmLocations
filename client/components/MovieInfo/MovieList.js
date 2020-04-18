@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { fetchTopMovies } from '../../actions';
+import { fetchTopMovies, unsetSpecificMovie } from '../../actions';
 
 import MovieCard from './MovieCard.js';
 
@@ -18,6 +18,8 @@ export default function MovieList() {
   const loading = useSelector(state => state.movieInfo.isLoading);
   const topMovies = useSelector(state => state.movieInfo.topMovies, shallowEqual);
 
+  const specificMovie = useSelector(state => state.specificMovie, shallowEqual);
+
   /*
    * handleLoadMoreClick is called when the user clicks the load more link at the bottom of the movie list.
    */
@@ -25,8 +27,20 @@ export default function MovieList() {
     dispatch(fetchTopMovies());
   }
 
+  /*
+   * handleShowAllMovies is called when the user clicks the show all movies link at th etop of the movie list. (only present if a specific movie is currently showing)
+   */
+  function handleShowAllMovies() {
+    dispatch(unsetSpecificMovie());
+  }
+
   return (
     <div id="movie-list">
+      {specificMovie &&
+      <div id="movie-list-show-all-movies" onClick={handleShowAllMovies}>
+        Show All Movies
+      </div>
+      }
       {Object.keys(topMovies).map((movieId) => {
         return <MovieCard key={movieId} movieId={movieId} />;
       })}

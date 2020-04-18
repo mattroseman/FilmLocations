@@ -35,6 +35,8 @@ export default function MovieMap() {
       leafletElement.fitBounds(specificMovie.locations.map((location) => {
         return location.point;
       }), { padding: [80, 80] });
+    } else {
+      dispatch(fetchMapMarkers(bounds, viewport.zoom));
     }
   }, [specificMovie]);
 
