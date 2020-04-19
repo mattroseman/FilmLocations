@@ -36,7 +36,12 @@ export default function MovieMap() {
         return location.point;
       }), { padding: [80, 80] });
     } else {
-      dispatch(fetchMapMarkers(bounds, viewport.zoom));
+      if (
+        bounds.southWest[0] !== undefined && bounds.southWest[1] !== undefined &&
+        bounds.northEast !== undefined && bounds.northEast[1] !== undefined
+      ) {
+        dispatch(fetchMapMarkers(bounds, viewport.zoom));
+      }
     }
   }, [specificMovie]);
 

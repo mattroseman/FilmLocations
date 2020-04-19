@@ -71,14 +71,22 @@ function setMapMarkers(locationClusters) {
  */
 export function fetchMapMarkers(bounds, zoom, movieId) {
   return async function(dispatch, getState) {
-    dispatch(requestLocationClusters(bounds, zoom, movieId));
-
     const { domain } = getState();
 
     const southWest = bounds.southWest;
     const northEast = bounds.northEast;
 
     let clusters = [];
+
+    if (
+      southWest[0] === undefined || southWest[1] === undefined ||
+      northEast[0] === undefined || northEast[1] === undefined ||
+      zoom === undefined
+    ) {
+      return;
+    }
+
+    dispatch(requestLocationClusters(bounds, zoom, movieId));
 
     try {
       const response = await fetch(
