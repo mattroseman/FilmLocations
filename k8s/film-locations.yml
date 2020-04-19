@@ -20,7 +20,7 @@ spec:
         app: film-locations
     spec:
       containers:
-        - image: gcr.io/filmlocations/film-locations:1.3.7
+        - image: gcr.io/filmlocations/film-locations:1.3.8
           imagePullPolicy: Always
           name: film-locations
           env:
