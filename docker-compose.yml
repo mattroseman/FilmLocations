@@ -60,6 +60,8 @@ services:
       DB_USER: film_locations_user
       DB_PASS: film_locations_pass
       DB_NAME: film_locations
+      CACHE_HOST: redis
+      CACHE_PORT: 6379
       PORT: 5000
     volumes:
       - ./lib:/usr/src/app/lib
