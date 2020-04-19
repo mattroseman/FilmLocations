@@ -1,7 +1,6 @@
 const chalk = require('chalk');
 
 const { Location } = require('../lib/models.js');
-const { getCoordinatesCenter } = require('../lib/utils.js');
 
 // the higher CLUSTER_FACTOR is smaller clusters are likely to be, and there will be more
 const CLUSTER_FACTORS = {
@@ -107,11 +106,6 @@ async function getLocationClusters(bounds, zoom, movieId) {
     console.error(chalk.red(`Something wen't wrong getting film locations in bounds: ${southWest}:${northEast}\n${err}`));
     throw err;
   }
-
-  // find the centroid for each cluster
-  clusters.forEach((cluster) => {
-    cluster.center = getCoordinatesCenter(cluster.locations.map((location) => location.coordinate));
-  });
 
   console.log(
     `${clusters.length} clusters found in bounds: [${southWest}:${northEast}]` +
