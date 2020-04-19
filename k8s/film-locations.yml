@@ -49,6 +49,10 @@ spec:
                 secretKeyRef:
                   name: film-locations-db-secret
                   key: name
+            - name: CACHE_HOST
+              value: redis
+            - name: CACHE_PORT
+              value: 6379
           livenessProbe:
             httpGet:
               path: /healthz
