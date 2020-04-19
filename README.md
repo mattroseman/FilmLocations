@@ -14,7 +14,7 @@ To connect to a MongoDB instance not through docker, update the credentials file
 
 To initialize the database start the `mongodb` docker image with `docker-compose up -d mongodb`.
 To connect to the MongoDB database running in docker.
-`dcr mongodb mongo --host mongodb --username film_locations_user --password film_locations_pass --authenticationDatabase admin film_locations`
+`docker-compose run mongodb mongo --host mongodb --username film_locations_user --password film_locations_pass --authenticationDatabase admin film_locations`
 
 To generate the database run `docker-compose run --rm get_film_locations`.
 This requires a connection to [Google's Geocoding API](https://developers.google.com/maps/documentation/geocoding/intro) which can be configured in `credentials/google.json`.
