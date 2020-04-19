@@ -20,7 +20,7 @@ spec:
         app: film-locations
     spec:
       containers:
-        - image: gcr.io/filmlocations/film-locations:1.4.0
+        - image: gcr.io/filmlocations/film-locations:1.4.1
           imagePullPolicy: Always
           name: film-locations
           env:
@@ -50,9 +50,9 @@ spec:
                   name: film-locations-db-secret
                   key: name
             - name: CACHE_HOST
-              value: redis
+              value: 'redis'
             - name: CACHE_PORT
-              value: 6379
+              value: '6379'
           livenessProbe:
             httpGet:
               path: /healthz
