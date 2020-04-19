@@ -41,6 +41,11 @@ services:
     ports:
       - 9229:9229
       - 8080:${PORT:-8080}
+  redis:
+    image: redis:5.0
+    container_name: redis
+    ports:
+      - 6379:6379
   film_locations:
     build:
       context: .
