@@ -2,7 +2,7 @@
 
 Interactive map of filming locations around the world. Built with a Node backend and React frontend, with [Leafletjs](https://leafletjs.com/) for the interactive map.
 
-![screenshot](moviemap_screenshot.png)
+![screenshot](screenshots/moviemap_screenshot_20200419.png)
 
 ## Installation
 
@@ -10,7 +10,8 @@ This project is built around [docker](https://www.docker.com/products/docker-des
 
 ### Database
 
-To connect to a MongoDB instance not through docker, update the credentials file `credentials/mongodb.json` with your connection information.
+The database setup/connection info is handled through docker configuration.
+If you are running a database outside of docker check the environment variables in `docker-compose.yml` for the container `film_locations` to see what environment variables need to be set.
 
 To initialize the database start the `mongodb` docker image with `docker-compose up -d mongodb`.
 To connect to the MongoDB database running in docker.
@@ -20,6 +21,11 @@ To generate the database run `docker-compose run --rm get_film_locations`.
 This requires a connection to [Google's Geocoding API](https://developers.google.com/maps/documentation/geocoding/intro) which can be configured in `credentials/google.json`.
 This is not a free API, so be aware of billing before running. There will be around 100,000 requests made to it.
 In the future I'm planning to add some test data so that this script doesn't need to run.
+
+### Cache
+
+The redis cache is similar to the database; the setup and connection is handled through docker configuration.
+Same as the database, if you are running redis outside of docker, look in `docker-compose.yml` under the `film_locations` container for environment variables that need to be set.
 
 ### Website
 
