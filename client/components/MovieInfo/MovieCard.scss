@@ -8,9 +8,8 @@
 
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-}
-@media only screen and (max-width: 575px) {
-  .movie-card {
+
+  @media #{$mobile-screen} {
     padding: 1rem;
     margin-bottom: .8rem;
   }
@@ -23,18 +22,16 @@
   margin-bottom: 1rem;
 
   cursor: pointer;
-}
-@media only screen and (max-width: 575px) {
-  .movie-card-title {
+
+  @media #{$mobile-screen} {
     margin-bottom: .6rem;
   }
 }
 
 .movie-card-locations {
   margin: 0rem;
-}
-@media only screen and (max-width: 575px) {
-  .movie-card-locations {
+
+  @media #{$mobile-screen} {
     padding-left: 1.5rem;
   }
 }
@@ -61,12 +58,13 @@
   text-align: center;
 
   cursor: pointer;
-}
-.movie-card-toggle-show-all-locations:hover {
-  color: #FFFFFF;
-  text-decoration: underline;
-}
 
-.movie-card-toggle-show-all-locations .fa {
-  margin-left: .5rem;
+  &:hover {
+    color: #FFFFFF;
+    text-decoration: underline;
+  }
+
+  .fa {
+    margin-left: .5rem;
+  }
 }

@@ -49,51 +49,53 @@ html, body, #root {
 
   cursor: pointer;
 
-  user-select: none;
+  user-select: none;  // don't let the text be highlightable
 
-  overflow: hidden;
+  overflow: hidden;  // when animating don't let content in the button show outside
 
   transition: width $animation-time ease-out;
-}
-#toggle-movie-info-btn:hover {
-  background-color: rgba($dark-grey, .80);
-  width: 7rem;
-}
-@media only screen and (min-width: 576px) {
-  #toggle-movie-info-btn {
+
+  @media #{$desktop-screen} {
     right: 100%;
 
     border-right: none;
   }
-}
-@media only screen and (max-width: 575px) {
-  #toggle-movie-info-btn {
+
+  @media #{$mobile-screen} {
     left: 100%;
 
     border-left: none;
+
+    // don't display this button on mobile if the movie info panel is showing
+    &.hide-movie-info {
+      display: none;
+    }
   }
 
-  #toggle-movie-info-btn.hide-movie-info {
+  &:hover {
+    background-color: rgba($dark-grey, .80);
+    width: 7rem;
+
+    // on desktop show the button text only when the button is hovered
+    @media #{$desktop-screen} {
+      #toggle-movie-info-btn-text {
+        display: block;
+      }
+
+      .fa-caret-left {
+        padding-right: 1rem;
+      }
+
+      .fa-caret-right {
+        padding-left: 1rem;
+      }
+    }
+  }
+
+  #toggle-movie-info-btn-text {
     display: none;
-  }
-}
 
-#toggle-movie-info-btn-text {
-  display: none;
-
-  white-space: nowrap;
-}
-@media only screen and (min-width: 576px) {
-  #toggle-movie-info-btn:hover > #toggle-movie-info-btn-text {
-    display: block;
-  }
-
-  #toggle-movie-info-btn:hover > .fa-caret-left {
-    padding-right: 1rem;
-  }
-
-  #toggle-movie-info-btn:hover > .fa-caret-right {
-    padding-left: 1rem;
+    white-space: nowrap;
   }
 }
 
@@ -117,25 +119,23 @@ html, body, #root {
 
   transform: translate(0);
   transition: transform $animation-time ease-out;
-}
-@media only screen and (min-width: 576px) {
-  #movie-info-container {
+
+  @media #{$desktop-screen} {
     right: 0;
+
+    &.hidden {
+      transform: translate(100%);
+    }
   }
 
-  #movie-info-container.hidden {
-    transform: translate(100%);
-  }
-}
-@media only screen and (max-width: 575px) {
-  #movie-info-container {
+  @media #{$mobile-screen} {
     left: 0;
 
     width: 90%;
-  }
 
-  #movie-info-container.hidden {
-    transform: translate(-100%);
+    &.hidden {
+      transform: translate(-100%);
+    }
   }
 }
 

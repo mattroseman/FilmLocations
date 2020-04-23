@@ -7,12 +7,13 @@
   border-radius: 100%;
 
   background: rgba($primary-color, .65);
-}
-.cluster-marker-icon.highlighted {
-  z-index: 1999 !important;
 
-  border-color: $secondary-color;
-  background: rgba($secondary-color, .65);
+  &.highlighted {
+    z-index: 1999 !important;
+
+    border-color: $secondary-color;
+    background: rgba($secondary-color, .65);
+  }
 }
 
 .cluster-marker-count {

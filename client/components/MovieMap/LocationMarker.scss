@@ -1,11 +1,15 @@
-.location-marker-icon > i {
-  color: $primary-color;
+.location-marker-icon {
+  i {
+    color: $primary-color;
 
-  padding: 1px;
-}
-.location-marker-icon.highlighted {
-  z-index: 1999 !important;
-}
-.location-marker-icon.highlighted > i {
-  color: $secondary-color;
+    padding: 1px;
+  }
+
+  &.highlighted {
+    z-index: 1999 !important;
+
+    i {
+      color: $secondary-color;
+    }
+  }
 }
