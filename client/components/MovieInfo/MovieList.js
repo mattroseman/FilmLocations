@@ -4,7 +4,6 @@ import { fetchTopMovies, unsetSpecificMovie, hideMovieInfo } from '../../actions
 
 import MovieCard from './MovieCard.js';
 
-import './MovieList.css';
 
 export default function MovieList() {
   const dispatch = useDispatch();

@@ -39,7 +39,9 @@
     "react-redux": "^7.2.0",
     "redis": "^3.0.2",
     "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "sass": "^1.26.3",
+    "sass-loader": "^8.0.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",

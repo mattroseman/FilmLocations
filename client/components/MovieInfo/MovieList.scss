@@ -9,17 +9,17 @@
 
   padding: 1.5rem;
 
-  background-color: var(--dark-grey);
-  color: var(--off-white);
+  background-color: $dark-grey;
+  color: $off-white;
 
-  scrollbar-color: var(--dark-grey) var(--off-white);
+  scrollbar-color: $dark-grey $off-white;
 }
 #movie-list::-webkit-scrollbar {
-  background-color: var(--dark-grey);
+  background-color: $dark-grey;
   width: .4rem;
 }
 #movie-list::-webkit-scrollbar-thumb {
-  background-color: var(--off-white);
+  background-color: $off-white;
   border-radius: 1rem;
 }
 @media only screen and (max-width: 575px) {
@@ -41,7 +41,7 @@
   cursor: pointer;
 }
 #movie-list-show-all-movies:hover {
-  color: var(--white);
+  color: $white;
   text-decoration: underline;
 }
 
@@ -53,6 +53,6 @@
   cursor: pointer;
 }
 #movie-list-load-more:hover {
-  color: var(--white);
+  color: $white;
   text-decoration: underline;
 }

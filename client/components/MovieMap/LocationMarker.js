@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Marker, Popup } from 'react-leaflet';
 
-import './LocationMarker.css';
 
 function LocationMarker(props) {
   return (

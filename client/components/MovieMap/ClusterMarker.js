@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { Marker, Popup } from 'react-leaflet';
+import { Marker } from 'react-leaflet';
 
-import './ClusterMarker.css';
 
 const CIRCLE_MARKER_RADII = [
   { max: 5, radius: 15 },

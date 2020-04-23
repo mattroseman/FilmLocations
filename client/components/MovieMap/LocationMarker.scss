@@ -1,5 +1,5 @@
 .location-marker-icon > i {
-  color: var(--primary-color);
+  color: $primary-color;
 
   padding: 1px;
 }
@@ -7,5 +7,5 @@
   z-index: 1999 !important;
 }
 .location-marker-icon.highlighted > i {
-  color: var(--secondary-color);
+  color: $secondary-color;
 }

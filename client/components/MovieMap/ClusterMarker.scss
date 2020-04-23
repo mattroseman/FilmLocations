@@ -3,20 +3,20 @@
   justify-content: center;
   align-items: center;
 
-  border: 2px solid var(--primary-color);
+  border: 2px solid $primary-color;
   border-radius: 100%;
 
-  background: rgba(var(--rgb-primary-color), .65);
+  background: rgba($primary-color, .65);
 }
 .cluster-marker-icon.highlighted {
   z-index: 1999 !important;
 
-  border-color: var(--secondary-color);
-  background: rgba(var(--rgb-secondary-color), .65);
+  border-color: $secondary-color;
+  background: rgba($secondary-color, .65);
 }
 
 .cluster-marker-count {
-  color: var(--white);
+  color: $white;
 
   text-align: center;
 

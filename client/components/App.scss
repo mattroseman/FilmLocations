@@ -5,18 +5,6 @@ html, body, #root {
   width: 100%;
 
   margin: 0rem;
-
-  --primary-color: #169C78;
-  --rgb-primary-color: 22, 156, 120;
-  --secondary-color: #EE6B22;
-  --rgb-secondary-color: 238, 107, 34;
-
-  --dark-grey: #212121;
-  --rgb-dark-grey: 33, 33, 33;
-  --light-grey: #333333;
-
-  --white: #FFFFFF;
-  --off-white: #D9D9D9;
 }
 
 #app-container {
@@ -45,9 +33,9 @@ html, body, #root {
   padding-left: 1rem;
   padding-right: 1rem;
 
-  background-color: rgba(var(--rgb-dark-grey), .50);
-  color: var(--white);
-  border: var(--white) 1px solid;
+  background-color: rgba($dark-grey, .50);
+  color: $white;
+  border: $white 1px solid;
 
   font-size: 1.2rem;
 
@@ -56,7 +44,7 @@ html, body, #root {
   user-select: none;
 }
 #toggle-movie-info-btn:hover {
-  background-color: rgba(var(--rgb-dark-grey), .80);
+  background-color: rgba($dark-grey, .80);
 }
 @media only screen and (min-width: 576px) {
   #toggle-movie-info-btn {
@@ -101,7 +89,7 @@ html, body, #root {
   flex: 0;
   min-width: 0;
 
-  background-color: var(--dark-grey);
+  background-color: $dark-grey;
 }
 @media only screen and (max-width: 575px) {
   #movie-info-container {

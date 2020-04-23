@@ -11,7 +11,6 @@ import { Map, TileLayer } from 'react-leaflet';
 import ClusterMarker from './ClusterMarker.js';
 import LocationMarker from './LocationMarker.js';
 
-import './MovieMap.css';
 
 export default function MovieMap() {
   const dispatch = useDispatch();

@@ -9,7 +9,6 @@ import {
   unhighlightMarker
 } from '../../actions';
 
-import './MovieCard.css';
 
 export default function MovieCard(props) {
   const dispatch = useDispatch();

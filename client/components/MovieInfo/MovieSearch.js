@@ -2,7 +2,6 @@ import React from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { setSearchTitle, fetchSearchSuggestions, setSearchSuggestions, fetchSpecificMovie, hideMovieInfo } from '../../actions';
 
-import './MovieSearch.css';
 
 export default function MovieSearch() {
   const dispatch = useDispatch();

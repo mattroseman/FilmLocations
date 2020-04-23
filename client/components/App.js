@@ -6,7 +6,8 @@ import { setDomain, showMovieInfo, hideMovieInfo } from '../actions';
 import MovieMap from './MovieMap/MovieMap.js';
 import MovieInfo from './MovieInfo/MovieInfo.js';
 
-import './App.css';
+import './styles.scss';
+
 
 let DOMAIN = '';
 

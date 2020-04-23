@@ -1,0 +1,19 @@
+$primary-color: #0A7659;
+$secondary-color: #EE6B22;
+
+$dark-grey: #212121;
+$light-grey: #333333;
+
+$white: #FFFFFF;
+$off-white: #D9D9D9;
+
+@import 'App.scss';
+
+@import 'MovieInfo/MovieInfo.scss';
+@import 'MovieInfo/MovieSearch.scss';
+@import 'MovieInfo/MovieList.scss';
+@import 'MovieInfo/MovieCard.scss';
+
+@import 'MovieMap/MovieMap.scss';
+@import 'MovieMap/ClusterMarker.scss';
+@import 'MovieMap/LocationMarker.scss';
