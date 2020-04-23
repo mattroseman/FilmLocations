@@ -5,5 +5,8 @@
             "corejs": 3
         }],
         "@babel/preset-react"
+    ],
+    "plugins": [
+      "react-hot-loader/babel"
     ]
 }
