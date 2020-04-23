@@ -71,14 +71,16 @@ services:
     ports:
       - 5000:5000
       - 9229:9229
-  film_locations_dev_server:
+  film_locations_client:
     build:
       context: .
       dockerfile: Dockerfile
-    image: film-locations-dev-server:local
-    container_name: film_locations_dev_server
+    image: film-locations-client:local
+    container_name: film_locations_client
     command: bash -c "npm run client-dev"
     volumes:
       - ./client:/usr/src/app/client
+      - ./webpack.config.js:/usr/src/app/webpack.config.js
+      - ./.babelrc:/usr/src/app/.babelrc
     ports:
       - 3000:3000
