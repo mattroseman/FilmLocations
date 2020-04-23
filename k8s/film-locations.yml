@@ -59,4 +59,8 @@ spec:
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 60
+          resources:
+            requests:
+              cpu: 50m
+              memory: 1.5G
       restartPolicy: Always
