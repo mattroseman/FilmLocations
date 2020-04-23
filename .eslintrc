@@ -12,8 +12,5 @@
   "globals": {
     "chrome": true
   },
-  "rules": {
-    "eqeqeq": 1
-  },
   "extends": "eslint:recommended"
 }

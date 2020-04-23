@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDomain, showMovieInfo, hideMovieInfo } from '../actions';
@@ -21,27 +21,46 @@ function App() {
   }, []);
 
   let movieInfoShowing = useSelector(state => state.movieInfo.showing);
+  const movieInfoContainerElement = useRef(null);
 
-  function toggleMovieInfo(show) {
-    if (show === true || (show === undefined && !movieInfoShowing)) {
-      history.pushState({
-        movieInfoShowing: true
-      }, '');
-
+  function toggleMovieInfo(show, updateHistory=true) {
+    if (show === true || (show == undefined && !movieInfoShowing)) {
+      // show the movie info component
       dispatch(showMovieInfo());
-    } else {
-      history.pushState({
-        movieInfoShowing: false
-      }, '');
 
+      if (updateHistory) {
+        history.pushState({
+          movieInfoShowing: true
+        }, '');
+      }
+    } else {
+      // hide the movie info component
       dispatch(hideMovieInfo());
+
+      if (updateHistory) {
+        history.pushState({
+          movieInfoShowing: false
+        }, '');
+      }
     }
   }
 
-  // hide the movie info panel off the bat on mobile
+  // handle mouse event outside of movie info panel on mobile
+  useEffect(() => {
+    if (window.screen.width < 576) {
+      // if a mousedown event happens outside the movie info element, close it
+      window.addEventListener('mousedown', (event) => {
+        if (!movieInfoContainerElement.current.contains(event.target) && !movieInfoShowing) {
+          toggleMovieInfo(false);
+        }
+      });
+    }
+  }, []);
+
+  // show the movie info panel on render for desktop
   useEffect(() => {
     if (window.screen.width >= 576) {
-      dispatch(showMovieInfo());
+      dispatch(showMovieInfo(null, false));
     }
   }, []);
 
@@ -58,27 +77,13 @@ function App() {
     }
   }, []);
 
-  // handle mouse event outside of movie info panel on mobile
-  useEffect(() => {
-    if (window.screen.width < 576) {
-      // if a mousedown event happens outside the movie info element, close it
-      window.addEventListener('mousedown', (event) => {
-        const movieInfoElement = document.getElementById('movie-info-container');
-
-        if (!movieInfoElement.contains(event.target) && !movieInfoElement.classList.contains('hidden')) {
-          toggleMovieInfo(false);
-        }
-      });
-    }
-  }, []);
-
   // add event listeners to manage browser history
   useEffect(() => {
     window.addEventListener('popstate', (event) => {
       if (event.state.movieInfoShowing) {
-        dispatch(showMovieInfo());
+        toggleMovieInfo(true, false);
       } else {
-        dispatch(hideMovieInfo());
+        toggleMovieInfo(false, false);
       }
     });
   }, []);
@@ -93,7 +98,7 @@ function App() {
       <i className="fa fa-caret-left" aria-hidden="true"></i>
       }
 
-      <span id="toggle-movie-info-btn-text">MovieInfo</span>
+      <span id="toggle-movie-info-btn-text">Movie Info</span>
 
       {((movieInfoShowing && window.screen.width >= 576) || (!movieInfoShowing && window.screen.width < 576)) &&
       <i className="fa fa-caret-right" aria-hidden="true"></i>
@@ -105,12 +110,16 @@ function App() {
     <div id="app-container">
       <div id="map-container">
         <MovieMap></MovieMap>
-
-        {toggleMovieInfoBtn}
       </div>
 
-      <div id="movie-info-container" className={movieInfoShowing ? "" : "hidden"}>
+      <div
+        id="movie-info-container"
+        className={movieInfoShowing ? "" : "hidden"}
+        ref={movieInfoContainerElement}
+      >
         <MovieInfo></MovieInfo>
+
+        {toggleMovieInfoBtn}
       </div>
     </div>
   );

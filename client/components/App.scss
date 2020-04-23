@@ -8,12 +8,16 @@ html, body, #root {
 }
 
 #app-container {
+  position:relative;
+
   display: flex;
   flex-direction: row;
   align-items: stretch;
 
   width: 100%;
   height: 100%;
+
+  overflow: hidden;
 
   margin: 0rem;
 }
@@ -49,7 +53,7 @@ html, body, #root {
 
   overflow: hidden;
 
-  transition: width .2s ease-out;
+  transition: width $animation-time ease-out;
 }
 #toggle-movie-info-btn:hover {
   background-color: rgba($dark-grey, .80);
@@ -57,14 +61,14 @@ html, body, #root {
 }
 @media only screen and (min-width: 576px) {
   #toggle-movie-info-btn {
-    right: 0;
+    right: 100%;
 
     border-right: none;
   }
 }
 @media only screen and (max-width: 575px) {
   #toggle-movie-info-btn {
-    left: 0;
+    left: 100%;
 
     border-left: none;
   }
@@ -76,6 +80,8 @@ html, body, #root {
 
 #toggle-movie-info-btn-text {
   display: none;
+
+  white-space: nowrap;
 }
 @media only screen and (min-width: 576px) {
   #toggle-movie-info-btn:hover > #toggle-movie-info-btn-text {
@@ -92,44 +98,44 @@ html, body, #root {
 }
 
 #map-container {
-  position: relative;
-
-  flex: 8;
+  flex: 1;
 
   margin: 0rem;
 }
 
 #movie-info-container {
-  flex: 2;
-  min-width: 25rem;
+  position: absolute;
+  top: 0;
+  z-index: 2000;
+
+  background-color: $dark-grey;
 
   margin: 0rem;
 
+  width: 35rem;
   height: 100%;
-}
-#movie-info-container.hidden {
-  flex: 0;
-  min-width: 0;
 
-  background-color: $dark-grey;
+  transform: translate(0);
+  transition: transform $animation-time ease-out;
 }
-@media only screen and (max-width: 575px) {
+@media only screen and (min-width: 576px) {
   #movie-info-container {
-    position: absolute;
-    top: 0;
-    left: -90%;
-    z-index: 2000;
-
-    transform: translate(100%);
-    transition: transform .2s ease-out;
-
-    height: 100%;
-    width: 90%;
-    min-width: 0;
+    right: 0;
   }
 
   #movie-info-container.hidden {
-    transform: translate(0);
+    transform: translate(100%);
+  }
+}
+@media only screen and (max-width: 575px) {
+  #movie-info-container {
+    left: 0;
+
+    width: 90%;
+  }
+
+  #movie-info-container.hidden {
+    transform: translate(-100%);
   }
 }
 

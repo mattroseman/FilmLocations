@@ -20,13 +20,6 @@ export default function MovieMap() {
   const viewport = useSelector(state => state.map.viewport, shallowEqual);
   const bounds = useSelector(state => state.map.bounds, shallowEqual);
 
-  // Invalidate the maps size whenever the movie info panel shows or hides
-  const movieInfoShowing = useSelector(state => state.movieInfo.showing);
-  useEffect(() => {
-    const leafletElement = map.current.leafletElement;
-    leafletElement.invalidateSize();
-  }, [movieInfoShowing]);
-
   const specificMovie = useSelector(state => state.specificMovie, shallowEqual);
   useEffect(() => {
     if (specificMovie) {
