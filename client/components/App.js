@@ -89,11 +89,13 @@ function App() {
       className={movieInfoShowing ? "hide-movie-info" : "show-movie-info"}
       onClick={() => toggleMovieInfo()}
     >
-      {!movieInfoShowing && window.screen.width >= 576 &&
+      {((!movieInfoShowing && window.screen.width >= 576) || (movieInfoShowing && window.screen.width < 576)) &&
       <i className="fa fa-caret-left" aria-hidden="true"></i>
       }
-      Movie Info
-      {movieInfoShowing && window.screen.width >= 576 &&
+
+      <span id="toggle-movie-info-btn-text">MovieInfo</span>
+
+      {((movieInfoShowing && window.screen.width >= 576) || (!movieInfoShowing && window.screen.width < 576)) &&
       <i className="fa fa-caret-right" aria-hidden="true"></i>
       }
     </div>

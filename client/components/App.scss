@@ -38,23 +38,35 @@ html, body, #root {
   border: $white 1px solid;
 
   font-size: 1.2rem;
+  text-align: center;
+
+  height: 2rem;
+  width: 1.2rem;
 
   cursor: pointer;
 
   user-select: none;
+
+  overflow: hidden;
+
+  transition: width .2s ease-out;
 }
 #toggle-movie-info-btn:hover {
   background-color: rgba($dark-grey, .80);
+  width: 7rem;
 }
 @media only screen and (min-width: 576px) {
   #toggle-movie-info-btn {
-    right: 3rem;
+    right: 0;
+
+    border-right: none;
   }
 }
 @media only screen and (max-width: 575px) {
   #toggle-movie-info-btn {
-    top: 1.5rem;
-    left: 1.5rem;
+    left: 0;
+
+    border-left: none;
   }
 
   #toggle-movie-info-btn.hide-movie-info {
@@ -62,11 +74,21 @@ html, body, #root {
   }
 }
 
-#toggle-movie-info-btn > .fa-caret-left {
-  margin-right: 1rem;
+#toggle-movie-info-btn-text {
+  display: none;
 }
-#toggle-movie-info-btn > .fa-caret-right {
-  margin-left: 1rem;
+@media only screen and (min-width: 576px) {
+  #toggle-movie-info-btn:hover > #toggle-movie-info-btn-text {
+    display: block;
+  }
+
+  #toggle-movie-info-btn:hover > .fa-caret-left {
+    padding-right: 1rem;
+  }
+
+  #toggle-movie-info-btn:hover > .fa-caret-right {
+    padding-left: 1rem;
+  }
 }
 
 #map-container {
@@ -109,7 +131,6 @@ html, body, #root {
   #movie-info-container.hidden {
     transform: translate(0);
   }
-
 }
 
 input, input:focus {
