@@ -1,6 +1,11 @@
+const { promisify } = require('util');
+
 const chalk = require('chalk');
+const geohash = require('ngeohash');
+const redis = require('redis');
 
 const { Location } = require('../lib/models.js');
+const { getCoordinatesCenter } = require('../lib/utils.js');
 
 // the higher CLUSTER_FACTOR is smaller clusters are likely to be, and there will be more
 const CLUSTER_FACTORS = {
@@ -13,6 +18,19 @@ const CLUSTER_FACTORS = {
   6: 2, 5: 2,
   4: 1, 3: 1, 2: 1, 1: 1
 }
+
+// configure Redis
+const REDIS_HOST = process.env.CACHE_HOST;
+const REDIS_PORT = process.env.CACHE_PORT;
+const redisClient = redis.createClient({ host: REDIS_HOST, port: REDIS_PORT });
+redis.Multi.prototype.execAsync = promisify(redis.Multi.prototype.exec);
+
+redisClient.on("error", function(error) {
+  console.error(error);
+});
+redisClient.on('ready', () => {
+  console.log('connected to redis');
+});
 
 /*
  * handleGetLocationClustersRequest is a function that can be passed into an express `get` method to handle requests to get film clusters for a given bounds
@@ -96,15 +114,82 @@ async function getLocationClusters(bounds, zoom, movieId) {
 
   const clusterFactor = CLUSTER_FACTORS[zoom];
 
-  // query mongo database to get all clusters in the given boundaries, and the counts of movies for each cluster
-  let clusters;
-  try {
-    console.time(`[${southWest}:${northEast}] mongodb query`)
-    clusters = await Location.getClustersInBounds(southWest, northEast, clusterFactor, movieId);
-    console.timeEnd(`[${southWest}:${northEast}] mongodb query`)
-  } catch (err) {
-    console.error(chalk.red(`Something wen't wrong getting film locations in bounds: ${southWest}:${northEast}\n${err}`));
-    throw err;
+  // get a list of geohashes that encompass the given bounds at the given zoom level
+  const geohashes = geohash.bboxes(southWest[0], southWest[1], northEast[0], northEast[1], clusterFactor);
+  let cachedGeohashes = new Set();
+  let uncachedGeohashes = new Set(geohashes);
+  let cachedClusters = {}
+
+  let clusters = [];
+
+  // if the clusterFactor is small enough (zoomed enough out) check cache for any clusters previously queried for 
+  if (clusterFactor <= 5) {
+    cachedClusters = await getCachedClusters(geohashes, clusterFactor, movieId);
+
+    // get the geohashes that had a cached cluster value
+    cachedGeohashes = new Set(Object.entries(cachedClusters)
+      .filter(([, cluster]) => cluster !== null)
+      .map(([geohash,]) => geohash));
+
+    // get the geohashes that didn't have a cached cluster value
+    uncachedGeohashes = new Set(Object.entries(cachedClusters)
+      .filter(([, cluster]) => cluster === null)
+      .map(([geohash,]) => geohash));
+
+    // update cachedClusters to not inlclude empty clusters, or clusters that weren't found in cache
+    for (const [geohash, cluster] of Object.entries(cachedClusters)) {
+      if (cluster === null || cluster.id === undefined) {
+        delete cachedClusters[geohash];
+      }
+    }
+
+    // if all the clusters were in cache, no DB query needs to happen
+    if (cachedGeohashes.size === geohashes.length) {
+      console.log(`all ${geohashes.length} were found in cache, no DB query needed`);
+
+      return Object.values(cachedClusters);
+    }
+
+    // query mongo database to get all clusters for any uncached geohashes
+    try {
+      clusters = await Location.getClustersForGeohashes(Array.from(uncachedGeohashes), clusterFactor, movieId);
+    } catch (err) {
+      console.error(chalk.red(`something went wrong getting clusters for geohashes: ${Array.from(uncachedGeohashes)}\n${err}`));
+      throw err;
+    }
+  } else {
+    // if the clusterFactor is too large (too zoomed in) get location clusters using the given bounds instead of geohashes
+    try {
+      clusters = await Location.getClustersInBounds(southWest, northEast, clusterFactor, movieId);
+    } catch (err) {
+      console.error(chalk.red(`something went wrong getting clusters in bounds: ${southWest}:${northEast}\n${err}`));
+      throw err;
+    }
+  }
+
+  // get the centers of all the clusters
+  for (const cluster of clusters) {
+    cluster.center = getCoordinatesCenter(cluster.locations.map((location) => location.coordinate));
+  }
+
+  clusters = [...clusters, ...Object.values(cachedClusters)];
+
+  // if the clusterFactor is small enough (zoomed enough out) set the cache values for the results
+  if (clusterFactor <= 5) {
+    setCachedClusters(clusters, clusterFactor, movieId);
+
+    // get the list of geohashes that don't have cluster data and are therefore empty
+    const emptyGeohashes = geohashes.filter((geohash) => {
+      for (const cluster of clusters) {
+        if (cluster.id === geohash) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    setCachedEmptyClusters(emptyGeohashes, clusterFactor, movieId);
   }
 
   console.log(
@@ -113,6 +198,85 @@ async function getLocationClusters(bounds, zoom, movieId) {
   );
 
   return clusters;
+}
+
+/*
+ * getCachedClusters takes an array of geohashes, anc checks to cache to see if any clusters are already stored there
+ * @param geohashes: an array of strings, each representing
+ * @return: an object with geohashes as keys, and the cached clusters as values (or null if no cached cluster was found)
+ */
+async function getCachedClusters(geohashes=[], clusterFactor=4, movieId=null) {
+  // if geohashes is undefined or an empty array
+  if (!geohashes || geohashes.length <= 0) {
+    return [];
+  }
+
+  const cachePrefix = `clusters_${clusterFactor}` + (movieId == null ? '' : movieId);
+
+  let cachedClusters = [];
+  const result = {};
+
+  try {
+    cachedClusters = await redisClient.batch(
+      geohashes.map((geohash) => {
+        return ['get', `${cachePrefix}_${geohash}`];
+      })
+    ).execAsync();
+  } catch (err) {
+    console.error(chalk.red(`something went wrong getting cached clusters\n${err}`));
+  }
+
+  // combine array of geohashes, and cache results into an object with the geohashes as keys and clusters as values
+  for (const i in geohashes) {
+    // parse the JSON string that was cached
+    result[geohashes[i]] = JSON.parse(cachedClusters[i]);
+  }
+
+  return result; 
+}
+
+/*
+ * setCachedClusters takes an array of clusters and sets them all in the cache
+ * @param clusters: an array of cluster objects
+ * @param clusterFactor: used when generating cache key
+ * @param movieId: used when generating cache key
+ */
+async function setCachedClusters(clusters=[], clusterFactor=4, movieId=null) {
+  const cachePrefix = `clusters_${clusterFactor}` + (movieId == null ? '' : movieId);
+
+  try {
+    await redisClient.batch(
+      clusters.map((cluster) => {
+        return ['set', `${cachePrefix}_${cluster.id}`, JSON.stringify(cluster)];
+      })
+    ).execAsync();
+  } catch (err) {
+    console.error(chalk.red(`something went wrong setting cached clusters\n${err}`));
+  }
+
+  return;
+}
+
+/*
+ * setCachedEmptyClusters takes an array of geohashes that don't have cluster data and cacheds an empty object
+ * @param geohashes: an array of strings for each geohash with no cluster data
+ * @param clusterFactor: used when generating cache key
+ * @param movieId: used when generating cache key
+ */
+async function setCachedEmptyClusters(geohashes=[], clusterFactor=4, movieId=null) {
+  const cachePrefix = `clusters_${clusterFactor}` + (movieId == null ? '' : movieId);
+
+  try {
+    await redisClient.batch(
+      geohashes.map((geohash) => {
+        return ['set', `${cachePrefix}_${geohash}`, '{}'];
+      })
+    ).execAsync();
+  } catch (err) {
+    console.error(chalk.red(`something went wrong setting cached empty clusters\n${err}`));
+  }
+
+  return;
 }
 
 module.exports = {
