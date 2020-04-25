@@ -115,7 +115,7 @@ async function getLocationClusters(bounds, zoom, movieId) {
   const clusterFactor = CLUSTER_FACTORS[zoom];
 
   // get a list of geohashes that encompass the given bounds at the given zoom level
-  const geohashes = geohash.bboxes(southWest[0], southWest[1], northEast[0], northEast[1], clusterFactor);
+  const geohashes = geohash.bboxes(...southWest, ...northEast, clusterFactor);
   let cachedGeohashes = new Set();
   let uncachedGeohashes = new Set(geohashes);
   let cachedClusters = {}
@@ -191,6 +191,14 @@ async function getLocationClusters(bounds, zoom, movieId) {
 
     setCachedEmptyClusters(emptyGeohashes, clusterFactor, movieId);
   }
+
+  // remove clusters whos center is outside of the given bounds (intentionally done after cacheing as to not waste the query)
+  clusters = clusters.filter((cluster) => {
+    return (
+      cluster.center[0] > southWest[0] && cluster.center[1] > southWest[1] &&
+      cluster.center[0] < northEast[0] && cluster.center[1] < northEast[1]
+    );
+  });
 
   console.log(
     `${clusters.length} clusters found in bounds: [${southWest}:${northEast}]` +
