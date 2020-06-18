@@ -25,8 +25,8 @@ const REDIS_PORT = process.env.CACHE_PORT;
 const redisClient = redis.createClient({ host: REDIS_HOST, port: REDIS_PORT });
 redis.Multi.prototype.execAsync = promisify(redis.Multi.prototype.exec);
 
-redisClient.on("error", function(error) {
-  console.error(error);
+redisClient.on('error', (err) => {
+  console.error(err);
 });
 redisClient.on('ready', () => {
   console.log('connected to redis');

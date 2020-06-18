@@ -163,7 +163,7 @@ async function handleGetTopMoviesRequest(req, res, next) {
 
   console.log(`getting top movies from ${offset} to ${offset + limit} within ${geohashes.length} geohash(es)`);
 
-  let topMovies
+  let topMovies;
   try {
     topMovies = await Movie.getTopMovies(geohashes, limit, offset);
   } catch (err) {
