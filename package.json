@@ -33,6 +33,7 @@
     "leaflet": "^1.6.0",
     "mongoose": "^5.8.11",
     "ngeohash": "^0.6.3",
+    "pg": "^8.0.3",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-leaflet": "^2.6.1",
