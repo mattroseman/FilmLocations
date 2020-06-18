@@ -8,6 +8,7 @@ const initialState = {
       southWest: [undefined, undefined],
       northEast: [undefined, undefined]
     },
+    geohashesShowing: [],
     markers: {},
     highlightedMarker: null
   },
@@ -16,7 +17,6 @@ const initialState = {
     isLoading: false,
     topMoviesPageSize: 10,
     topMoviesDefaultNumLocationsToShow: 3,
-    movieIdsShowing: [],
     topMovies: {},
     search: {
       title: '',

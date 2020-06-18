@@ -22,6 +22,11 @@ export default function map(state=initialState.map, action) {
         ...state,
         markers: action.markers
       };
+    case actions.SET_GEOHASHES_SHOWING:
+      return {
+        ...state,
+        geohashesShowing: action.geohashes
+      };
     case actions.HIGHLIGHT_MARKER:
       // get the marker that has the given location id
       for (const marker of Object.values(state.markers)) {

@@ -20,6 +20,24 @@ export default function movieInfo(state=initialState.movieInfo, action) {
         ...state,
         isLoading: true
       };
+    case actions.SET_TOP_MOVIES: {
+      const topMoviesObj = {};
+
+      // convert the array of topMovies to an object
+      // and include the numLocationsShowing property
+      for (const topMovie of action.topMovies) {
+        topMoviesObj[topMovie.id] = {
+          showDefaultNumLocations: true,  // this property is the default, but can be overwritten if topMovie has something set
+          ...topMovie
+        }
+      }
+
+      return {
+        ...state,
+        isLoading: false,
+        topMovies: topMoviesObj
+      };
+    }
     case actions.UPDATE_TOP_MOVIES: {
       const topMoviesObj = {};
 

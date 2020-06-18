@@ -1,5 +1,3 @@
-import { setMovieIdsShowing } from './movie-info-actions.js';
-
 /*
  * ACTION TYPES
  */
@@ -9,6 +7,7 @@ export const SET_MAP_BOUNDS = 'SET_MAP_BOUNDS';
 export const REQUEST_LOCATION_CLUSTERS = 'REQUEST_LOCATION_CLUSTERS';
 export const REQUEST_SPECIFIC_MOVIE_LOCATION_CLUSTERS = 'REQUEST_SPECIFIC_MOVIE_LOCATION_CLUSTERS';
 export const SET_MAP_MARKERS = 'SET_MAP_MARKERS';
+export const SET_GEOHASHES_SHOWING = 'SET_GEOHASHES_SHOWING';
 export const HIGHLIGHT_MARKER = 'HIGHLIGHT_MARKER';
 export const UNHIGHLIGHT_MARKER = 'UNHIGHLIGHT_MARKER';
 
@@ -57,7 +56,14 @@ function setMapMarkers(locationClusters) {
 
   return {
     type: SET_MAP_MARKERS,
-    markers: markers
+    markers
+  };
+}
+
+function setGeohashesShowing(geohashes) {
+  return {
+    type: SET_GEOHASHES_SHOWING,
+    geohashes
   };
 }
 
@@ -89,11 +95,13 @@ export function fetchMapMarkers(bounds, zoom, movieId) {
     dispatch(requestLocationClusters(bounds, zoom, movieId));
 
     try {
+      console.time(`fetching location clusters`);
       const response = await fetch(
         `${domain}/location-clusters?swlat=${southWest[0]}&swlon=${southWest[1]}&nelat=${northEast[0]}&nelon=${northEast[1]}&zoom=${zoom}` +
         (movieId !== undefined ? `&movieId=${movieId}` : '')
       );
       clusters = await response.json();
+      console.timeEnd(`fetching location clusters`);
     } catch (err) {
       console.error(
         `something wen't wrong getting clusters for current bounds: ${bounds} at zoom: ${zoom}` +
@@ -104,15 +112,9 @@ export function fetchMapMarkers(bounds, zoom, movieId) {
 
     dispatch(setMapMarkers(clusters));
 
-    if (movieId) {
-      dispatch(setMovieIdsShowing([movieId]));
-    } else {
-      const movieIds = clusters.reduce((movieIds, cluster) => {
-        return [...movieIds, ...cluster.movies];
-      }, []);
+    const geohashes = clusters.map((cluster) => cluster.id);
 
-      dispatch(setMovieIdsShowing(movieIds));
-    }
+    dispatch(setGeohashesShowing(geohashes));
   }
 }
 

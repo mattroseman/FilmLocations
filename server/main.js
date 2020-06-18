@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 app.get('/location-clusters', handleGetLocationClustersRequest);
 
 app.get('/movie', handleGetMovieRequest);
-app.post('/top-movies', handleGetTopMoviesRequest);
+app.get('/top-movies', handleGetTopMoviesRequest);
 
 app.get('/movie-titles', handleGetMovieTitlesRequest);
 

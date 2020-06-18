@@ -8,11 +8,11 @@ import MovieCard from './MovieCard.js';
 export default function MovieList() {
   const dispatch = useDispatch();
 
-  const movieIdsShowing = useSelector(state => state.movieInfo.movieIdsShowing, shallowEqual);
-  // If the movieIdsShowing state changes, fetchTopMovies from the top
+  const geohashesShowing = useSelector(state => state.map.geohashesShowing, shallowEqual);
+  // if the geohashes showing changes, fetch top movies from the top
   useEffect(() => {
-    dispatch(fetchTopMovies());
-  }, [movieIdsShowing]);
+    dispatch(fetchTopMovies(geohashesShowing, false));
+  }, [geohashesShowing]);
 
   const loading = useSelector(state => state.movieInfo.isLoading);
   const topMovies = useSelector(state => state.movieInfo.topMovies, shallowEqual);
@@ -23,7 +23,7 @@ export default function MovieList() {
    * handleLoadMoreClick is called when the user clicks the load more link at the bottom of the movie list.
    */
   function handleLoadMoreClick() {
-    dispatch(fetchTopMovies());
+    dispatch(fetchTopMovies(geohashesShowing, true));
   }
 
   /*
@@ -55,7 +55,7 @@ export default function MovieList() {
       </div>
       }
 
-      {!loading && Object.keys(topMovies).length < movieIdsShowing.length &&
+      {!loading &&
       <div id="movie-list-load-more" onClick={handleLoadMoreClick}>
         Load More Movies
       </div>

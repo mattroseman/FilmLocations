@@ -4,6 +4,7 @@
 
 export const SET_MOVIE_IDS_SHOWING = 'SET_MOVIE_IDS_SHOWING';
 export const REQUEST_TOP_MOVIES = 'REQUEST_TOP_MOVIES';
+export const SET_TOP_MOVIES = 'SET_TOP_MOVIES';
 export const UPDATE_TOP_MOVIES = 'UPDATE_TOP_MOVIES';
 
 export const SHOW_ALL_TOP_MOVIE_LOCATIONS = 'SHOW_ALL_TOP_MOVIE_LOCATIONS';
@@ -27,13 +28,21 @@ export function setMovieIdsShowing(movieIdsShowing) {
   }
 }
 
-function requestTopMovies(movieIds, offset, size) {
+function requestTopMovies(geohashes, offset, size, append) {
   return {
     type: REQUEST_TOP_MOVIES,
-    movieIds,
+    geohashes,
     offset,
-    size
+    size,
+    append
   }
+}
+
+export function setTopMovies(topMovies) {
+  return {
+    type: SET_TOP_MOVIES,
+    topMovies
+  };
 }
 
 export function updateTopMovies(topMovies) {
@@ -44,48 +53,47 @@ export function updateTopMovies(topMovies) {
 }
 
 /*
- * fetchTopMovies requests for movie info for the top movies showing
- * @param offset: the offset to get top movies from. So if 10, get's the top movies after the first 10
- * @param size: the number of top movies to get.
+ * fetchTopMovies requests for a list of top movies that have locations in the given list of geohashes
+ * @param geohashes: an array of strings representing the current geohashes with locations in the map viewport
+ * @param append: (optional param) If set to true the results will be append to the list of top movies, if false top movies will be overriden with the results.
  */
-export function fetchTopMovies() {
+export function fetchTopMovies(geohashes=[], append=false) {
   return async function (dispatch, getState) {
-    const { movieInfo: { topMoviesPageSize, topMovies, movieIdsShowing }} = getState();
+    const { movieInfo: { topMoviesPageSize, topMovies }} = getState();
 
     // don't do anything if there aren't any movie ids showing
-    if (movieIdsShowing.length === 0) {
+    if (geohashes.length === 0) {
       return;
     }
 
-    const offset = Object.keys(topMovies).length;
+    // if offset is not provided, go off the current length of topMovies
+    let offset = Object.keys(topMovies).length;
+    if (!append) {
+      offset = 0;
+    }
     const size = topMoviesPageSize;
 
-    dispatch(requestTopMovies(movieIdsShowing, offset, size));
+    dispatch(requestTopMovies(geohashes, offset, size, append));
 
     const { domain } = getState();
 
     let newTopMovies = [];
 
     try {
-      const response = await fetch(`${domain}/top-movies`, {
-        method: 'post',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          movieIds: movieIdsShowing,
-          offset: offset,
-          limit: size
-        })
-      });
+      const response = await fetch(
+        `${domain}/top-movies?geohashes=${geohashes.join(',')}&offset=${offset}&limit=${size}`
+      );
 
       newTopMovies = await response.json();
     } catch (err) {
       console.error(`something wen't wrong getting ${size} top movies from ${offset}\n${err}`);
     }
 
-    dispatch(updateTopMovies(newTopMovies));
+    if (append) {
+      dispatch(updateTopMovies(newTopMovies));
+    } else {
+      dispatch(setTopMovies(newTopMovies));
+    }
   };
 }
 

@@ -145,37 +145,34 @@ async function getMovie(id=null, title=null) {
 }
 
 /*
- * handleGetMoviesRequest is a function that can be passed into an express `get` method to handle requests to get a movie with a given title or id.
- * @param req: The request object passed from express. Expected query params are id or title. One of these must be provided or a 422 response will be sent.
- */
-/*
- * handleGetTopMoviesRequest is a function that can be passed into an express `post` method to handle requests to get top movies from a given list of movie ids.
- * @param req: The request object passed from express. Expected request body params are 'movieIds' as a list of movie id strings.
+ * handleGetTopMoviesRequest is a function that can be passed into an express `get` method to handle requests to get top movies
+ * that are in a given list of geohashes
+ * @param req: The request object passed from express. Expected query params are geohashes as a comma seperated string of geohashes
  *  Optional params in request body are `offset` which will get top movies after the given number of top movies, and `limit` which determines how many top movies are returned.
  */
 async function handleGetTopMoviesRequest(req, res, next) {
   // if the request body parameters aren't valid, respond with a 422
-  if (!validateGetTopMoviesParams(req.body)) {
+  if (!validateGetTopMoviesParams(req.query)) {
     res.sendStatus(422);
     return;
   }
 
-  const movieIds = req.body.movieIds;
+  const geohashes = req.query.geohashes.split(',').filter(geohash => geohash.length > 0);
   const offset = 'offset' in req.body ? +req.body.offset : DEFAULT_TOP_MOVIES_OFFSET;
   const limit = 'limit' in req.body ? +req.body.limit : DEFAULT_TOP_MOVIES_LIMIT;
 
-  console.log(`getting top movies from ${offset} to ${offset + limit} out of ${movieIds.length} total movies`);
+  console.log(`getting top movies from ${offset} to ${offset + limit} within ${geohashes.length} geohash(es)`);
 
   let topMovies
   try {
-    topMovies = await Movie.getTopMovies(movieIds, limit, offset);
+    topMovies = await Movie.getTopMovies(geohashes, limit, offset);
   } catch (err) {
-    console.error(chalk.red(`Something wen't wrong getting top ${limit} movies out of ${movieIds.length} ids`));
+    console.error(chalk.red(`Something wen't wrong getting top ${limit} movies out of ${geohashes.length} ids`));
     next(err);
     return;
   }
 
-  console.log(`got top ${topMovies.length} movies out of ${movieIds.length}`);
+  console.log(`got top ${topMovies.length} movies within ${geohashes.length} geohash(es)`);
 
   res.send(topMovies);
 }
@@ -185,8 +182,17 @@ async function handleGetTopMoviesRequest(req, res, next) {
  * @return: true if the params are valid, false otherwise
  */
 function validateGetTopMoviesParams(queryParams) {
-  if (!('movieIds' in queryParams) || queryParams.movieIds.constructor !== Array || queryParams.movieIds.length < 1) {
+  // check that geohashes is in query params, and that there is at least one geohash in the comma seperated list
+  if (!('geohashes' in queryParams) || queryParams.geohashes.split(',').filter(geohash => geohash.length > 0).length <= 0) {
     return false;
+  }
+
+  // check that all the geohashes have the same length
+  const geohashLength = queryParams.geohashes[0].length;
+  for (const geohash of queryParams.geohashes) {
+    if (geohash.length !== geohashLength) {
+      return false;
+    }
   }
 
   // offset is not required, but if present must be a number

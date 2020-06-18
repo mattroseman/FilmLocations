@@ -91,14 +91,14 @@ function sortLocations(locations, bounds) {
   // if two locations are both in bounds, sort by length of their descriptions
   return locations.sort((a, b) => {
     // if a location has a point, and b does not, sort a before b and vice versa
-    if (a.point !== undefined && b.point === undefined) {
+    if (a.point != null && b.point == null) {
       return -1;
-    } else if (b.point !== undefined && a.point === undefined) {
+    } else if (b.point != null && a.point == null) {
       return 1;
     }
 
     // if both locations have coordinates
-    if (a.point !== undefined && b.point !== undefined) {
+    if (a.point != null && b.point != null) {
       const aInBounds = (
         a.point[0] > bounds.southWest[0] && a.point[0] < bounds.northEast[0] &&
         a.point[1] > bounds.southWest[1] && a.point[1] < bounds.northEast[1]
