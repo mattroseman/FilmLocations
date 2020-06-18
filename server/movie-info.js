@@ -158,8 +158,8 @@ async function handleGetTopMoviesRequest(req, res, next) {
   }
 
   const geohashes = req.query.geohashes.split(',').filter(geohash => geohash.length > 0);
-  const offset = 'offset' in req.body ? +req.body.offset : DEFAULT_TOP_MOVIES_OFFSET;
-  const limit = 'limit' in req.body ? +req.body.limit : DEFAULT_TOP_MOVIES_LIMIT;
+  const offset = 'offset' in req.query ? +req.query.offset : DEFAULT_TOP_MOVIES_OFFSET;
+  const limit = 'limit' in req.query ? +req.query.limit : DEFAULT_TOP_MOVIES_LIMIT;
 
   console.log(`getting top movies from ${offset} to ${offset + limit} within ${geohashes.length} geohash(es)`);
 
