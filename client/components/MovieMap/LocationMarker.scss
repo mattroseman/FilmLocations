@@ -13,3 +13,20 @@
     }
   }
 }
+
+.location-marker-popup {
+  .location-marker-popup-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+
+    .location-marker-popup__location-string {
+    }
+
+    .location-marker-popup__google-maps-link {
+      align-self: end;
+    }
+  }
+}
+
