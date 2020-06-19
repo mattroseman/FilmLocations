@@ -19,14 +19,28 @@
     display: flex;
     flex-direction: column;
     justify-content: start;
-    align-items: center;
+    align-items: start;
+
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 
     .location-marker-popup__location-string {
     }
 
     .location-marker-popup__google-maps-link {
-      align-self: end;
+      align-self: flex-end;
+
+      .fa-external-link {
+        margin-left: .3rem;
+      }
     }
   }
 }
 
+.leaflet-popup-close-button {
+  color: $light-grey;
+
+  &:hover {
+    color: $dark-grey;
+  }
+}

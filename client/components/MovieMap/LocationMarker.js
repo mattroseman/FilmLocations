@@ -21,6 +21,7 @@ function LocationMarker(props) {
             target="_blank"
           >
             google maps
+            <i className="fa fa-external-link" aria-hidden="true"></i>
           </a>
         </div>
       </Popup>
