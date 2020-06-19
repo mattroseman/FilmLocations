@@ -37,6 +37,14 @@ export default function MovieMap() {
     }
   }, [specificMovie]);
 
+  // update the map bounds, whenever the viewport changes
+  useEffect(() => {
+    // grab the new bounds from the leafletElement dynamic property
+    const leafletElement = map.current.leafletElement;
+    const bounds = leafletElement.getBounds();
+    dispatch(setMapBounds(bounds));
+  }, [viewport]);
+
   // set the map markers when the bounds change or a specific movie is set/unset
   useEffect(() => {
     if (
@@ -70,18 +78,7 @@ export default function MovieMap() {
       maxZoom={20}
       zoomControl={window.screen.width >= 576}
       viewport={viewport}
-      whenReady={() => {
-        const leafletElement = map.current.leafletElement;
-        const bounds = leafletElement.getBounds();
-        dispatch(setMapBounds(bounds));
-      }}
-      onViewportChanged={(newViewport) => {
-        dispatch(setMapViewport(newViewport));
-        // grab the new bounds from the leafletElement dynamic property
-        const leafletElement = map.current.leafletElement;
-        const bounds = leafletElement.getBounds();
-        dispatch(setMapBounds(bounds));
-      }}
+      onViewportChanged={(newViewport) => dispatch(setMapViewport(newViewport))}
     >
       <TileLayer
         attribution={'&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'}

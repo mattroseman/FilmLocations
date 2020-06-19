@@ -6,7 +6,8 @@ import {
   showSpecificMovie,
   hideMovieInfo,
   highlightMarker,
-  unhighlightMarker
+  unhighlightMarker,
+  setMapViewport,
 } from '../../actions';
 
 
@@ -29,6 +30,7 @@ export default function MovieCard(props) {
           className='movie-card-location'
           onMouseEnter={() => dispatch(highlightMarker(movieLocation.id))}
           onMouseLeave={() => dispatch(unhighlightMarker())}
+          onClick={() => dispatch(setMapViewport({center: movieLocation.point, zoom: 19}))}
         >
           <h4 className='movie-card-location-name'>{movieLocation.locationString}</h4>
 

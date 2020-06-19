@@ -12,7 +12,7 @@ export {
   setMapBounds,
   fetchMapMarkers,
   highlightMarker,
-  unhighlightMarker
+  unhighlightMarker,
 } from './map-actions.js';
 
 export {
