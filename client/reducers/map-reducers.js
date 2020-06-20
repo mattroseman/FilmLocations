@@ -17,16 +17,27 @@ export default function map(state=initialState.map, action) {
       return state;
     case actions.REQUEST_SPECIFIC_MOVIE_LOCATION_CLUSTERS:
       return state;
-    case actions.SET_MAP_MARKERS:
+    case actions.SET_MAP_MARKERS: {
+      const markers = {};
+
+      for (const cluster of action.locationClusters) {
+        markers[cluster.id] = {
+          id: cluster.id,
+          count: cluster.numLocations,
+          coordinate: cluster.center,
+          locations: cluster.locations,
+          highlighted: false
+        };
+      }
+
+      const geohashes = action.locationClusters.map((cluster) => cluster.id);
+
       return {
         ...state,
-        markers: action.markers
+        markers,
+        geohashesShowing: geohashes
       };
-    case actions.SET_GEOHASHES_SHOWING:
-      return {
-        ...state,
-        geohashesShowing: action.geohashes
-      };
+    }
     case actions.HIGHLIGHT_MARKER:
       // get the marker that has the given location id
       for (const marker of Object.values(state.markers)) {

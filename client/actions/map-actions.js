@@ -7,7 +7,6 @@ export const SET_MAP_BOUNDS = 'SET_MAP_BOUNDS';
 export const REQUEST_LOCATION_CLUSTERS = 'REQUEST_LOCATION_CLUSTERS';
 export const REQUEST_SPECIFIC_MOVIE_LOCATION_CLUSTERS = 'REQUEST_SPECIFIC_MOVIE_LOCATION_CLUSTERS';
 export const SET_MAP_MARKERS = 'SET_MAP_MARKERS';
-export const SET_GEOHASHES_SHOWING = 'SET_GEOHASHES_SHOWING';
 export const HIGHLIGHT_MARKER = 'HIGHLIGHT_MARKER';
 export const UNHIGHLIGHT_MARKER = 'UNHIGHLIGHT_MARKER';
 
@@ -42,28 +41,9 @@ function requestLocationClusters(bounds, zoom, movieId) {
 }
 
 function setMapMarkers(locationClusters) {
-  const markers = {};
-
-  for (const cluster of locationClusters) {
-    markers[cluster.id] = {
-      id: cluster.id,
-      count: cluster.numLocations,
-      coordinate: cluster.center,
-      locations: cluster.locations,
-      highlighted: false
-    };
-  }
-
   return {
     type: SET_MAP_MARKERS,
-    markers
-  };
-}
-
-function setGeohashesShowing(geohashes) {
-  return {
-    type: SET_GEOHASHES_SHOWING,
-    geohashes
+    locationClusters
   };
 }
 
@@ -111,10 +91,6 @@ export function fetchMapMarkers(bounds, zoom, movieId) {
     }
 
     dispatch(setMapMarkers(clusters));
-
-    const geohashes = clusters.map((cluster) => cluster.id);
-
-    dispatch(setGeohashesShowing(geohashes));
   }
 }
 
