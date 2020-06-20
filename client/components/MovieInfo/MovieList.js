@@ -10,12 +10,6 @@ export default function MovieList() {
 
   const topMovies = useSelector(state => state.movieInfo.topMovies, shallowEqual);
   const specificMovie = useSelector(state => state.specificMovie, shallowEqual);
-  let moviesShowing = [];
-  if (specificMovie != null) {
-    moviesShowing = { [specificMovie.id]: specificMovie };
-  } else {
-    moviesShowing = topMovies;
-  }
 
   const geohashesShowing = useSelector(state => state.map.geohashesShowing, shallowEqual);
   // if the geohashes showing changes, fetch top movies from the top
@@ -55,7 +49,7 @@ export default function MovieList() {
       </div>
       }
 
-      {Object.keys(moviesShowing).map((movieId) => {
+      {!loading && Object.keys(topMovies).map((movieId) => {
         return <MovieCard key={movieId} movieId={movieId} />;
       })}
 
@@ -65,7 +59,7 @@ export default function MovieList() {
       </div>
       }
 
-      {!loading &&
+      {!loading && specificMovie == null &&
       <div id="movie-list-load-more" onClick={handleLoadMoreClick}>
         Load More Movies
       </div>

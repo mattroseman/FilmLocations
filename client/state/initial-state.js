@@ -14,7 +14,7 @@ const initialState = {
   },
   movieInfo: {
     showing: false,
-    isLoading: false,
+    isLoading: true,
     topMoviesPageSize: 10,
     topMoviesDefaultNumLocationsToShow: 3,
     topMovies: {},

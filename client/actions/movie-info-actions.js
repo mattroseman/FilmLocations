@@ -38,7 +38,7 @@ function requestTopMovies(geohashes, offset, size, append) {
   }
 }
 
-export function setTopMovies(topMovies) {
+function setTopMovies(topMovies) {
   return {
     type: SET_TOP_MOVIES,
     topMovies
