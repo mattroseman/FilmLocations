@@ -38,6 +38,19 @@ export default function movieInfo(state=initialState.movieInfo, action) {
         topMovies: topMoviesObj
       };
     }
+    case actions.SET_SPECIFIC_MOVIE:
+      return {
+        ...state,
+        topMovies: {
+          [action.movie.id]: action.movie
+        }
+      };
+    case actions.UNSET_SPECIFIC_MOVIE:
+      return {
+        ...state,
+        isLoading: true,
+        topMovies: {},
+      };
     case actions.UPDATE_TOP_MOVIES: {
       const topMoviesObj = {};
 

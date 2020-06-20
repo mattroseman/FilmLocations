@@ -9,7 +9,10 @@ import filmLocationsApp from './reducers';
 
 import App from './components/App.js';
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+  trace: true,
+  traceLimit: 25
+})|| compose;
 const store = createStore(
   filmLocationsApp,
   composeEnhancers(
