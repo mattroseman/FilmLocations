@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector, shallowEqual } from 'react-redux';
 
 import { Marker } from 'react-leaflet';
 
@@ -30,15 +31,17 @@ function getCircleMarkerRadius(numLocations) {
 }
 
 function ClusterMarker(props) {
+  const marker = useSelector(state => state.map.markers[props.markerId], shallowEqual);
+
   return (
     <Marker
-      position={props.marker.coordinate}
+      position={marker.coordinate}
       icon={L.divIcon({
-        html: `<div class="cluster-marker-count">${props.marker.count}</div>`,
-        className: props.marker.highlighted ? 'cluster-marker-icon highlighted' : 'cluster-marker-icon',
-        iconSize: 2 * getCircleMarkerRadius(props.marker.count)
+        html: `<div class="cluster-marker-count">${marker.count}</div>`,
+        className: marker.highlighted ? 'cluster-marker-icon highlighted' : 'cluster-marker-icon',
+        iconSize: 2 * getCircleMarkerRadius(marker.count)
       })}
-      onClick={props.onClusterMarkerClick}
+      onClick={() => props.onClusterMarkerClick(marker)}
     >
     </Marker>
   );

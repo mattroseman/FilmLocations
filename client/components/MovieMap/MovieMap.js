@@ -60,8 +60,15 @@ export default function MovieMap() {
   }, [bounds]);
 
 
-  // TODO maybe only check if marker keys change, or if marker count values change since those are the only values that should trigger a rerender here
-  let markers = useSelector(state => state.map.markers, shallowEqual);
+  // only grab data from markers that is used
+  let markers = useSelector(state => {
+    return Object.values(state.map.markers).map(marker => {
+      return {
+        id: marker.id,
+        count: marker.count,
+      };
+    });
+  }, shallowEqual);
 
   function handleClusterMarkerClick(marker) {
     const leafletElement = map.current.leafletElement;
@@ -85,22 +92,20 @@ export default function MovieMap() {
         url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
       />
 
-      {Object.values(markers).map((marker) => {
+      {markers.map((marker) => {
         if (marker.count > 1 && viewport.zoom < 20) {
           return (
             <ClusterMarker
               key={marker.id}
-              marker={marker} // TODO should just pass in marker id, and the child component should have useSelector for marker object
-              onClusterMarkerClick={() => {
-                handleClusterMarkerClick(marker);
-              }}
+              markerId={marker.id}
+              onClusterMarkerClick={handleClusterMarkerClick}
             ></ClusterMarker>
           );
         } else {
           return (
             <LocationMarker
               key={marker.id}
-              marker={marker}
+              markerId={marker.id}
             ></LocationMarker>
           );
         }
