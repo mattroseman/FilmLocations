@@ -7,6 +7,7 @@ export {
   HIGHLIGHT_MARKER,
   UNHIGHLIGHT_MARKER,
   FOCUS_LOCATION,
+  UNFOCUS_LOCATION,
 
   setMapViewport,
   setMapBounds,
@@ -14,6 +15,7 @@ export {
   highlightMarker,
   unhighlightMarker,
   focusLocation,
+  unfocusLocation,
 } from './map-actions.js';
 
 export {

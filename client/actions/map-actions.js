@@ -10,6 +10,7 @@ export const SET_MAP_MARKERS = 'SET_MAP_MARKERS';
 export const HIGHLIGHT_MARKER = 'HIGHLIGHT_MARKER';
 export const UNHIGHLIGHT_MARKER = 'UNHIGHLIGHT_MARKER';
 export const FOCUS_LOCATION = 'FOCUS_LOCATION';
+export const UNFOCUS_LOCATION = 'UNFOCUS_LOCATION';
 
 /*
  * ACTION CREATORS
@@ -112,5 +113,11 @@ export function focusLocation(movieLocation) {
   return {
     type: FOCUS_LOCATION,
     movieLocation
+  };
+}
+
+export function unfocusLocation() {
+  return {
+    type: UNFOCUS_LOCATION
   };
 }

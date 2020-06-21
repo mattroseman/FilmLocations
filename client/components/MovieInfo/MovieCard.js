@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+
 import {
   showAllTopMovieLocations,
   showDefaultTopMovieLocations,

@@ -1,10 +1,16 @@
 import React, { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Marker, Popup } from 'react-leaflet';
 
+import {
+  unfocusLocation
+} from '../../actions';
+
 
 function LocationMarker(props) {
+  const dispatch = useDispatch();
+
   const marker = useRef(null);
   const popup = useRef(null);
 
@@ -13,13 +19,12 @@ function LocationMarker(props) {
   }, []);
 
   // if this location is focused open the popup
-  const focusedLocation = useSelector(state => state.map.focusedLocation);
+  const focusedLocationId = useSelector(state => state.map.focusedLocationId);
   useEffect(() => {
-    // console.log(focusedLocation);
-    if (focusedLocation === props.marker.locations[0].id) {
+    if (props.marker.locations[0].id === focusedLocationId) {
       marker.current.leafletElement.openPopup();
     }
-  }, [focusedLocation]);
+  }, [focusedLocationId]);
 
   let popupElement;
 
@@ -29,7 +34,7 @@ function LocationMarker(props) {
         ref={popup}
         className="location-marker-popup"
         autoPan={false}
-        // TODO onClose={() => dispatch(unfocusLocation())}
+        onClose={() => dispatch(unfocusLocation())}
       >
         <div className="location-marker-popup-content">
           <div className="location-marker-popup__location-string">
@@ -54,7 +59,7 @@ function LocationMarker(props) {
         ref={popup}
         className="location-marker-popup"
         autoPan={false}
-        // TODO onClose={() => dispatch(unfocusLocation())}
+        onClose={() => dispatch(unfocusLocation())}
       >
         {props.marker.locations[0].locationString}
       </Popup>

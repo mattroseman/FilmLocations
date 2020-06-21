@@ -60,6 +60,7 @@ export default function MovieMap() {
   }, [bounds]);
 
 
+  // TODO maybe only check if marker keys change, or if marker count values change since those are the only values that should trigger a rerender here
   let markers = useSelector(state => state.map.markers, shallowEqual);
 
   function handleClusterMarkerClick(marker) {
@@ -89,7 +90,7 @@ export default function MovieMap() {
           return (
             <ClusterMarker
               key={marker.id}
-              marker={marker}
+              marker={marker} // TODO should just pass in marker id, and the child component should have useSelector for marker object
               onClusterMarkerClick={() => {
                 handleClusterMarkerClick(marker);
               }}

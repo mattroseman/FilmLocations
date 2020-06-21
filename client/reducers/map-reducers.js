@@ -27,7 +27,6 @@ export default function map(state=initialState.map, action) {
           coordinate: cluster.center,
           locations: cluster.locations,
           highlighted: false,
-          focused: false
         };
       }
 
@@ -77,10 +76,16 @@ export default function map(state=initialState.map, action) {
         ...state,
         viewport: {
           center: action.movieLocation.point,
-          zoom: 19
+          zoom: 19,
         },
-        focusedLocation: action.movieLocation.id,
+        focusedLocationId: action.movieLocation.id,
       };
+    case actions.UNFOCUS_LOCATION: {
+      return {
+        ...state,
+        focusedLocationId: null,
+      };
+    }
     default:
       return state;
   }
