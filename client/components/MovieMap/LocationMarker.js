@@ -68,7 +68,7 @@ function LocationMarker(props) {
       icon={L.divIcon({
         html: '<i class="fa fa-map-marker fa-3x" aria-hidden="true"></i>',
         iconSize: 25,
-        className: props.highlighted ? 'location-marker-icon highlighted' : 'location-marker-icon',
+        className: props.marker.highlighted ? 'location-marker-icon highlighted' : 'location-marker-icon',
       })}
       onClick={() => console.log(props.marker.locations[0].locationString)}
     >

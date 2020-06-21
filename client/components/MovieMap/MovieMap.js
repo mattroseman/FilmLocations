@@ -61,7 +61,6 @@ export default function MovieMap() {
 
 
   let markers = useSelector(state => state.map.markers, shallowEqual);
-  const highlightedMarker = useSelector(state => state.map.highlightedMarker);
 
   function handleClusterMarkerClick(marker) {
     const leafletElement = map.current.leafletElement;
@@ -91,7 +90,6 @@ export default function MovieMap() {
             <ClusterMarker
               key={marker.id}
               marker={marker}
-              highlighted={marker.id === highlightedMarker}
               onClusterMarkerClick={() => {
                 handleClusterMarkerClick(marker);
               }}
@@ -99,7 +97,10 @@ export default function MovieMap() {
           );
         } else {
           return (
-            <LocationMarker key={marker.id} marker={marker} highlighted={marker.id === highlightedMarker}></LocationMarker>
+            <LocationMarker
+              key={marker.id}
+              marker={marker}
+            ></LocationMarker>
           );
         }
       })}

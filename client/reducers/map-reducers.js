@@ -40,13 +40,19 @@ export default function map(state=initialState.map, action) {
       };
     }
     case actions.HIGHLIGHT_MARKER:
-      // get the marker that has the given location id
+      // set the "highlighted" field to true for the marker that has the given location id
       for (const marker of Object.values(state.markers)) {
         for (const markerLocation of marker.locations) {
           if (markerLocation.id === action.locationId) {
             return {
               ...state,
-              highlightedMarker: marker.id
+              markers: {
+                ...state.markers,
+                [marker.id]: {
+                  ...state.markers[marker.id],
+                  highlighted: true
+                }
+              }
             };
           }
         }
@@ -54,11 +60,18 @@ export default function map(state=initialState.map, action) {
 
       // if no marker is found that has the given location id, don't change anything
       return state;
-    case actions.UNHIGHLIGHT_MARKER:
+    case actions.UNHIGHLIGHT_MARKER: {
+      // set all markers "highlighted" field to false
+      const newMarkers = {...state.markers};
+      for (const markerId of Object.keys(newMarkers)) {
+        newMarkers[markerId].highlighted = false;
+      }
+
       return {
         ...state,
-        highlightedMarker: null
+        markers: newMarkers
       };
+    }
     case actions.FOCUS_LOCATION:
       return {
         ...state,

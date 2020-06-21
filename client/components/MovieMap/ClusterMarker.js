@@ -35,7 +35,7 @@ function ClusterMarker(props) {
       position={props.marker.coordinate}
       icon={L.divIcon({
         html: `<div class="cluster-marker-count">${props.marker.count}</div>`,
-        className: props.highlighted ? 'cluster-marker-icon highlighted' : 'cluster-marker-icon',
+        className: props.marker.highlighted ? 'cluster-marker-icon highlighted' : 'cluster-marker-icon',
         iconSize: 2 * getCircleMarkerRadius(props.marker.count)
       })}
       onClick={props.onClusterMarkerClick}
