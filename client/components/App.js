@@ -3,7 +3,7 @@ import { hot } from 'react-hot-loader/root';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDomain, showMovieInfo, hideMovieInfo } from '../actions';
 
-import MovieMap from './MovieMap/MovieMap.js';
+import MovieMap from './Map/MovieMap.js';
 import MovieInfo from './MovieInfo/MovieInfo.js';
 
 import './styles.scss';
