@@ -1,14 +1,36 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Marker, Popup } from 'react-leaflet';
 
 
 function LocationMarker(props) {
-  let popup;
+  const marker = useRef(null);
+  const popup = useRef(null);
+
+  useEffect(() => {
+    marker.current.leafletElement.bindPopup(popup.current.leafletElement);
+  }, []);
+
+  // if this location is focused open the popup
+  const focusedLocation = useSelector(state => state.map.focusedLocation);
+  useEffect(() => {
+    // console.log(focusedLocation);
+    if (focusedLocation === props.marker.locations[0].id) {
+      marker.current.leafletElement.openPopup();
+    }
+  }, [focusedLocation]);
+
+  let popupElement;
 
   if (props.marker.locations[0].placeId != null) {
-    popup = (
-      <Popup className="location-marker-popup" autoPan={false}>
+    popupElement = (
+      <Popup
+        ref={popup}
+        className="location-marker-popup"
+        autoPan={false}
+        // TODO onClose={() => dispatch(unfocusLocation())}
+      >
         <div className="location-marker-popup-content">
           <div className="location-marker-popup__location-string">
             {props.marker.locations[0].locationString}
@@ -27,8 +49,13 @@ function LocationMarker(props) {
       </Popup>
     );
   } else {
-    popup = (
-      <Popup className="location-marker-popup" autoPan={false}>
+    popupElement = (
+      <Popup
+        ref={popup}
+        className="location-marker-popup"
+        autoPan={false}
+        // TODO onClose={() => dispatch(unfocusLocation())}
+      >
         {props.marker.locations[0].locationString}
       </Popup>
     );
@@ -36,6 +63,7 @@ function LocationMarker(props) {
 
   return (
     <Marker
+      ref={marker}
       position={props.marker.coordinate}
       icon={L.divIcon({
         html: '<i class="fa fa-map-marker fa-3x" aria-hidden="true"></i>',
@@ -44,7 +72,7 @@ function LocationMarker(props) {
       })}
       onClick={() => console.log(props.marker.locations[0].locationString)}
     >
-      {popup}
+      {popupElement}
     </Marker>
   );
 }

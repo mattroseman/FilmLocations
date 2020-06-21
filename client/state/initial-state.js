@@ -10,7 +10,8 @@ const initialState = {
     },
     geohashesShowing: [],
     markers: {},
-    highlightedMarker: null
+    highlightedMarker: null,
+    focusedLocation: null,
   },
   movieInfo: {
     showing: false,

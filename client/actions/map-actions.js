@@ -9,6 +9,7 @@ export const REQUEST_SPECIFIC_MOVIE_LOCATION_CLUSTERS = 'REQUEST_SPECIFIC_MOVIE_
 export const SET_MAP_MARKERS = 'SET_MAP_MARKERS';
 export const HIGHLIGHT_MARKER = 'HIGHLIGHT_MARKER';
 export const UNHIGHLIGHT_MARKER = 'UNHIGHLIGHT_MARKER';
+export const FOCUS_LOCATION = 'FOCUS_LOCATION';
 
 /*
  * ACTION CREATORS
@@ -104,5 +105,12 @@ export function highlightMarker(locationId) {
 export function unhighlightMarker() {
   return {
     type: UNHIGHLIGHT_MARKER
+  };
+}
+
+export function focusLocation(movieLocation) {
+  return {
+    type: FOCUS_LOCATION,
+    movieLocation
   };
 }

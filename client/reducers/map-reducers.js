@@ -26,7 +26,8 @@ export default function map(state=initialState.map, action) {
           count: cluster.numLocations,
           coordinate: cluster.center,
           locations: cluster.locations,
-          highlighted: false
+          highlighted: false,
+          focused: false
         };
       }
 
@@ -57,6 +58,15 @@ export default function map(state=initialState.map, action) {
       return {
         ...state,
         highlightedMarker: null
+      };
+    case actions.FOCUS_LOCATION:
+      return {
+        ...state,
+        viewport: {
+          center: action.movieLocation.point,
+          zoom: 19
+        },
+        focusedLocation: action.movieLocation.id,
       };
     default:
       return state;
