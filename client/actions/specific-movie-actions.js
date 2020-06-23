@@ -17,20 +17,10 @@ function requestSpecificMovie(movieTitle) {
   };
 }
 
-function setSpecificMovie(movie) {
+export function setSpecificMovie(movie) {
   return {
     type: SET_SPECIFIC_MOVIE,
     movie
-  };
-}
-
-/*
- * showSpecificMovie dispatches actions to set the specific movie to the given movie,
- * and actions to update movie info states
- */
-export function showSpecificMovie(movie) {
-  return async function(dispatch) {
-    dispatch(setSpecificMovie(movie));
   };
 }
 
@@ -60,7 +50,7 @@ export function fetchSpecificMovie(movieTitle='') {
       return;
     }
 
-    dispatch(showSpecificMovie(movie));
+    dispatch(setSpecificMovie(movie));
   }
 }
 

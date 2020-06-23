@@ -31,17 +31,20 @@ function getCircleMarkerRadius(numLocations) {
 }
 
 function ClusterMarker(props) {
-  const marker = useSelector(state => state.map.markers[props.markerId], shallowEqual);
+  const coordinate = useSelector(state => state.map.markers[props.markerId].coordinate, shallowEqual);
+  const count = useSelector(state => state.map.markers[props.markerId].count);
+  const highlighted = useSelector(state => state.map.markers[props.markerId].highlighted);
+  const markerLocations = useSelector(state => state.map.markers[props.markerId].locations, shallowEqual);
 
   return (
     <Marker
-      position={marker.coordinate}
+      position={coordinate}
       icon={L.divIcon({
-        html: `<div class="cluster-marker-count">${marker.count}</div>`,
-        className: marker.highlighted ? 'cluster-marker-icon highlighted' : 'cluster-marker-icon',
-        iconSize: 2 * getCircleMarkerRadius(marker.count)
+        html: `<div class="cluster-marker-count">${count}</div>`,
+        className: highlighted ? 'cluster-marker-icon highlighted' : 'cluster-marker-icon',
+        iconSize: 2 * getCircleMarkerRadius(count)
       })}
-      onClick={() => props.onClusterMarkerClick(marker)}
+      onClick={() => props.onClusterMarkerClick(markerLocations)}
     >
     </Marker>
   );

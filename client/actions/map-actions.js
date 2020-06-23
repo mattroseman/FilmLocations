@@ -2,7 +2,6 @@
  * ACTION TYPES
  */
 
-export const SET_MAP_VIEWPORT = 'SET_MAP_VIEWPORT';
 export const SET_MAP_BOUNDS = 'SET_MAP_BOUNDS';
 export const REQUEST_LOCATION_CLUSTERS = 'REQUEST_LOCATION_CLUSTERS';
 export const REQUEST_SPECIFIC_MOVIE_LOCATION_CLUSTERS = 'REQUEST_SPECIFIC_MOVIE_LOCATION_CLUSTERS';
@@ -15,13 +14,6 @@ export const UNFOCUS_LOCATION = 'UNFOCUS_LOCATION';
 /*
  * ACTION CREATORS
  */
-
-export function setMapViewport(viewport) {
-  return {
-    type: SET_MAP_VIEWPORT,
-    viewport
-  };
-}
 
 export function setMapBounds(bounds) {
   return {
@@ -61,8 +53,8 @@ export function fetchMapMarkers(bounds, zoom, movieId) {
   return async function(dispatch, getState) {
     const { domain } = getState();
 
-    const southWest = bounds.southWest;
-    const northEast = bounds.northEast;
+    const southWest = [bounds._southWest.lat, bounds._southWest.lng];
+    const northEast = [bounds._northEast.lat, bounds._northEast.lng];
 
     let clusters = [];
 
@@ -80,7 +72,7 @@ export function fetchMapMarkers(bounds, zoom, movieId) {
       console.time(`fetching location clusters`);
       const response = await fetch(
         `${domain}/location-clusters?swlat=${southWest[0]}&swlon=${southWest[1]}&nelat=${northEast[0]}&nelon=${northEast[1]}&zoom=${zoom}` +
-        (movieId !== undefined ? `&movieId=${movieId}` : '')
+        (movieId != undefined ? `&movieId=${movieId}` : '')
       );
       clusters = await response.json();
       console.timeEnd(`fetching location clusters`);
@@ -109,10 +101,10 @@ export function unhighlightMarker() {
   };
 }
 
-export function focusLocation(movieLocation) {
+export function focusLocation(focusedLocation) {
   return {
     type: FOCUS_LOCATION,
-    movieLocation
+    focusedLocation
   };
 }
 

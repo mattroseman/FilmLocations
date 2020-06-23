@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { useDispatch, useSelector } from 'react-redux';
-import { setDomain, showMovieInfo, hideMovieInfo } from '../actions';
+import { showMovieInfo, hideMovieInfo } from '../actions';
 
 import MovieMap from './Map/MovieMap.js';
 import MovieInfo from './MovieInfo/MovieInfo.js';
@@ -9,16 +9,8 @@ import MovieInfo from './MovieInfo/MovieInfo.js';
 import './styles.scss';
 
 
-let DOMAIN = '';
-
 function App() {
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    // initialize DOMAIN to localhost:5000 if running locally, otherwise leave blank
-    DOMAIN = window.location.hostname.indexOf('localhost') > -1 ? 'http://localhost:5000' : '';
-    dispatch(setDomain(DOMAIN));
-  }, []);
 
   let movieInfoShowing = useSelector(state => state.movieInfo.showing);
   const movieInfoContainerElement = useRef(null);

@@ -4,7 +4,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   showAllTopMovieLocations,
   showDefaultTopMovieLocations,
-  showSpecificMovie,
+  setSpecificMovie,
   hideMovieInfo,
   highlightMarker,
   unhighlightMarker,
@@ -43,7 +43,7 @@ export default function MovieCard(props) {
     });
 
   function handleShowSpecificMovie() {
-    dispatch(showSpecificMovie(movie));
+    dispatch(setSpecificMovie(movie));
 
     // hide the movie info panel on mobile
     if (window.screen.width < 576) {

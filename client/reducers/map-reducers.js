@@ -3,11 +3,6 @@ import initialState from '../state/initial-state.js';
 
 export default function map(state=initialState.map, action) {
   switch(action.type) {
-    case actions.SET_MAP_VIEWPORT:
-      return {
-        ...state,
-        viewport: action.viewport
-      };
     case actions.SET_MAP_BOUNDS:
       return {
         ...state,
@@ -74,16 +69,12 @@ export default function map(state=initialState.map, action) {
     case actions.FOCUS_LOCATION:
       return {
         ...state,
-        viewport: {
-          center: action.movieLocation.point,
-          zoom: 19,
-        },
-        focusedLocationId: action.movieLocation.id,
+        focusedLocation: action.focusedLocation,
       };
     case actions.UNFOCUS_LOCATION: {
       return {
         ...state,
-        focusedLocationId: null,
+        focusedLocation: null,
       };
     }
     default:
