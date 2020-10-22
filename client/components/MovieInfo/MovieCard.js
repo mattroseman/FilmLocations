@@ -22,7 +22,7 @@ export default function MovieCard(props) {
   // don't bother rerendering prop if map changes, it'll get rerendered from parent
   const mapBounds = useSelector(state => state.map.bounds, () => { return true; })
 
-  const movieLocations = sortLocations(movie.locations, mapBounds)
+  const movieLocations = sortLocations([...movie.locations], mapBounds)
     .slice(0, movie.showDefaultNumLocations ? defaultNumLocationsToShow : -1)
     .map((movieLocation) => {
       return (
