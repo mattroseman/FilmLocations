@@ -41,22 +41,22 @@ So any changes to frontend or backend code will trigger a refresh and can be see
 
 ## Project Layout
 
-- client (client side React code)
-  - actions (redux actions that can be dispatched)
-  - reducers (redux reducers for updating the Store)
-  - state (contains initial state for redux Store)
-  - components
-    - App.js (Main react component)
-    - Map (React components for the leaflet map)
-    - MovieInfo (React components for the list movies)
-  - public (skeleton index.html file and static files)
-- server (Express server code)
-  - main.js (Express setup code including routing)
-  - movie-info.js (endpoint getting info about a specific movie)
-  - movie-titles.js (endpoint for getting a list of movies given a bounds)
-  - location-clusters.js (endpoint for getting a list of clusters given a bounds)
-- lib (functions for Express server and scripts to generate database)
-- scripts (scripts to generate the movie database)
+- **client/** (client side React code)
+  - **actions/** (redux actions that can be dispatched)
+  - **reducers/** (redux reducers for updating the Store)
+  - **state/** (contains initial state for redux Store)
+  - **components/**
+    - **App.js** (Main react component)
+    - **Map/** (React components for the leaflet map)
+    - **MovieInfo/** (React components for the list movies)
+  - **public/** (skeleton index.html file and static files)
+- **server/** (Express server code)
+  - **main.js** (Express setup code including routing)
+  - **movie-info.js** (endpoint getting info about a specific movie)
+  - **movie-titles.js** (endpoint for getting a list of movies given a bounds)
+  - **location-clusters.js** (endpoint for getting a list of clusters given a bounds)
+- **lib/** (functions for Express server and scripts to generate database)
+- **scripts/** (scripts to generate the movie database)
 
 ## Contributing
 
