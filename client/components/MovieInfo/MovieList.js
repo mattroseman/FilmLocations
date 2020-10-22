@@ -9,16 +9,16 @@ export default function MovieList() {
   const dispatch = useDispatch();
 
   const topMovies = useSelector(state => state.movieInfo.topMovies, shallowEqual);
+
   const specificMovie = useSelector(state => state.specificMovie, shallowEqual);
 
-  const geohashesShowing = useSelector(state => state.map.geohashesShowing, shallowEqual);
-  // if the geohashes showing changes, fetch top movies from the top
+  const shouldUpdate = useSelector(state => state.movieInfo.shouldUpdate);
+  // If specificMovie is unset or the geohashes showing changes fetch top movies again
   useEffect(() => {
-    // only fetch top movies if there isn't a specific movie showing
-    if (specificMovie == null) {
-      dispatch(fetchTopMovies(geohashesShowing, false));
+    if (shouldUpdate && specificMovie === null) {
+      dispatch(fetchTopMovies());
     }
-  }, [geohashesShowing]);
+  }, [specificMovie, shouldUpdate]);
 
   const loading = useSelector(state => state.movieInfo.isLoading);
 
@@ -26,7 +26,7 @@ export default function MovieList() {
    * handleLoadMoreClick is called when the user clicks the load more link at the bottom of the movie list.
    */
   function handleLoadMoreClick() {
-    dispatch(fetchTopMovies(geohashesShowing, true));
+    dispatch(fetchTopMovies(true));
   }
 
   /*

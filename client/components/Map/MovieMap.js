@@ -52,11 +52,18 @@ export default function MovieMap() {
     state => state.specificMovie == null ? [] : state.specificMovie.locations.map(l => l.point),
     shallowEqual
   );
+  const specificMovieWasSet = useRef(false);
 
   useEffect(() => {
+    const leafletElement = map.current.leafletElement;
+
     if (specificMovieId != null) {
-      const leafletElement = map.current.leafletElement;
       leafletElement.fitBounds(specificMovieLocations, { padding: [80, 80] });
+      specificMovieWasSet.current = true;
+    } else if (specificMovieWasSet.current) {
+      dispatch(fetchMapMarkers(leafletElement.getBounds(), leafletElement.getZoom()));
+
+      specificMovieWasSet.current = false;
     }
   }, [specificMovieId]);
 

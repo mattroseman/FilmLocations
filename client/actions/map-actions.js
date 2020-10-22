@@ -34,10 +34,11 @@ function requestLocationClusters(bounds, zoom, movieId) {
   };
 }
 
-function setMapMarkers(locationClusters) {
+function setMapMarkers(locationClusters, movieId=null) {
   return {
     type: SET_MAP_MARKERS,
-    locationClusters
+    locationClusters,
+    movieId
   };
 }
 
@@ -84,7 +85,7 @@ export function fetchMapMarkers(bounds, zoom, movieId) {
       );
     }
 
-    dispatch(setMapMarkers(clusters));
+    dispatch(setMapMarkers(clusters, movieId));
   }
 }
 

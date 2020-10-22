@@ -2,7 +2,6 @@
  * ACTION TYPES
  */
 
-export const SET_MOVIE_IDS_SHOWING = 'SET_MOVIE_IDS_SHOWING';
 export const REQUEST_TOP_MOVIES = 'REQUEST_TOP_MOVIES';
 export const SET_TOP_MOVIES = 'SET_TOP_MOVIES';
 export const UPDATE_TOP_MOVIES = 'UPDATE_TOP_MOVIES';
@@ -21,13 +20,6 @@ export const HIDE_MOVIE_INFO = 'HIDE_MOVIE_INFO';
  * ACTION CREATORS
  */
 
-export function setMovieIdsShowing(movieIdsShowing) {
-  return {
-    type: SET_MOVIE_IDS_SHOWING,
-    movieIdsShowing
-  }
-}
-
 function requestTopMovies(geohashes, offset, size, append) {
   return {
     type: REQUEST_TOP_MOVIES,
@@ -38,7 +30,7 @@ function requestTopMovies(geohashes, offset, size, append) {
   }
 }
 
-function setTopMovies(topMovies) {
+export function setTopMovies(topMovies) {
   return {
     type: SET_TOP_MOVIES,
     topMovies
@@ -53,16 +45,23 @@ export function updateTopMovies(topMovies) {
 }
 
 /*
- * fetchTopMovies requests for a list of top movies that have locations in the given list of geohashes
- * @param geohashes: an array of strings representing the current geohashes with locations in the map viewport
+ * fetchTopMovies requests for a list of top movies that have locations in the current list of geohashes showing
  * @param append: (optional param) If set to true the results will be append to the list of top movies, if false top movies will be overriden with the results.
  */
-export function fetchTopMovies(geohashes=[], append=false) {
+export function fetchTopMovies(append=false) {
   return async function (dispatch, getState) {
-    const { movieInfo: { topMoviesPageSize, topMovies }} = getState();
+    const {
+      movieInfo: {
+        topMoviesPageSize,
+        topMovies
+      },
+      map: {
+        geohashesShowing
+      }
+    } = getState();
 
     // don't do anything if there aren't any movie ids showing
-    if (geohashes.length === 0) {
+    if (geohashesShowing.length === 0) {
       return;
     }
 
@@ -73,7 +72,7 @@ export function fetchTopMovies(geohashes=[], append=false) {
     }
     const size = topMoviesPageSize;
 
-    dispatch(requestTopMovies(geohashes, offset, size, append));
+    dispatch(requestTopMovies(geohashesShowing, offset, size, append));
 
     const { domain } = getState();
 
@@ -81,7 +80,7 @@ export function fetchTopMovies(geohashes=[], append=false) {
 
     try {
       const response = await fetch(
-        `${domain}/top-movies?geohashes=${geohashes.join(',')}&offset=${offset}&limit=${size}`
+        `${domain}/top-movies?geohashes=${geohashesShowing.join(',')}&offset=${offset}&limit=${size}`
       );
 
       newTopMovies = await response.json();

@@ -3,21 +3,10 @@ import initialState from '../state/initial-state.js';
 
 export default function movieInfo(state=initialState.movieInfo, action) {
   switch(action.type) {
-    case actions.SET_MOVIE_IDS_SHOWING:
-      // if there is no change to the movieIdsShowing array, make no change to state
-      if (equalSets(new Set(state.movieIdsShowing), new Set(action.movieIdsShowing))) {
-        return state;
-      }
-
-      // if there is a change, update movieIdsShowing, and clear topMovies array
-      return {
-        ...state,
-        movieIdsShowing: action.movieIdsShowing,
-        topMovies: []
-      };
     case actions.REQUEST_TOP_MOVIES:
       return {
         ...state,
+        shouldUpdate: false,
         isLoading: true
       };
     case actions.SET_TOP_MOVIES: {
@@ -38,11 +27,25 @@ export default function movieInfo(state=initialState.movieInfo, action) {
         topMovies: topMoviesObj
       };
     }
+    case actions.SET_MAP_MARKERS: {
+      // if a specificMovie is set, don't set shouldUpdate to true
+      if (action.movieId !== null) {
+        return state;
+      }
+
+      return {
+        ...state,
+        shouldUpdate: true
+      };
+    }
     case actions.SET_SPECIFIC_MOVIE:
       return {
         ...state,
         topMovies: {
-          [action.movie.id]: action.movie
+          [action.movie.id]: {
+            ...action.movie,
+            showDefaultNumLocations: true
+          }
         }
       };
     case actions.UNSET_SPECIFIC_MOVIE:
@@ -125,22 +128,4 @@ export default function movieInfo(state=initialState.movieInfo, action) {
     default:
       return state;
   }
-}
-
-/*
- * equalSets compares two sets, and checks if they are equal
- * @return: true if the sets are equal, false otherwise
- */
-function equalSets(setA, setB) {
-  if (setA.size !== setB.size) {
-    return false;
-  }
-
-  for (const elem of setA) {
-    if (!setB.has(elem)) {
-      return false;
-    }
-  }
-
-  return true;
 }

@@ -8,12 +8,13 @@ const initialState = {
       southWest: [undefined, undefined],
       northEast: [undefined, undefined]
     },
-    geohashesShowing: [],
     markers: {},
+    geohashesShowing: [],
     focusedPoint: null,
   },
   movieInfo: {
     showing: false,
+    shouldUpdate: false,
     isLoading: true,
     topMoviesPageSize: 10,
     topMoviesDefaultNumLocationsToShow: 3,

@@ -25,12 +25,10 @@ export default function map(state=initialState.map, action) {
         };
       }
 
-      const geohashes = action.locationClusters.map((cluster) => cluster.id);
-
       return {
         ...state,
         markers,
-        geohashesShowing: geohashes
+        geohashesShowing: action.locationClusters.map(cluster => cluster.id),
       };
     }
     case actions.HIGHLIGHT_MARKER:
