@@ -35,11 +35,31 @@ Otherwise the commands in Dockerfile and docker-compose.yml will take care of th
 The website can be started with `docker-compose up -d film_locations` and accessed at `localhost:5000`.
 This runs the `start-dev` npm command, which runs the express server with nodemon. Any changes to server code will trigger a refresh.
 
-If you want to hot reaload the frontend code you can also run the command `docker-compose up -d film_locations_dev_server` and access it at `localhost:3000`.
+If you want to hot reaload the frontend code you can also run the command `docker-compose up -d film_locations_client` and access it at `localhost:3000`.
 This starts a webpack hotreload server that connects to the backend running on `localhost:5000`.
 So any changes to frontend or backend code will trigger a refresh and can be seen immediately.
 
+## Project Layout
+
+- client (client side React code)
+  - actions (redux actions that can be dispatched)
+  - reducers (redux reducers for updating the Store)
+  - state (contains initial state for redux Store)
+  - components
+    - App.js (Main react component)
+    - Map (React components for the leaflet map)
+    - MovieInfo (React components for the list movies)
+  - public (skeleton index.html file and static files)
+- server (Express server code)
+  - main.js (Express setup code including routing)
+  - movie-info.js (endpoint getting info about a specific movie)
+  - movie-titles.js (endpoint for getting a list of movies given a bounds)
+  - location-clusters.js (endpoint for getting a list of clusters given a bounds)
+- lib (functions for Express server and scripts to generate database)
+- scripts (scripts to generate the movie database)
+
 ## Contributing
+
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## Authors

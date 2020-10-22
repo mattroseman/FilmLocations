@@ -40,6 +40,10 @@ export default function MovieMap() {
     }).map(marker => marker.id);
   }, shallowEqual);
 
+  /*
+   * handleClusterMarkerClick should be fired whenever a marker is clicked on. It zooms the map onto the clicked upon marker
+   * @param markerLocations: a list [[lat, lon],...] location points that make up the marker
+   */
   function handleClusterMarkerClick(markerLocations) {
     const leafletElement = map.current.leafletElement;
     leafletElement.fitBounds(markerLocations.map((markerLocation) => {
@@ -54,13 +58,16 @@ export default function MovieMap() {
   );
   const specificMovieWasSet = useRef(false);
 
+  // update the map for when specific movie is set or unset
   useEffect(() => {
     const leafletElement = map.current.leafletElement;
 
     if (specificMovieId != null) {
+      // if specificMovie was set zoom the map to fit the locations of the specific movie
       leafletElement.fitBounds(specificMovieLocations, { padding: [80, 80] });
       specificMovieWasSet.current = true;
     } else if (specificMovieWasSet.current) {
+      // if specific movie was unset, refetch the markers for the current bounds
       dispatch(fetchMapMarkers(leafletElement.getBounds(), leafletElement.getZoom()));
 
       specificMovieWasSet.current = false;
@@ -68,6 +75,7 @@ export default function MovieMap() {
   }, [specificMovieId]);
 
   const focusedPoint = useSelector(state => state.map.focusedLocation != null ? state.map.focusedLocation.point : null);
+  // if a specific point is focused (like a location is clicked on from the movie info panel) set the map to zoom in on that point
   useEffect(() => {
     if (focusedPoint != null) {
       const leafletElement = map.current.leafletElement;

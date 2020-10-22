@@ -15,6 +15,10 @@ function App() {
   let movieInfoShowing = useSelector(state => state.movieInfo.showing);
   const movieInfoContainerElement = useRef(null);
 
+  /*
+   * toggleMovieInfo shows or hides the movie info panel updating history with the new state
+   * @param show: optional param to manually set the movie panel to showing or hidden (defaults to toggling)
+   */
   function toggleMovieInfo(show, updateHistory=true) {
     if (show === true || (show == undefined && !movieInfoShowing)) {
       // show the movie info component
