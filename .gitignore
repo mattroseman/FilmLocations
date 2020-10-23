@@ -1,6 +1,9 @@
-node_modules
+node_modules/*
 
 data/*
 !data/init-mongo.sh
 
 client/dist
+
+k8s/secrets/*
+!k8s/secrets/template__film-locations-db-secret.yml
