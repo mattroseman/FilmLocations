@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,7 +21,7 @@ spec:
         app: film-locations
     spec:
       containers:
-        - image: gcr.io/filmlocations/film-locations:1.4.1
+        - image: mroseman/film-locations:latest
           imagePullPolicy: Always
           name: film-locations
           env:
@@ -50,9 +51,11 @@ spec:
                   name: film-locations-db-secret
                   key: name
             - name: CACHE_HOST
-              value: 'redis'
+              value: 'redis-service'
             - name: CACHE_PORT
               value: '6379'
+            - name: PORT
+              value: '8080'
           livenessProbe:
             httpGet:
               path: /healthz
@@ -61,6 +64,6 @@ spec:
             periodSeconds: 60
           resources:
             requests:
-              cpu: 50m
-              memory: 1.5G
+              cpu: 300m
+              memory: 700M
       restartPolicy: Always
