@@ -87,7 +87,6 @@ services:
       PORT: 5000
     volumes:
       - ./lib:/usr/src/app/lib
-      - ./credentials:/usr/src/app/credentials
       - ./server:/usr/src/app/server
       - ./scripts:/usr/src/app/scripts
     ports:
