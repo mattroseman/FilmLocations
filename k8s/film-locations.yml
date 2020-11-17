@@ -21,7 +21,7 @@ spec:
         app: film-locations
     spec:
       containers:
-        - image: mroseman/film-locations:latest
+        - image: mroseman/film-locations:1.4.3
           imagePullPolicy: Always
           name: film-locations
           env:
