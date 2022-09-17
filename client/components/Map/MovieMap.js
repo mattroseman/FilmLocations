@@ -5,7 +5,7 @@ import {
   fetchMapMarkers,
 } from '../../actions';
 
-import { MapContainer, TileLayer } from 'react-leaflet';
+import { Map, TileLayer } from 'react-leaflet';
 
 import ClusterMarker from './ClusterMarker.js';
 import LocationMarker from './LocationMarker.js';
@@ -84,7 +84,7 @@ export default function MovieMap() {
   }, [focusedPoint]);
 
   return (
-    <MapContainer
+    <Map
       ref={map}
       worldCopyJump={true}
       minZoom={window.screen.width < 576 ? 2 : 4}
@@ -134,6 +134,6 @@ export default function MovieMap() {
           ></LocationMarker>
         );
       })}
-    </MapContainer>
+    </Map>
   );
 }
