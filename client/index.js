@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import { createStore, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
@@ -23,9 +23,10 @@ const store = createStore(
   )
 );
 
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(
   <Provider store={store}>
     <App />
   </Provider>,
-  document.getElementById('root')
 );

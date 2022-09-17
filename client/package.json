@@ -1,0 +1,31 @@
+{
+  "name": "moviemap-client",
+  "version": "1.0.0",
+  "description": "The react client for the moviemap website",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "dev": "webpack-dev-server --mode development --host 0.0.0.0",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mroseman95/FilmLocations.git"
+  },
+  "author": "Matthew Roseman",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "leaflet": "^1.6.0",
+    "react-leaflet": "^2.6.1",
+    "react-redux": "^8.0.2",
+    "redux": "^4.2.0",
+    "redux-thunk": "^2.4.1",
+    "sass": "^1.54.9",
+    "sass-loader": "^13.0.2",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.0"
+  }
+}
