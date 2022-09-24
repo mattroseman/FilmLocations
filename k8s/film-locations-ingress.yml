@@ -1,5 +1,5 @@
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: film-locations-ingress
@@ -16,9 +16,12 @@ spec:
       http:
         paths:
           - path: /
+            pathType: ImplementationSpecific
             backend:
-              serviceName: film-locations-service
-              servicePort: 8080
+              service:
+                name: film-locations-service
+                port:
+                  number: 8080
 ---
 apiVersion: cert-manager.io/v1
 kind: Issuer
@@ -32,7 +35,7 @@ spec:
     email: mroseman95@gmail.com
     # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
-      name: film-locations-tls
+      name: letsencrypt-prod
     # Enable the HTTP-01 challenge provider
     solvers:
       - http01:
