@@ -29,7 +29,7 @@
     "cors": "^2.8.5",
     "escape-string-regexp": "^2.0.0",
     "eslint": "^6.8.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "leaflet": "^1.6.0",
     "mongoose": "^5.8.11",
     "ngeohash": "^0.6.3",
